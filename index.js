@@ -24,6 +24,8 @@ const LocalStrategy = require("passport-local");
 const passportLocalMongoose = require("passport-local-mongoose");
 const {isAuthenticated} = require("passport/lib/http/request");
 const {EventEmitter} = require('events');
+const { promisify } = require('util');
+
 
 
 // Create express application
@@ -33,7 +35,7 @@ const app = express();
 app.set('view engine', 'ejs');
 
 // Middleware for parsing request bodies
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Serve static files from the "uploads" and "public" directories
@@ -89,7 +91,7 @@ const fileFilter = function (req, file, cb) {
 };
 
 // Create multer upload middleware
-const upload = multer({storage: storage, fileFilter: fileFilter});
+const upload = multer({ storage: storage, fileFilter: fileFilter });
 
 // Custom middleware for handling requests
 app.use(async function (req, res, next) {
@@ -99,18 +101,18 @@ app.use(async function (req, res, next) {
         let lastUploadedClinicPhoto;
 
         // Retrieve last uploaded doctor photo
-        const doctorPhotodocs = await DoctorPhoto.find({}).sort({_id: -1}).limit(1).exec();
+        const doctorPhotodocs = await DoctorPhoto.find({}).sort({ _id: -1 }).limit(1).exec();
         if (doctorPhotodocs.length > 0) {
             lastUploadedDoctorPhoto = path.basename(doctorPhotodocs[0].doctorPhoto);
         }
 
         // Retrieve last uploaded clinic photo
-        const clinicPhotodocs = await ClinicPhoto.find({}).sort({_id: -1}).limit(1).exec();
+        const clinicPhotodocs = await ClinicPhoto.find({}).sort({ _id: -1 }).limit(1).exec();
         if (clinicPhotodocs.length > 0) {
             lastUploadedClinicPhoto = path.basename(clinicPhotodocs[0].clinicPhoto);
         }
 
-        // Retrieve necessary data from various collections
+        // Retrieve necessary data from various collections using Promise.all()
         const [
             patients,
             invoices,
@@ -136,38 +138,35 @@ app.use(async function (req, res, next) {
         ]);
 
         // Get the language preference from user preferences or default to 'en'
-        const language = (userPreferences[0] ?? {}).language || 'en';
+        const language = (userPreferences[0] || {}).language || 'en';
 
         // Path to translation file
         const translationFilePath = path.join(__dirname, 'locales', language, 'translation.json');
 
-        // Read translation file
-        fs.readFile(translationFilePath, 'utf8', (err, data) => {
-            if (err) {
-                console.error('Error handling translation file:', err);
-            } else {
-                const translationFile = JSON.parse(data);
+        // Read translation file using promisify()
+        const readFileAsync = promisify(fs.readFile);
+        const data = await readFileAsync(translationFilePath, 'utf8');
 
-                // Set locals for rendering views
-                res.locals = {
-                    lastUploadedDoctorPhoto: encodeURIComponent(lastUploadedDoctorPhoto),
-                    lastUploadedClinicPhoto: encodeURIComponent(lastUploadedClinicPhoto),
-                    patients: patients.length > 0 ? patients : [],
-                    invoices: invoices.length > 0 ? invoices : [],
-                    doctor: doctor.length > 0 ? doctor[0] : null,
-                    clinic: clinic.length > 0 ? clinic[0] : null,
-                    settingSocialMedia: settingSocialMedia.length > 0 ? settingSocialMedia[0] : null,
-                    userPrefrences: userPreferences[0],
-                    drugs: drugs.length > 0 ? drugs : [],
-                    contacts: contacts.length > 0 ? contacts : [],
-                    reviews: reviews.length > 0 ? reviews : [],
-                    todos: todos.length > 0 ? todos : [],
-                    translation: translationFile // Add the translationFile to res.locals
-                };
+        const translationFile = JSON.parse(data);
 
-                next();
-            }
-        });
+        // Set locals for rendering views
+        res.locals = {
+            lastUploadedDoctorPhoto: encodeURIComponent(lastUploadedDoctorPhoto),
+            lastUploadedClinicPhoto: encodeURIComponent(lastUploadedClinicPhoto),
+            patients: patients.length > 0 ? patients : [],
+            invoices: invoices.length > 0 ? invoices : [],
+            doctor: doctor.length > 0 ? doctor[0] : null,
+            clinic: clinic.length > 0 ? clinic[0] : null,
+            settingSocialMedia: settingSocialMedia.length > 0 ? settingSocialMedia[0] : null,
+            userPrefrences: userPreferences[0],
+            drugs: drugs.length > 0 ? drugs : [],
+            contacts: contacts.length > 0 ? contacts : [],
+            reviews: reviews.length > 0 ? reviews : [],
+            todos: todos.length > 0 ? todos : [],
+            translation: translationFile // Add the translationFile to res.locals
+        };
+
+        next();
     } catch (err) {
         console.error(err);
         res.status(500).send('Internal Server Error');
@@ -176,18 +175,19 @@ app.use(async function (req, res, next) {
 
 const PORT = process.env.PORT || 3000;
 
-//this code sets up the necessary schemas and models for a MongoDB database using Mongoose, to interact with the database and perform CRUD operations on the defined collections.
+// This code sets up the necessary schemas and models for a MongoDB database using Mongoose
+// to interact with the database and perform CRUD operations on the defined collections.
 mongoose.set('strictQuery', false);
+
 const connectDB = async () => {
     try {
         const conn = await mongoose.connect(process.env.MONGO_URI);
-        console.log(`MongoDB Conntected ${conn.connection.host} `)
+        console.log(`MongoDB Connected ${conn.connection.host} `);
+    } catch (err) {
+        console.log(err);
+        process.exit(1);
     }
-    catch (err) {
-        console.log(err)
-        process.exit(1)
-    }
-}
+};
 // mongoose.connect("mongodb://127.0.0.1:27017/clinicDB", {useNewUrlParser: true, useUnifiedTopology: true})
 //     .then(() => {
 //         console.log('Connected to MongoDB');
@@ -804,32 +804,32 @@ passport.deserializeUser(Authentication.deserializeUser());
 
 
 // Set up session management
-app.use(session({
-    secret: "Our little secret.", // Secret used to sign the session ID cookie
-    resave: false, // Whether to save the session on every request, even if it hasn't been modified
-    saveUninitialized: false // Whether to save uninitialized sessions to the store
-}));
+// app.use(session({
+//     secret: "Our little secret.", // Secret used to sign the session ID cookie
+//     resave: false, // Whether to save the session on every request, even if it hasn't been modified
+//     saveUninitialized: false // Whether to save uninitialized sessions to the store
+// }));
 
 // Initialize Passport authentication
-app.use(passport.initialize());
+// app.use(passport.initialize());
 
 // Enable persistent login sessions with Passport
-app.use(passport.session());
+// app.use(passport.session());
 
 // Enable flash messages
-app.use(flash());
+// app.use(flash());
 
 // Serialize the user object into the session
-passport.serializeUser(function (doctor, done) {
-    done(null, doctor.id);
-});
+// passport.serializeUser(function (doctor, done) {
+//     done(null, doctor.id);
+// });
 
 // Deserialize the user object from the session
-passport.deserializeUser(function (id, done) {
-    Doctor.findById(id, function (err, doctor) {
-        done(err, doctor);
-    });
-});
+// passport.deserializeUser(function (id, done) {
+//     Doctor.findById(id, function (err, doctor) {
+//         done(err, doctor);
+//     });
+// });
 
 
 //Defining other schemas
@@ -1005,16 +1005,16 @@ const contactSchema = new mongoose.Schema({
 });
 const Contact = mongoose.model('Contact', contactSchema);
 
-//
+
 // app.get('/register', (req, res) => {
 //     res.render('register');
 // });
 
 
 // Render the login page
-app.get('/login', (req, res) => {
-    res.render('sign-in', { errorMessage: req.flash('error') });
-});
+// app.get('/login', (req, res) => {
+//     res.render('sign-in', { errorMessage: req.flash('error') });
+// });
 
 /*
 // Render the registration page
@@ -1024,36 +1024,38 @@ app.get("/register", function(req, res){
 */
 
 // Handle the logout request
-app.get("/logout", function (req, res) {
-    req.logout(function (err) {
-        if (err) {
-            console.log(err);
-        }
-        res.redirect("/");
-    });
-});
+// app.get("/logout", function (req, res) {
+//     req.logout(function (err) {
+//         if (err) {
+//             console.log(err);
+//         }
+//         res.redirect("/");
+//     });
+// });
 
 // Middleware to ensure user authentication
-function ensureAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.redirect("/login"); // Redirect to the login page if user is not authenticated
-}
+// function ensureAuthenticated(req, res, next) {
+//     if (req.isAuthenticated()) {
+//         return next();
+//     }
+//     res.redirect("/login"); // Redirect to the login page if user is not authenticated
+// }
 
 // Render the dashboard page
-app.get("/dashboard", ensureAuthenticated, (req, res) => {
-    res.render('index', { currentLanguage: req.language });
+app.get("/dashboard", async (req, res) => {
+    try {
+        res.render('index', { currentLanguage: req.language });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server error");
+    }
 });
 
-// Render the landing page
 app.get('/', async (req, res) => {
     const hoursList = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
 
     try {
         const activeReviews = await Review.find({ active: true }).exec();
-
-        // Add stars as a new property to each review object
         const activeReviewsWithStars = activeReviews.map((review) => ({
             ...review.toObject(),
             stars: generateStars(review.rating),
@@ -1069,21 +1071,17 @@ app.get('/', async (req, res) => {
 
 app.get('/user/theme', async function (req, res) {
     try {
-        // Get user theme preference from database
-        const userPrefrences = await UserPreferences.find({}).exec();
-
-        // Send user theme preference as JSON object
-        res.json({theme: userPrefrences[0]});
+        const userPreferences = await UserPreferences.find({}).exec();
+        res.json({ theme: userPreferences[0] });
     } catch (err) {
         console.error(err);
         res.status(500).send('Internal Server Error');
     }
 });
 
-// Retrieve an invoice by ID
 app.get('/api/invoices/:invoiceID', async (req, res) => {
     try {
-        const invoice = await Invoice.findOne({ _id: req.params.invoiceID });
+        const invoice = await Invoice.findOne({ _id: req.params.invoiceID }).exec();
         if (!invoice) {
             res.status(404).json({ message: 'Invoice not found' });
         } else {
@@ -1095,7 +1093,6 @@ app.get('/api/invoices/:invoiceID', async (req, res) => {
     }
 });
 
-// Retrieve an appointment by ID
 app.get('/api/appointments/:id', async (req, res) => {
     try {
         const appointment = await Appointment.findById(req.params.id).lean().exec();
@@ -1106,7 +1103,6 @@ app.get('/api/appointments/:id', async (req, res) => {
     }
 });
 
-// Retrieve a drug by ID
 app.get('/api/drug/:id', async (req, res) => {
     try {
         const drug = await Drug.findById(req.params.id).lean().exec();
@@ -1117,31 +1113,26 @@ app.get('/api/drug/:id', async (req, res) => {
     }
 });
 
-// Language switch route
 app.get('/switch-language/:lang', async (req, res) => {
     try {
         const lang = req.params.lang;
 
-        // Retrieve the user preferences from the database
         const userPreferences = await UserPreferences.findOne();
-
-        // Update the user's language preference in the database
         if (userPreferences) {
             userPreferences.language = lang;
             await userPreferences.save();
         }
 
-        // Redirect back to the dashboard
         res.redirect('/dashboard');
     } catch (error) {
-        // Handle any errors that occur while updating the user's language
         console.error('Error updating user language:', error);
         res.redirect('/dashboard');
     }
 });
 
+
 //Rendering account settings
-app.get("/account-settings", ensureAuthenticated, async (req, res) => {
+app.get("/account-settings",  async (req, res) => {
 
     const allTimeZone = [{
         Name: 'Afghanistan',
@@ -2626,83 +2617,75 @@ app.get("/account-settings", ensureAuthenticated, async (req, res) => {
     }
 
 })
-app.get("/invoices", ensureAuthenticated, async (req, res) => {
-    // Retrieve invoices
-    const foundInvoices = await Invoice.find({}).limit(10).exec();
+app.get("/invoices", async (req, res) => {
+    try {
+        const foundInvoices = await Invoice.find({}).limit(10).exec();
+        const foundPatients = await Patient.find({ invoices: { $exists: true, $ne: [] } })
+            .populate("invoices")
+            .exec();
 
-    // Retrieve patients with invoices
-    const foundPatients = await Patient.find({invoices: {$exists: true, $ne: []}})
-        .populate("invoices")
-        .exec();
-
-    // Render the invoices view with the retrieved data
-    res.render('invoices', {foundPatients, foundInvoices});
+        res.render('invoices', { foundPatients, foundInvoices });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server error");
+    }
 });
 
-app.get("/create-invoice", ensureAuthenticated, (req, res) => {
-    // Render the createInvoice view
+app.get("/create-invoice", (req, res) => {
     res.render('createInvoice');
 });
 
-app.get("/doctor-profile", ensureAuthenticated, (req, res) => {
-    // Render the doctorProfile view
+app.get("/doctor-profile", (req, res) => {
     res.render('doctorProfile');
 });
 
-app.get("/book-appointment", ensureAuthenticated, async (req, res) => {
+app.get("/book-appointment", async (req, res) => {
     const hoursList = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
 
     try {
-        // Retrieve all appointments, approved appointments, and canceled appointments
         const foundAppointments = await Appointment.find({}).exec();
         const foundApprovedAppointments = await ApprovedAppointment.find({}).exec();
         const foundCanceledAppointments = await DeletedAppointment.find({}).exec();
 
-        // Render the book-appointment view with the retrieved data
         res.render("book-appointment", {
-            foundAppointments: foundAppointments,
-            foundApprovedAppointments: foundApprovedAppointments,
-            foundCanceledAppointments: foundCanceledAppointments,
-            hoursList: hoursList
+            foundAppointments,
+            foundApprovedAppointments,
+            foundCanceledAppointments,
+            hoursList
         });
-    } catch (err) {
-        console.error(err);
+    } catch (error) {
+        console.error(error);
         res.sendStatus(500);
     }
 });
 
-app.get("/approved-appointments", ensureAuthenticated, async (req, res) => {
+app.get("/approved-appointments", async (req, res) => {
     try {
-        // Retrieve all approved appointments
         const foundApprovedAppointments = await ApprovedAppointment.find({}).exec();
 
-        // Render the approved-appointment view with the retrieved data
         res.render("approved-appointment", {
-            foundApprovedAppointments: foundApprovedAppointments,
+            foundApprovedAppointments,
         });
-    } catch (err) {
-        console.error(err);
+    } catch (error) {
+        console.error(error);
         res.sendStatus(500);
     }
 });
 
-app.get("/canceled-appointments", ensureAuthenticated, async (req, res) => {
+app.get("/canceled-appointments", async (req, res) => {
     try {
-        // Retrieve all canceled appointments
         const foundCanceledAppointments = await DeletedAppointment.find({}).exec();
 
-        // Render the canceled-appointments view with the retrieved data
         res.render("canceled-appointments", {
-            foundCanceledAppointments: foundCanceledAppointments,
+            foundCanceledAppointments,
         });
-    } catch (err) {
-        console.error(err);
+    } catch (error) {
+        console.error(error);
         res.sendStatus(500);
     }
 });
 
-
-//Star icons generator
+// Star icons generator
 function generateStars(rating) {
     var stars = "";
     for (var i = 1; i <= 5; i++) {
@@ -2715,49 +2698,41 @@ function generateStars(rating) {
     return stars;
 }
 
-app.get("/patients", ensureAuthenticated, async (req, res) => {
+app.get("/patients", async (req, res) => {
     try {
-        // Retrieve all patients from the database
         const foundPatients = await Patient.find({}).exec();
-
-        // Render the patients view with the retrieved data
         res.render("patients", {
-            foundPatients: foundPatients,
+            foundPatients,
         });
-    } catch (err) {
-        console.error(err);
-        res.sendStatus(500);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server error");
     }
 });
 
-app.get("/add-patient", ensureAuthenticated, (req, res) => {
-    // Render the add-patient view
+app.get("/add-patient", (req, res) => {
     res.render("add-patient");
 });
 
-app.get("/patient-profile", ensureAuthenticated, async (req, res) => {
+app.get("/patient-profile", async (req, res) => {
     const patientId = req.query.id;
     const hoursList = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
 
     try {
-        // Find the patient by ID and populate the "invoices" field
         const patient = await Patient.findById(patientId).populate("invoices");
 
         if (!patient) {
             return res.status(404).send("Patient not found");
         }
 
-        // Retrieve last visits, appointments, approved appointments, and canceled appointments
         const lastVisits = await LastVisit.find({}).exec();
         const foundAppointments = await Appointment.find({}).exec();
-        const Appointments = await Appointment.find({idNumber: patient.idNumber}).exec();
-        const approvedAppointments = await ApprovedAppointment.find({idNumber: patient.idNumber}).exec();
-        const deletedAppointments = await DeletedAppointment.find({idNumber: patient.idNumber}).exec();
+        const Appointments = await Appointment.find({ idNumber: patient.idNumber }).exec();
+        const approvedAppointments = await ApprovedAppointment.find({ idNumber: patient.idNumber }).exec();
+        const deletedAppointments = await DeletedAppointment.find({ idNumber: patient.idNumber }).exec();
 
-        // Retrieve the last invoice for the patient, if any
         const lastInvoice = patient.invoices.length > 0 ? patient.invoices[patient.invoices.length - 1] : null;
 
-        // Render the patient-profile view with the retrieved data
         res.render("patient-profile", {
             patient,
             lastInvoice,
@@ -2767,49 +2742,38 @@ app.get("/patient-profile", ensureAuthenticated, async (req, res) => {
             approvedAppointments,
             deletedAppointments
         });
-    } catch (err) {
-        console.error(err);
+    } catch (error) {
+        console.error(error);
         res.status(500).send("Server error");
     }
 });
 
-app.get("/drugs", ensureAuthenticated, async (req, res) => {
+app.get("/drugs", async (req, res) => {
     try {
-        // Retrieve all drugs from the database
         const foundDrugs = await Drug.find({}).exec();
-
-        // Render the drugs view with the retrieved data
         res.render("drugs", {
-            foundDrugs: foundDrugs,
+            foundDrugs,
         });
-    } catch (err) {
-        console.error(err);
-        res.sendStatus(500);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server error");
     }
 });
 
-app.get("/add-drug", ensureAuthenticated, (req, res) => {
-    // Render the add-drug view
+app.get("/add-drug", (req, res) => {
     res.render("add-drug");
 });
 
-app.get("/reviews", ensureAuthenticated, async (req, res) => {
+app.get("/reviews", async (req, res) => {
     try {
-        // Find all reviews with viewed set to "false"
-        const reviews = await Review.find({viewed: false});
-
-        // Update the viewed property of the reviews to "true"
-        await Review.updateMany({viewed: false}, {viewed: true});
-
-        // Emit an 'update' event with the new reviews count
-        const newReviewsCount = await Review.countDocuments({viewed: false});
+        const reviews = await Review.find({ viewed: false });
+        await Review.updateMany({ viewed: false }, { viewed: true });
+        const newReviewsCount = await Review.countDocuments({ viewed: false });
         eventEmitter.emit('update', newReviewsCount);
 
-        // Retrieve active and inactive reviews
-        const activeReviews = await Review.find({active: true}).exec();
-        const inactiveReviews = await Review.find({active: false}).exec();
+        const activeReviews = await Review.find({ active: true }).exec();
+        const inactiveReviews = await Review.find({ active: false }).exec();
 
-        // Add stars as a new property to each review object
         const activeReviewsWithStars = activeReviews.map((review) => ({
             ...review.toObject(),
             stars: generateStars(review.rating),
@@ -2820,48 +2784,37 @@ app.get("/reviews", ensureAuthenticated, async (req, res) => {
             stars: generateStars(review.rating),
         }));
 
-        // Render the reviews view with the retrieved data
         res.render("reviews", {
             activeReviews: activeReviewsWithStars,
             inactiveReviews: inactiveReviewsWithStars,
         });
-    } catch (err) {
-        console.error(err);
-        res.sendStatus(500);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server error");
     }
 });
 
-app.get("/contact-requests", ensureAuthenticated, async (req, res) => {
+app.get("/contact-requests", async (req, res) => {
     try {
-        // Update the viewed property of the contacts to "true"
-        await Contact.updateMany({viewed: false}, {viewed: true});
-
-        // Emit an 'update' event with the new contacts count
-        const newContactsCount = await Contact.countDocuments({viewed: false});
+        await Contact.updateMany({ viewed: false }, { viewed: true });
+        const newContactsCount = await Contact.countDocuments({ viewed: false });
         contactEventEmitter.emit('update', newContactsCount);
-
-        // Retrieve persons to contact and contacted persons
-        const personsToContact = await Contact.find({contacted: false}).exec();
-        const contactedPersons = await Contact.find({contacted: true}).exec();
-
-        // Render the contact view with the retrieved data
-        res.render("contact", {personsToContact, contactedPersons});
-    } catch (err) {
-        console.error(err);
-        res.sendStatus(500);
+        const personsToContact = await Contact.find({ contacted: false }).exec();
+        const contactedPersons = await Contact.find({ contacted: true }).exec();
+        res.render("contact", { personsToContact, contactedPersons });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server error");
     }
 });
 
 app.get('/contacts/count', async (req, res) => {
     try {
-        // Count the number of new contacts
-        const newContactsCount = await Contact.countDocuments({viewed: false});
-
-        // Send the count as a JSON response
-        res.json({count: newContactsCount});
+        const newContactsCount = await Contact.countDocuments({ viewed: false });
+        res.json({ count: newContactsCount });
     } catch (error) {
         console.error('Error fetching contact count:', error);
-        res.status(500).json({error: 'Internal server error'});
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
@@ -2869,38 +2822,31 @@ app.get('/api/patients/:id', async (req, res) => {
     const patientId = req.params.id;
 
     try {
-        // Find the patient in the database based on the provided ID
         const patient = await Patient.findById(patientId);
 
         if (!patient) {
-            return res.status(404).json({message: 'Patient not found'});
+            return res.status(404).json({ message: 'Patient not found' });
         }
 
-        // Send the patient as a JSON response
         res.json(patient);
     } catch (error) {
         console.error(error);
-        res.status(500).json({message: 'Internal server error'});
+        res.status(500).json({ message: 'Internal server error' });
     }
 });
 
 app.get('/reviews/count', async (req, res) => {
     try {
-        // Count the number of new reviews
-        const newReviewsCount = await Review.countDocuments({viewed: false});
-
-        // Send the count as a JSON response
-        res.json({count: newReviewsCount});
+        const newReviewsCount = await Review.countDocuments({ viewed: false });
+        res.json({ count: newReviewsCount });
     } catch (error) {
         console.error('Error fetching review count:', error);
-        res.status(500).json({error: 'Internal server error'});
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
 
-
 // Post requests ..............
-
 //This route is responsible for booking an appointment. It retrieves the necessary appointment details from the request body and updates an existing appointment or creates a new one. The updated or newly created appointment is then saved to the database.
 app.post("/book-appointment", async (req, res) => {
     const idNumber = req.body.idNumber;
@@ -2909,15 +2855,15 @@ app.post("/book-appointment", async (req, res) => {
     const dateOfBirth = req.body.dateOfBirth;
     const gender = req.body.gender;
     const service = req.body.service;
-    const date = req.body.date
-    const time = req.body.time
+    const date = req.body.date;
+    const time = req.body.time;
     const email = req.body.email;
     const tel = req.body.tel;
     const paragraph = req.body.paragraph;
 
     try {
         const appointment = await Appointment.findOneAndUpdate(
-            {idNumber: idNumber},
+            { idNumber: idNumber },
             {
                 $set: {
                     fName: firstName,
@@ -2930,9 +2876,9 @@ app.post("/book-appointment", async (req, res) => {
                     email: email,
                     tel: tel,
                     paragraph: paragraph,
-                }
+                },
             },
-            {upsert: true, new: true}
+            { upsert: true, new: true }
         );
 
         console.log('Appointment saved:', appointment);
@@ -2941,12 +2887,11 @@ app.post("/book-appointment", async (req, res) => {
         console.error('Error saving appointment:', error);
         res.status(500).send('Internal server error');
     }
-})
+});
 
-//This route is similar to the previous one and is also used for booking appointments. It receives the form data from the request body and performs the same operations as the /book-appointment route. After saving the appointment, it sends a JSON response indicating the success status.
 app.post('/online-appointment-booking', async (req, res) => {
     const formData = req.body.formData;
-    console.log(formData)
+    console.log(formData);
 
     const idNumber = formData.idNumber;
     const firstName = formData.fName;
@@ -2960,7 +2905,7 @@ app.post('/online-appointment-booking', async (req, res) => {
 
     try {
         let appointment = await Appointment.findOneAndUpdate(
-            {idNumber: idNumber},
+            { idNumber: idNumber },
             {
                 $set: {
                     fName: firstName,
@@ -2973,21 +2918,20 @@ app.post('/online-appointment-booking', async (req, res) => {
                     paragraph: paragraph,
                 },
             },
-            {upsert: true, new: true}
+            { upsert: true, new: true }
         );
 
         console.log('Appointment saved:', appointment);
 
         // Send a JSON response indicating success
-        res.status(200).json({message: 'Appointment saved successfully'});
+        res.status(200).json({ message: 'Appointment saved successfully' });
     } catch (error) {
         console.error('Error saving appointment:', error);
-        res.status(500).json({error: 'Internal server error'});
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
-//This route is used to add a new patient. It retrieves patient information from the request body and creates a new Patient object. The object is then saved to the database, and the route redirects the user to the /patients page.
-app.post("/add-patient", (req, res) => {
+app.post("/add-patient", async (req, res) => {
     const idNumber = req.body.idNumber;
     const fName = req.body.fName;
     const lName = req.body.lName;
@@ -3003,29 +2947,35 @@ app.post("/add-patient", (req, res) => {
     const status = req.body.status;
     const employeeName = req.body.employeeName;
 
-    const patient = new Patient({
-        idNumber: idNumber,
-        fName: fName,
-        lName: lName,
-        disease: disease,
-        tel: tel,
-        dateOfBirth: dateOfBirth,
-        age: age,
-        gender: gender,
-        email: email,
-        adress: adress,
-        note: note,
-        lastVisit: lastVisit,
-        status: status,
-        employeeName: employeeName,
-    })
+    try {
+        const patient = new Patient({
+            idNumber: idNumber,
+            fName: fName,
+            lName: lName,
+            disease: disease,
+            tel: tel,
+            dateOfBirth: dateOfBirth,
+            age: age,
+            gender: gender,
+            email: email,
+            adress: adress,
+            note: note,
+            lastVisit: lastVisit,
+            status: status,
+            employeeName: employeeName,
+        });
 
-    patient.save();
-    res.redirect("/patients")
-})
+        await patient.save();
+        res.redirect("/patients");
+    } catch (error) {
+        console.error('Error saving patient:', error);
+        res.status(500).send('Internal server error');
+    }
+});
+
 
 //the route handler is using app.post() to handle HTTP POST requests to "/patient-profile". It extracts various data fields from the request body using req.body. The extracted fields are then used to update a Patient document in a database using Patient.findOneAndUpdate().
-app.post("/patient-profile", (req, res) => {
+app.post("/patient-profile", async (req, res) => {
     // Extracting data from the request body
     const patientId = req.body.patientId;
     const idNumber = req.body.idNumber;
@@ -3243,7 +3193,7 @@ app.post("/patient-profile", (req, res) => {
     const employer = req.body.employer;
     const workingPlan = req.body.workingPlan;
     // Updating the Patient document in the database
-    Patient.findOneAndUpdate({_id: patientId}, {
+    await Patient.findOneAndUpdate({_id: patientId}, {
         idNumber: idNumber,
         fName: fName,
         lName: lName,
@@ -3487,7 +3437,6 @@ app.post("/patient-profile", (req, res) => {
     });
     res.redirect('/patients')
 })
-
 app.post("/add-drug", async (req, res) => {
     // Destructure the request body to extract the required data
     const {
@@ -3537,7 +3486,7 @@ app.post("/add-drug", async (req, res) => {
             },
             // Create a new document if it doesn't exist
             { upsert: true, new: true }
-        );
+        ).exec();
 
         // Redirect to the "/drugs" route
         res.redirect("/drugs");
@@ -3548,138 +3497,163 @@ app.post("/add-drug", async (req, res) => {
     }
 });
 
-app.delete("/delete-appointment/:appointmentID", (req, res) => {
-    // Extract the appointment ID from the request parameters
-    const appointmentId = req.params.appointmentID;
+app.delete("/delete-appointment/:appointmentID", async (req, res) => {
+    try {
+        // Extract the appointment ID from the request parameters
+        const appointmentId = req.params.appointmentID;
 
-    // Find and delete the appointment from the database
-    Appointment.findOneAndDelete({ _id: appointmentId }, function (err, foundAppointment) {
-        if (err) {
-            console.log(err);
-            // Send an error response if there was an issue deleting the appointment
-            res.json({ success: false, message: 'Error deleting appointment.' });
+        // Find and delete the appointment from the database
+        const deletedAppointment = await Appointment.findOneAndDelete({ _id: appointmentId }).exec();
+
+        if (!deletedAppointment) {
+            // Send an error response if the appointment was not found
+            res.json({ success: false, message: 'Error deleting appointment. Appointment not found.' });
         } else {
             // Create a new deleted appointment record with the details from the found appointment
             const canceledAppointment = new DeletedAppointment({
-                idNumber: foundAppointment.idNumber,
-                fName: foundAppointment.fName,
-                lName: foundAppointment.lName,
-                tel: foundAppointment.tel,
-                service: foundAppointment.service,
-                date: foundAppointment.date,
-                time: foundAppointment.time,
+                idNumber: deletedAppointment.idNumber,
+                fName: deletedAppointment.fName,
+                lName: deletedAppointment.lName,
+                tel: deletedAppointment.tel,
+                service: deletedAppointment.service,
+                date: deletedAppointment.date,
+                time: deletedAppointment.time,
             });
 
             // Save the canceled appointment record
-            canceledAppointment.save(function (err) {
-                if (err) {
-                    console.log(err);
-                    // Send an error response if there was an issue creating the new appointment record
-                    res.json({ success: false, message: 'Error creating new appointment.' });
-                } else {
-                    console.log("Appointment moved successfully.");
-                    // Send a success response
-                    res.json({ success: true });
-                }
-            });
+            await canceledAppointment.save();
+
+            console.log("Appointment moved successfully.");
+            // Send a success response
+            res.json({ success: true });
         }
-    });
+    } catch (error) {
+        console.error(error);
+        // Send a server error response
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
 });
 
-app.delete("/delete-invoice/:invoiceID", (req, res) => {
-    // Extract the invoice ID from the request parameters
-    const invoiceId = req.params.invoiceID;
+app.delete("/delete-invoice/:invoiceID", async (req, res) => {
+    try {
+        // Extract the invoice ID from the request parameters
+        const invoiceId = req.params.invoiceID;
 
-    // Find and delete the invoice from the database
-    Invoice.findOneAndDelete({ _id: invoiceId }, function (err, foundInvoice) {
-        if (err) {
-            console.log(err);
-            // Send an error response if there was an issue deleting the invoice
-            res.json({ success: false, message: 'Error deleting invoice.' });
+        // Find and delete the invoice from the database
+        const deletedInvoice = await Invoice.findOneAndDelete({ _id: invoiceId }).exec();
+
+        if (!deletedInvoice) {
+            // Send an error response if the invoice was not found
+            res.json({ success: false, message: 'Error deleting invoice. Invoice not found.' });
         } else {
             console.log("Invoice removed successfully.");
             // Send a success response
             res.json({ success: true });
         }
-    });
+    } catch (error) {
+        console.error(error);
+        // Send a server error response
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
 });
 
-app.delete("/delete-drug/:drugID", (req, res) => {
-    // Extract the drug ID from the request parameters
-    const drugId = req.params.drugID;
+app.delete("/delete-drug/:drugID", async (req, res) => {
+    try {
+        // Extract the drug ID from the request parameters
+        const drugId = req.params.drugID;
 
-    // Find and delete the drug from the database
-    Drug.findOneAndDelete({ _id: drugId }, function (err, foundInvoice) {
-        if (err) {
-            console.log(err);
-            // Send an error response if there was an issue deleting the drug
-            res.json({ success: false, message: 'Error deleting drug.' });
+        // Find and delete the drug from the database
+        const deletedDrug = await Drug.findOneAndDelete({ _id: drugId }).exec();
+
+        if (!deletedDrug) {
+            // Send an error response if the drug was not found
+            res.json({ success: false, message: 'Error deleting drug. Drug not found.' });
         } else {
             console.log("Drug removed successfully.");
             // Send a success response
             res.json({ success: true });
         }
-    });
+    } catch (error) {
+        console.error(error);
+        // Send a server error response
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
 });
 
-app.delete("/delete-review/:reviewID", (req, res) => {
-    // Extract the review ID from the request parameters
-    const reviewId = req.params.reviewID;
+app.delete("/delete-review/:reviewID", async (req, res) => {
+    try {
+        // Extract the review ID from the request parameters
+        const reviewId = req.params.reviewID;
 
-    // Find and delete the review from the database
-    Review.findOneAndDelete({ _id: reviewId }, function (err, foundReview) {
-        if (err) {
-            console.log(err);
-            // Send an error response if there was an issue deleting the review
-            res.json({ success: false, message: 'Error deleting review.' });
+        // Find and delete the review from the database
+        const deletedReview = await Review.findOneAndDelete({ _id: reviewId }).exec();
+
+        if (!deletedReview) {
+            // Send an error response if the review was not found
+            res.json({ success: false, message: 'Error deleting review. Review not found.' });
         } else {
             console.log("Review removed successfully.");
             // Send a success response
             res.json({ success: true });
         }
-    });
+    } catch (error) {
+        console.error(error);
+        // Send a server error response
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
 });
 
-app.delete("/delete-contact/:contactID", (req, res) => {
-    // Extract the contact ID from the request parameters
-    const contactId = req.params.contactID;
+app.delete("/delete-contact/:contactID", async (req, res) => {
+    try {
+        // Extract the contact ID from the request parameters
+        const contactId = req.params.contactID;
 
-    // Find and delete the contact from the database
-    Contact.findOneAndDelete({ _id: contactId }, function (err, foundContact) {
-        if (err) {
-            console.log(err);
-            // Send an error response if there was an issue deleting the contact
-            res.json({ success: false, message: 'Error deleting contact.' });
+        // Find and delete the contact from the database
+        const deletedContact = await Contact.findOneAndDelete({ _id: contactId }).exec();
+
+        if (!deletedContact) {
+            // Send an error response if the contact was not found
+            res.json({ success: false, message: 'Error deleting contact. Contact not found.' });
         } else {
             console.log("Contact removed successfully.");
             // Send a success response
             res.json({ success: true });
         }
-    });
+    } catch (error) {
+        console.error(error);
+        // Send a server error response
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
 });
 
-app.delete("/delete-patient/:patientID", (req, res) => {
-    // Extract the patient ID from the request parameters
-    const patientID = req.params.patientID;
+app.delete("/delete-patient/:patientID", async (req, res) => {
+    try {
+        // Extract the patient ID from the request parameters
+        const patientID = req.params.patientID;
 
-    // Find and delete the patient from the database
-    Patient.findOneAndDelete({ _id: patientID }, function (err, foundPatient) {
-        if (err) {
-            console.log(err);
-            // Send an error response if there was an issue deleting the patient
-            res.json({ success: false, message: 'Error deleting patient.' });
+        // Find and delete the patient from the database
+        const deletedPatient = await Patient.findOneAndDelete({ _id: patientID }).exec();
+
+        if (!deletedPatient) {
+            // Send an error response if the patient was not found
+            res.json({ success: false, message: 'Error deleting patient. Patient not found.' });
         } else {
             console.log("Patient removed successfully.");
             // Send a success response
             res.json({ success: true });
         }
-    });
+    } catch (error) {
+        console.error(error);
+        // Send a server error response
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
 });
-app.post("/active-review/:reviewID", async (req, res) => {
-    // Extract the review ID from the request parameters
-    const reviewId = req.params.reviewID;
 
+app.post("/active-review/:reviewID", async (req, res) => {
     try {
+        // Extract the review ID from the request parameters
+        const reviewId = req.params.reviewID;
+
         // Find the review in the database
         const foundReview = await Review.findOne({ _id: reviewId }).exec();
 
@@ -3705,10 +3679,10 @@ app.post("/active-review/:reviewID", async (req, res) => {
 });
 
 app.post("/contact-person/:personID", async (req, res) => {
-    // Extract the person ID from the request parameters
-    const personId = req.params.personID;
-
     try {
+        // Extract the person ID from the request parameters
+        const personId = req.params.personID;
+
         // Find the person in the database
         const foundPerson = await Contact.findOne({ _id: personId }).exec();
 
@@ -3733,121 +3707,122 @@ app.post("/contact-person/:personID", async (req, res) => {
     }
 });
 
-app.delete("/del-past-appointment/:appointmentID", (req, res) => {
-    // Extract the appointment ID from the request parameters
-    const appointmentId = req.params.appointmentID;
-    console.log(appointmentId);
+app.delete("/del-past-appointment/:appointmentID", async (req, res) => {
+    try {
+        // Extract the appointment ID from the request parameters
+        const appointmentId = req.params.appointmentID;
 
-    // Use Promise.all() to wait for both database operations to complete
-    Promise.all([
-        ApprovedAppointment.findOneAndDelete({ _id: appointmentId }).exec(),
-        DeletedAppointment.findOneAndDelete({ _id: appointmentId }).exec()
-    ])
-        .then(([approvedAppointment, deletedAppointment]) => {
-            // Send a success response to the client
-            res.json({ success: true });
-            console.log('Deleted approved appointment:', approvedAppointment);
-            console.log('Deleted deleted appointment:', deletedAppointment);
-        })
-        .catch(err => {
-            console.error(err);
-            // Send an error response if there was an issue deleting the appointment
-            res.json({ success: false, message: 'Error deleting appointment.' });
-        });
+        // Use Promise.all() to wait for both database operations to complete
+        await Promise.all([
+            ApprovedAppointment.findOneAndDelete({ _id: appointmentId }).exec(),
+            DeletedAppointment.findOneAndDelete({ _id: appointmentId }).exec()
+        ]);
+
+        console.log("Deleted approved appointment:", approvedAppointment);
+        console.log("Deleted deleted appointment:", deletedAppointment);
+
+        // Send a success response to the client
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        // Send an error response if there was an issue deleting the appointment
+        res.json({ success: false, message: "Error deleting appointment." });
+    }
 });
-app.post("/update-appointment", (req, res) => {
-    // Extract data from the request body
-    const appointmentId = req.body.appointmentID;
-    const idNumber = req.body.idNumber;
-    const fName = req.body.fName;
-    const lName = req.body.lName;
-    const tel = req.body.tel;
-    const service = req.body.service;
-    const date = req.body.date;
-    const time = req.body.time;
 
-    // Update the appointment with the new data
-    Appointment.findOneAndUpdate(
-        { _id: appointmentId },
-        {
+app.post("/update-appointment", async (req, res) => {
+    try {
+        // Extract data from the request body
+        const appointmentId = req.body.appointmentID;
+        const idNumber = req.body.idNumber;
+        const fName = req.body.fName;
+        const lName = req.body.lName;
+        const tel = req.body.tel;
+        const service = req.body.service;
+        const date = req.body.date;
+        const time = req.body.time;
+
+        // Update the appointment with the new data
+        const updatedAppointment = await Appointment.findOneAndUpdate(
+            { _id: appointmentId },
+            {
+                idNumber: idNumber,
+                fName: fName,
+                lName: lName,
+                tel: tel,
+                service: service,
+                date: date,
+                time: time,
+            },
+            { new: true }
+        ).exec();
+
+        console.log(updatedAppointment);
+
+        // Redirect to the book-appointment page
+        res.redirect("/book-appointment");
+    } catch (error) {
+        console.error(error);
+        // Send a server error response
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+app.post("/approve-appointment", async (req, res) => {
+    try {
+        // Extract data from the request body
+        const appointmentId = req.body.appointmentID;
+        const idNumber = req.body.idNumber;
+        const fName = req.body.fName;
+        const lName = req.body.lName;
+        const tel = req.body.tel;
+        const service = req.body.service;
+        const date = req.body.date;
+        const time = req.body.time;
+        const gender = req.body.gender;
+
+        const filter = { idNumber: idNumber };
+        const update = {
+            $set: {
+                fName: fName,
+                lName: lName,
+                disease: service,
+                date: date,
+                time: time,
+                tel: tel,
+                gender: gender,
+                status: "Pending",
+            },
+        };
+        const options = { upsert: true, new: true };
+
+        // Update the patient information
+        await Patient.findOneAndUpdate(filter, update, options).exec();
+
+        // Create a new approved appointment
+        const approvedAppointment = new ApprovedAppointment({
             idNumber: idNumber,
             fName: fName,
             lName: lName,
-            tel: tel,
             service: service,
             date: date,
             time: time,
-        },
-        { new: true },
-        (err, doc) => {
-            if (err) throw err;
-            console.log(doc);
-        }
-    );
-
-    // Redirect to the book-appointment page
-    res.redirect("/book-appointment");
-});
-
-app.post("/approve-appointment", (req, res) => {
-    // Extract data from the request body
-    const appointmentId = req.body.appointmentID;
-    const idNumber = req.body.idNumber;
-    const fName = req.body.fName;
-    const lName = req.body.lName;
-    const tel = req.body.tel;
-    const service = req.body.service;
-    const date = req.body.date;
-    const time = req.body.time;
-    const gender = req.body.gender;
-
-    const filter = { idNumber: idNumber };
-    const update = {
-        $set: {
-            fName: fName,
-            lName: lName,
-            disease: service,
-            date: date,
-            time: time,
             tel: tel,
-            gender: gender,
-            status: "Pending",
-        },
-    };
-    const options = { upsert: true, new: true };
+        });
+        await approvedAppointment.save();
 
-    // Update the patient information
-    Patient.findOneAndUpdate(filter, update, options, function (err, patient) {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log("Patient updated successfully.");
-        }
-    });
+        // Delete the original appointment
+        await Appointment.deleteOne({ _id: appointmentId }).exec();
 
-    // Create a new approved appointment
-    const approvedAppointment = new ApprovedAppointment({
-        idNumber: idNumber,
-        fName: fName,
-        lName: lName,
-        service: service,
-        date: date,
-        time: time,
-        tel: tel,
-    });
-    approvedAppointment.save();
+        console.log("Document approved successfully.");
 
-    // Delete the original appointment
-    Appointment.deleteOne({ _id: appointmentId }, function (err) {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log("Document approved successfully.");
-        }
-    });
-
-    // Redirect to the book-appointment page
-    res.redirect("/book-appointment");
+        // Redirect to the book-appointment page
+        res.redirect("/book-appointment");
+    } catch (error) {
+        console.error(error);
+        // Send a server error response
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
 });
 
 app.post('/clinic-info', async (req, res) => {
@@ -3866,24 +3841,26 @@ app.post('/clinic-info', async (req, res) => {
     };
 
     try {
-        // Create a new clinic document with the clinicData
-        const newClinic = await Clinic.create(clinicData);
-
-        // Find any existing clinic document with a different idNumber
-        const existingClinic = await Clinic.findOne({ idNumber: { $ne: clinicData.idNumber } });
+        // Find the existing clinic document
+        const existingClinic = await Clinic.findOne({ idNumber: { $ne: clinicData.idNumber } }).exec();
 
         if (existingClinic) {
             await existingClinic.remove(); // Delete any existing clinic document with a different idNumber
         }
 
+        // Create a new clinic document with the clinicData
+        await Clinic.create(clinicData);
+
         // Redirect to the account-settings page
         res.redirect("/account-settings");
-    } catch (err) {
-        console.error(err);
+    } catch (error) {
+        console.error(error);
+        // Send a server error response
         res.status(500).send('Internal Server Error');
     }
 });
-app.post('/doctor-info', function (req, res) {
+
+app.post('/doctor-info', async (req, res) => {
     // Extract doctor data from the request body
     const doctorData = {
         idNumber: req.body.idNumber,
@@ -3908,21 +3885,24 @@ app.post('/doctor-info', function (req, res) {
         schedule: req.body.schedule,
     };
 
-    // Update the doctor information
-    Doctor.findOneAndUpdate(
-        { _id: { $ne: null } }, // Check if there is any existing document
-        doctorData, // Update with new doctor data
-        { upsert: true, new: true, overwrite: true }, // Create or update the existing document
-        function (err, doc) {
-            if (err) {
-                return res.status(500).send(err);
-            }
-            res.redirect("/account-settings");
-        }
-    );
+    try {
+        // Update the doctor information
+        await Doctor.findOneAndUpdate(
+            { _id: { $ne: null } }, // Check if there is any existing document
+            doctorData, // Update with new doctor data
+            { upsert: true, new: true, overwrite: true } // Create or update the existing document
+        ).exec();
+
+        // Redirect to the account-settings page
+        res.redirect("/account-settings");
+    } catch (error) {
+        console.error(error);
+        // Send a server error response
+        res.status(500).send('Internal Server Error');
+    }
 });
 
-app.post('/social-media', function (req, res) {
+app.post('/social-media', async (req, res) => {
     // Extract social media data from the request body
     const socialMediaData = {
         twitter: req.body.twitter,
@@ -3930,18 +3910,21 @@ app.post('/social-media', function (req, res) {
         linkedIn: req.body.linkedIn
     };
 
-    // Update the social media settings
-    SettingSocialMedia.findOneAndUpdate(
-        {}, // Empty filter to update any existing document
-        { socialMedia: socialMediaData }, // Update the socialMedia field with the new data
-        { upsert: true, new: true }, // Create a new document if it doesn't exist
-        function (err, doc) {
-            if (err) {
-                return res.status(500).send(err);
-            }
-            res.redirect("/account-settings");
-        }
-    );
+    try {
+        // Update the social media settings
+        await SettingSocialMedia.findOneAndUpdate(
+            {}, // Empty filter to update any existing document
+            { socialMedia: socialMediaData }, // Update the socialMedia field with the new data
+            { upsert: true, new: true } // Create a new document if it doesn't exist
+        ).exec();
+
+        // Redirect to the account-settings page
+        res.redirect("/account-settings");
+    } catch (error) {
+        console.error(error);
+        // Send a server error response
+        res.status(500).send('Internal Server Error');
+    }
 });
 
 app.post('/doctor-photos', upload.single('doctorPhoto'), function (req, res) {
@@ -3951,7 +3934,7 @@ app.post('/doctor-photos', upload.single('doctorPhoto'), function (req, res) {
     });
 
     // Save the doctor photo document
-    doctorPhoto.save()
+    doctorPhoto.save();
     res.redirect("/account-settings");
 });
 
@@ -3966,76 +3949,71 @@ app.post('/clinic-photos', upload.single('clinicPhoto'), function (req, res) {
     res.redirect("/account-settings");
 });
 
-app.post('/patients/:id/invoices', (req, res) => {
-    // Generate an invoice ID using the shortid library
-    const invoice_Id = `#${shortid.generate()}`;
+app.post('/patients/:id/invoices', async (req, res) => {
+    try {
+        // Generate an invoice ID using the shortid library
+        const invoice_Id = `#${shortid.generate()}`;
 
-    // Extract invoice data from the request body
-    const fullName = req.body.fullName;
-    const { items } = req.body;
-    const patientId = req.params.id;
-    const invoiceDate = req.body.invoiceDate;
-    const email = req.body.email;
-    const terms = req.body.terms;
+        // Extract invoice data from the request body
+        const fullName = req.body.fullName;
+        const { items } = req.body;
+        const patientId = req.params.id;
+        const invoiceDate = req.body.invoiceDate;
+        const email = req.body.email;
+        const terms = req.body.terms;
 
-    // Create an array of invoice items
-    const invoiceItems = items.map(({ itemName, description, unitCost, quantity }) => {
-        return new InvoiceItem({
-            itemName: itemName,
-            description: description,
-            unitCost: unitCost,
-            quantity: quantity,
+        // Create an array of invoice items
+        const invoiceItems = items.map(({ itemName, description, unitCost, quantity }) => {
+            return new InvoiceItem({
+                itemName: itemName,
+                description: description,
+                unitCost: unitCost,
+                quantity: quantity,
+            });
         });
-    });
 
-    // Calculate the total price, amount paid, and due amount
-    const amountPaid = req.body.amountPaid;
-    const totalPrice = invoiceItems.reduce((acc, item) => acc + item.total, 0);
-    const due = totalPrice - amountPaid;
+        // Calculate the total price, amount paid, and due amount
+        const amountPaid = req.body.amountPaid;
+        const totalPrice = invoiceItems.reduce((acc, item) => acc + item.total, 0);
+        const due = totalPrice - amountPaid;
 
-    // Create a new invoice document
-    const invoice = new Invoice({
-        invoiceId: invoice_Id,
-        fullName: fullName,
-        status: due > 0 ? "Pending" : "Paid",
-        invoiceDate: invoiceDate,
-        items: invoiceItems,
-        totalPrice: totalPrice,
-        amountPaid: amountPaid,
-        due: due,
-        email: email,
-        terms: terms,
-    });
+        // Create a new invoice document
+        const invoice = new Invoice({
+            invoiceId: invoice_Id,
+            fullName: fullName,
+            status: due > 0 ? "Pending" : "Paid",
+            invoiceDate: invoiceDate,
+            items: invoiceItems,
+            totalPrice: totalPrice,
+            amountPaid: amountPaid,
+            due: due,
+            email: email,
+            terms: terms,
+        });
 
-    // Add the invoice to the patient's invoices array and save the invoice
-    Patient.findByIdAndUpdate(
-        patientId,
-        { $push: { invoices: invoice } },
-        { new: true },
-        (err, patient) => {
-            if (err) {
-                console.log(err);
-                res.status(500).send('Error adding invoice to patient');
-            } else {
-                invoice.save((err) => {
-                    if (err) {
-                        console.log(err);
-                        res.status(500).send('Error saving invoice');
-                    } else {
-                        res.redirect('/patient-profile?id=' + patient._id); // Redirect to patient profile page with updated patient information
-                    }
-                });
-            }
-        }
-    );
+        // Add the invoice to the patient's invoices array and save the invoice
+        await Patient.findByIdAndUpdate(
+            patientId,
+            { $push: { invoices: invoice } },
+            { new: true }
+        ).exec();
+
+        await invoice.save();
+
+        // Redirect to the patient profile page with updated patient information
+        res.redirect('/patient-profile?id=' + patientId);
+    } catch (error) {
+        console.error(error);
+        // Send a server error response
+        res.status(500).send('Internal Server Error');
+    }
 });
 
-//sseConnections is an array that stores the response objects of connected clients.
+// SSE Connections Array
 const sseConnections = [];
 
-//The sendEvent function is responsible for sending SSE events to all connected clients. It creates an SSE event with a message ("Email sent successfully") and sends it to each client using the res.write method.
-function sendEvent() {
-    const data = 'Email sent successfully';
+// Send SSE event to all connected clients
+function sendEvent(data) {
     const event = `data: ${data}\n\n`;
 
     // Send the SSE event to all connected clients
@@ -4046,7 +4024,7 @@ function sendEvent() {
     console.log(`Sent SSE event: ${event}`);
 }
 
-// Create a separate route for SSE
+// SSE Route
 app.get('/sse', (req, res) => {
     // Set the headers to enable SSE
     const headers = {
@@ -4077,6 +4055,7 @@ app.get('/sse', (req, res) => {
         }
     });
 });
+
 
 app.post('/generate-pdf', async (req, res) => {
     try {
@@ -4666,15 +4645,15 @@ const reviewEmitter = new EventEmitter();
 
 // Endpoint for submitting a review
 app.post("/rate", async (req, res) => {
-    const formData = req.body.formData;
-    console.log(formData);
-    const rating = formData.rating;
-    const name = formData.name;
-    const profession = formData.profession;
-    const city = formData.city;
-    const review = formData.review;
-
     try {
+        const formData = req.body.formData;
+        console.log(formData);
+        const rating = formData.rating;
+        const name = formData.name;
+        const profession = formData.profession;
+        const city = formData.city;
+        const review = formData.review;
+
         const newReview = new Review({
             rating: rating,
             name: name,
@@ -4721,13 +4700,13 @@ app.get('/sse/reviews', (req, res) => {
 
 // Endpoint for submitting a contact form
 app.post("/contact", async (req, res) => {
-    const formData = req.body.formData;
-    const name = formData.name;
-    const email = formData.email;
-    const tel = formData.tel;
-    const message = formData.message;
-
     try {
+        const formData = req.body.formData;
+        const name = formData.name;
+        const email = formData.email;
+        const tel = formData.tel;
+        const message = formData.message;
+
         const newContact = new Contact({
             name: name,
             email: email,
@@ -4770,15 +4749,16 @@ app.get('/sse/contacts', (req, res) => {
 });
 
 
+
 // Endpoint for updating the last visit of a patient
 app.post('/patients/:id/lastvisit', async (req, res) => {
-    const formData = req.body.formData;
-    console.log(formData);
-
-    const patientId = req.params.id;
-    const {reason, date, time, note} = formData;
-
     try {
+        const formData = req.body.formData;
+        console.log(formData);
+
+        const patientId = req.params.id;
+        const { reason, date, time, note } = formData;
+
         const patient = await Patient.findById(patientId);
         if (!patient) {
             return res.status(404).send("Patient not found");
@@ -4798,55 +4778,55 @@ app.post('/patients/:id/lastvisit', async (req, res) => {
         const newLastVisit = new LastVisit(lastVisit);
         await newLastVisit.save();
 
-        res.json({success: true});
+        res.json({ success: true });
     } catch (error) {
         console.error(error);
-        res.status(500).json({error: 'Failed to update last visit'});
+        res.status(500).json({ error: 'Failed to update last visit' });
     }
 });
 
 // Endpoint for user login
-app.post('/login', (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
-        if (err) {
-            console.error(err);
-            return next(err);
-        }
-        if (!user) {
-            // User authentication failed, show error message on login page
-            req.flash('error', 'Incorrect email or password');
-            return res.redirect('/login');
-        }
-        req.logIn(user, (err) => {
-            if (err) {
-                console.error(err);
-                return next(err);
-            }
-            return res.redirect('/dashboard');
-        });
-    })(req, res, next);
-});
+// app.post('/login', (req, res, next) => {
+//     passport.authenticate('local', (err, user, info) => {
+//         if (err) {
+//             console.error(err);
+//             return next(err);
+//         }
+//         if (!user) {
+//             // User authentication failed, show error message on login page
+//             req.flash('error', 'Incorrect email or password');
+//             return res.redirect('/login');
+//         }
+//         req.logIn(user, (err) => {
+//             if (err) {
+//                 console.error(err);
+//                 return next(err);
+//             }
+//             return res.redirect('/dashboard');
+//         });
+//     })(req, res, next);
+// });
 
 // Endpoint for creating a new todo item
 app.post('/todos', (req, res) => {
-    const {text} = req.body;
+    const { text } = req.body;
 
     if (!text) {
-        return res.status(400).json({error: 'Text is required'});
+        return res.status(400).json({ error: 'Text is required' });
     }
 
-    Todo.create({text})
+    Todo.create({ text })
         .then(todo => {
             res.status(201).json(todo);
         })
         .catch(error => {
-            res.status(500).json({error: 'Failed to create todo item'});
+            res.status(500).json({ error: 'Failed to create todo item' });
         });
 });
 
 // Endpoint for updating the status of a todo item
 app.put('/todos/:id', (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
 
     Todo.findById(id)
         .then(todo => {
@@ -4857,20 +4837,20 @@ app.put('/todos/:id', (req, res) => {
             res.json(updatedTodo);
         })
         .catch(error => {
-            res.status(500).json({error: 'Failed to update todo item'});
+            res.status(500).json({ error: 'Failed to update todo item' });
         });
 });
 
 // Endpoint for deleting a todo item
 app.delete('/todos/:id', (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
 
     Todo.findByIdAndDelete(id)
         .then(() => {
             res.sendStatus(204);
         })
         .catch(error => {
-            res.status(500).json({error: 'Failed to delete todo item'});
+            res.status(500).json({ error: 'Failed to delete todo item' });
         });
 });
 
@@ -4881,7 +4861,7 @@ app.post('/patients/:id/updateStatus', (req, res) => {
 
     // Update the patient status in the database using Mongoose or any other ORM you are using
     // For example, using Mongoose:
-    Patient.findByIdAndUpdate(patientId, {status: newStatus}, (err, updatedPatient) => {
+    Patient.findByIdAndUpdate(patientId, { status: newStatus }, (err, updatedPatient) => {
         if (err) {
             // Handle the error
             res.status(500).send('An error occurred');
@@ -4891,6 +4871,7 @@ app.post('/patients/:id/updateStatus', (req, res) => {
         }
     });
 });
+
 
 
 // app.post("/register", function(req, res) {

@@ -435,13 +435,18 @@
                                                 <tr>
                                                     <td>
                                                         <div>From:</div>
-                                                        <div class="fs-6 fw-bold mb-1">
-                                                            Dr. <%= doctor.fName %> <%= doctor.lName %></div>
-                                                        <div><%= doctor.address.state %> <%= doctor.address.street %></div>
-                                                        <div><%= doctor.address.zipCode %>
-                                                            , <%= doctor.address.city %> <%= doctor.address.country %></div>
-                                                        <div>Email: <%= doctor.email %></div>
-                                                        <div>Phone: <%= doctor.tel %></div>
+                                                        <% if (doctor) { %>
+                                                            <div class="fs-6 fw-bold mb-1">
+                                                                Dr. <%= doctor.fName %> <%= doctor.lName %>
+                                                            </div>
+                                                            <div><%= doctor.address.state %> <%= doctor.address.street %></div>
+                                                            <div><%= doctor.address.zipCode %>, <%= doctor.address.city %> <%= doctor.address.country %></div>
+                                                            <div>Email: <%= doctor.email %></div>
+                                                            <div>Phone: <%= doctor.tel %></div>
+                                                        <% } else { %>
+                                                            <div>No doctor information available.</div>
+                                                        <% } %>
+
                                                     </td>
                                                     <td class="text-end" id="toPatient">
                                                         <div>To:</div>
