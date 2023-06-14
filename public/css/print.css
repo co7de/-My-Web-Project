@@ -1,0 +1,13 @@
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #invoice_detail, #invoice_detail * {
+        visibility: visible;
+    }
+    #invoice_detail .btn-primary.btn,
+    #invoice_detail .btn-primary.btn i,
+    #invoice_detail .btn-secondary.btn{
+        visibility: hidden;
+    }
+}

@@ -1,0 +1,269 @@
+.custom-file-upload {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.custom-file-upload input[type=file] {
+    position: absolute;
+    font-size: 100px;
+    top: 0;
+    right: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.ovLay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1200;
+}
+
+.popup {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    height: 350px;
+    background-color: var(--card-color);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    display: flex;
+
+}
+
+.timeslots {
+    display: flex;
+    margin-top: 20px;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.timeslot {
+    cursor: pointer;
+    transition: transform 0.4s;
+
+}
+
+.timeslot:hover {
+    transform: scale(1.5);
+
+}
+.hours {
+    margin: auto;
+    height: 250px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.hour {
+    margin: 10px 20px;
+    color: #fff;
+    background-color: #007bff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.4s;
+
+}
+
+.hour:hover {
+    color: orange;
+}
+
+.back-arrow, #close i{
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: block;
+    cursor: pointer;
+    transition:  0.1s ease-in;
+    background-color: #007bff;
+    padding: 5px;
+    border-radius: 3px;
+}
+
+.back-arrow:hover, #close i:hover{
+    transform: scale(1.5);
+    color: orange;
+}
+
+#Create-Invoice.tab-content{
+    margin-bottom: 50px;
+}
+
+.app-demo {
+    position: relative;
+    overflow: hidden;
+}
+
+.app-demo .card-overlay {
+    position: absolute;
+    top: -60px;
+    left: -60px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transition: all .5s;
+    transition: all .5s;
+    z-index: 1;
+}
+
+.app-demo:hover .card-overlay {
+    -webkit-transform: scale(35);
+    transform: scale(35);
+}
+
+.app-demo:hover .demo-text {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.app-demo .demo-text {
+    transition: all .3s;
+    transition-delay: .1s;
+    transform: translateY(20px);
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    z-index: 2;
+    text-align: center;
+    justify-content: center;
+    width: calc(100% - 1rem);
+    height: calc(100% - 1rem);
+    align-items: center;
+    color: #fff;
+    opacity: 0;
+}
+
+.success-notification {
+    position: fixed;
+    top: 80px;
+    right: 50px;
+    z-index: 1000;
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-10px);
+    }
+    50% {
+        transform: translateX(10px);
+    }
+    75% {
+        transform: translateX(-20px);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+#patientProfileForm .form-row > * {
+    margin-bottom: 40px; /* increase the margin as desired */
+    /*border: 1px solid #ccc; !* add a 1px solid border *!*/
+    border-radius: 10px; /* add rounded corners to the border */
+    padding: 10px; /* add some padding for spacing */
+    margin: 15px 10px; /* add some space between rows */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* add a box shadow for a card effect */
+    /*background-color: #fff; !* set a white background color *!*/
+    box-sizing: border-box; /* include padding and border in the box size */
+
+}
+
+#patientProfileForm label.radio-inline:hover,
+#patientProfileForm input[type="radio"]:hover,
+#patientProfileForm input[type="checkbox"]:hover,
+#patientProfileForm label.checkbox-inline:hover {
+    cursor: pointer;
+}
+
+.form-check input[type="checkbox"]:checked + label.checkbox-inline {
+    font-weight: bold;
+    color: cyan;
+    transform: scale(1);
+}
+
+.form-check input[type="radio"]:checked + label.radio-inline,
+form-check input[type="radio"]:not(:checked) + label.radio-inline {
+    font-weight: bold;
+    color: cyan;
+    transform: scale(1);
+}
+
+
+/* Style for the form title */
+#patientProfileForm .form-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+/* Style for the form input and label */
+#patientProfileForm input[type="text"].form-control {
+margin-bottom: 30px;
+}
+
+#patientProfileForm label {
+    margin-bottom: 30px;
+}
+
+/* Style for the form select */
+#patientProfileForm .form-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='currentColor' class='bi bi-caret-down-fill' viewBox='0 0 16 16'%3E%3Cpath d='M4.795 6.56a1.5 1.5 0 0 1 2.41-.07l.096.114 3.5 4a1.5 1.5 0 0 1-2.13 2.12l-.097-.114-3.5-4a1.5 1.5 0 0 1 .221-2.048z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 12px 12px;
+    padding-right: 1.875rem;
+}
+
+#patientProfileForm input[type="text"].form-control {
+    display: inline-block;
+}
+
+.star-rating {
+    display: inline-block;
+}
+
+.star-rating input[type="radio"] {
+    display: none;
+}
+
+.star-rating label {
+    float: right;
+    padding: 0 0.1em;
+    font-size: 2em;
+    color: gray;
+    cursor: pointer;
+}
+
+.star-rating label:before {
+    content: "\2605";
+}
+
+.star-rating input[type="radio"]:checked ~ label,
+.star-rating input[type="radio"]:hover ~ label {
+    color: gold;
+}
+

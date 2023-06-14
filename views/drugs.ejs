@@ -1,0 +1,295 @@
+<%- include("partials/header"); -%>
+
+
+<!-- start: page toolbar -->
+<div class="page-toolbar px-xl-4 px-sm-2 px-0 py-3">
+    <div class="container-fluid">
+        <div class="row g-3 mb-3 align-items-center">
+            <div class="col">
+                <ol class="breadcrumb bg-transparent mb-0">
+                    <li class="breadcrumb-item"><a class="text-secondary" href="/"><%= translation.home %></a></li>
+                    <li class="breadcrumb-item"><%= translation.drug %></li>
+                    <li class="breadcrumb-item active" aria-current="page"><%= translation.add %></li>
+                </ol>
+            </div>
+        </div> <!-- .row end -->
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <h1 class="fs-5 color-900 mt-1 mb-0"><%= translation.welcome_back_dr %>  <%= locals.doctor ? locals.doctor.fName : '' %>
+                    !</h1>
+                <small class="text-muted"></small>
+            </div>
+
+        </div> <!-- .row end -->
+    </div>
+</div>
+
+
+<div class="page-body px-xl-4 px-sm-2 px-0 py-lg-2 py-1 mt-0 mt-lg-3">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="card-title m-0"><%= translation.medicine_list %></h6>
+                        <div class="dropdown morphing scale-left">
+                            <a href="#" class="card-fullscreen" data-bs-toggle="tooltip" aria-label="Card Full-Screen"
+                               data-bs-original-title="Card Full-Screen"><i class="icon-size-fullscreen"></i></a>
+                            <a href="#" class="more-icon dropdown-toggle" data-bs-toggle="dropdown"
+                               aria-expanded="false"><i class="fa fa-ellipsis-h"></i></a>
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="myPatientAll_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                            <div class="row dt-row">
+                                <div class="col-sm-12">
+                                    <table id="myPatientAll"
+                                           class="myTable table card-table table-hover align-middle mb-0 nowrap dataTable no-footer dtr-inline"
+                                           aria-describedby="myPatientAll_info" style="width: 1132px;">
+                                        <thead>
+                                        <tr>
+                                            <th class="sorting" tabindex="0" aria-controls="myPatientAll" rowspan="1"
+                                                colspan="1" style="width: 62.2px; text-align: center"
+                                                aria-label="ID: activate to sort column ascending">#
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myPatientAll" rowspan="1"
+                                                colspan="1" style="width: 63.2px; text-align: center"
+                                                aria-label="First Name: activate to sort column ascending"><%= translation.drug_name %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myPatientAll" rowspan="1"
+                                                colspan="1" style="width: 33.2px; text-align: center"
+                                                aria-label="Age: activate to sort column ascending"><%= translation.category %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myPatientAll" rowspan="1"
+                                                colspan="1" style="width: 92.2px; text-align: center"
+                                                aria-label="Number: activate to sort column ascending"><%= translation.company_name %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myPatientAll" rowspan="1"
+                                                colspan="1" style="width: 87.2px; text-align: center"
+                                                aria-label="Last Visit: activate to sort column ascending"><%= translation.purchase_date %>
+                                            </th>
+                                            <th class="dt-body-right sorting" tabindex="0" aria-controls="myPatientAll"
+                                                rowspan="1" colspan="1" style="width: 63.2px; text-align: center"
+                                                aria-label="Status: activate to sort column ascending"><%= translation.price %>
+                                            </th>
+                                            <th class="dt-body-right sorting" tabindex="0" aria-controls="myPatientAll"
+                                                rowspan="1" colspan="1" style="width: 63.2px; text-align: center"
+                                                aria-label="APPOINTMENT TIME: activate to sort column ascending">
+                                                <%= translation.expired_date %>
+                                            </th>
+                                            <th class="dt-body-right sorting" tabindex="0" aria-controls="myPatientAll"
+                                                rowspan="1" colspan="1" style="width: 63.2px; text-align: center"
+                                                aria-label="APPOINTMENT TIME: activate to sort column ascending">
+                                                <%= translation.stock %>
+                                            </th>
+                                            <th class="dt-body-right sorting" tabindex="0" aria-controls="myPatientAll"
+                                                rowspan="1" colspan="1" style="width: 63.2px; text-align: center"
+                                                aria-label="APPOINTMENT TIME: activate to sort column ascending">
+                                                <%= translation.action %>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <% foundDrugs.forEach(function (drug, idx) { %>
+                                            <tr id="drug_<%= drug._id %>" class="table-row">
+                                                <form action="/update-drug" method="post" class="form">
+                                                    <input
+                                                            type="hidden"
+                                                            name="idNumber"
+                                                            value='<%= drug.idNumber %>'>
+                                                    <td style="text-align: center"><%= idx + 1 %></td>
+                                                    <td style="text-align: center"><%= drug.drugName %><input
+                                                                type="hidden"
+                                                                name="drugName"
+                                                                value='<%= drug.drugName %>'>
+                                                    </td>
+                                                    <td style="text-align: center"><%= drug.category %><input
+                                                                type="hidden"
+                                                                name="category"
+                                                                value='<%= drug.category %>'>
+                                                    </td>
+                                                    <td style="text-align: center"><%= drug.companyName %><input
+                                                                type="hidden"
+                                                                name="companyName"
+                                                                value='<%= drug.companyName %>'>
+                                                    </td>
+                                                    <td style="text-align: center">
+                                                        <% const dateStr = drug.purchaseDate %>
+                                                        <% const date = new Date(dateStr) %>
+                                                        <% const formattedDate = date.toLocaleDateString("en-US", {
+                                                            month: "short",
+                                                            day: "numeric",
+                                                            year: "numeric"
+                                                        }) %>
+                                                        <span
+                                                                class="badge bg-primary"><%= formattedDate %></span>
+                                                        <input type="hidden" name="purchaseDate" value='<%= dateStr %>'>
+                                                    </td>
+                                                    <td style="text-align: center"><%= drug.price %><input
+                                                                type="hidden" name="price"
+                                                                value='<%= drug.price %>'></td>
+                                                    <td style="text-align: center">
+                                                        <% const expDateStr = drug.expiredDate %>
+                                                        <% const expDate = new Date(expDateStr) %>
+                                                        <% const expFormattedDate = expDate.toLocaleDateString("en-US", {
+                                                            month: "short",
+                                                            day: "numeric",
+                                                            year: "numeric"
+                                                        }) %>
+                                                        <span
+                                                                class="badge bg-danger"><%= expFormattedDate %></span>
+                                                        <input type="hidden" name="purchaseDate"
+                                                               value='<%= expDateStr %>'>
+                                                    </td>
+                                                    <td style="text-align: center"><%= drug.stock %><input
+                                                                type='hidden'
+                                                                name='stock'
+                                                                value='<%= drug.stock %>'>
+                                                    </td>
+
+                                                    <input type="hidden" name="patientID" value="<%= drug._id %>">
+                                                    <td class="btnsCell" style="text-align: center">
+                                                        <a href="#addDrugForm">
+                                                            <button id="<%= drug._id %>_updateBtn" type="button"
+                                                                    onclick="updateDrug('<%= drug._id %>', this, this.closest('form'))"
+                                                                    class="btn btn-link btn-sm color-400 btn-outline-warning"
+                                                                    data-bs-placement="top"
+                                                                    aria-label="Edit" data-bs-original-title="Edit"
+                                                                    data-original-title="" title=""><i
+                                                                        class="fa fa-pencil"></i></button>
+                                                        </a>
+                                                        <button id="<%= drug._id %>_deleteBtn" type="button"
+                                                                class="btn btn-link btn-sm color-400 btn-outline-danger"
+                                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                aria-label="Delete" data-bs-original-title="Delete"
+                                                                data-original-title="" title=""
+                                                                onclick="deleteDrug('<%= drug.drugName %>', '<%= drug._id %>' )">
+                                                            <i
+                                                                    class="fa fa-trash"></i></button>
+                                                    </td>
+                                                </form>
+                                            </tr>
+                                        <% }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- .row end -->
+    </div>
+</div>
+
+
+
+<!-- start: page body -->
+<div class="page-body px-xl-4 px-sm-2 px-0 py-lg-2 py-1 mt-0 mt-lg-3">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <form id="addDrugForm" action="/add-drug" method="post">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="card-title m-0"><%= translation.add_new_drug %></h6>
+                            <div class="dropdown morphing scale-left">
+                                <a href="#" class="card-fullscreen" data-bs-toggle="tooltip"
+                                   aria-label="Card Full-Screen" data-bs-original-title="Card Full-Screen"><i
+                                            class="icon-size-fullscreen"></i></a>
+
+
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-sm-4">
+                                    <label class="form-label"><%= translation.no %></label>
+                                    <input type="number" class="form-control form-control-lg" name="idNumber" required
+                                           placeholder="<%= translation.no %>">
+                                </div>
+                                <div class="col-sm-4">
+                                    <label class="form-label"><%= translation.drug_name %></label>
+                                    <input type="text" class="form-control form-control-lg" name="drugName" required
+                                           placeholder="<%= translation.drug_name %>">
+                                </div>
+                                <div class="col-sm-4">
+                                    <label class="form-label"><%= translation.category %></label>
+                                    <select class="form-control form-control-lg" tabindex="-98" name="category">
+                                        <option value="Tablet"><%= translation.tablet %></option>
+                                        <option value="Syrup"><%= translation.syrup %></option>
+                                        <option value="Injectable"><%= translation.injectable %></option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-4">
+                                    <label class="form-label"><%= translation.company_name %></label>
+                                    <input type="text" class="form-control form-control-lg" name="companyName" required
+                                           placeholder="<%= translation.company_name %>">
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="form-label"><%= translation.purchase_date %></label>
+                                    <input type="date" class="form-control form-control-lg" name="purchaseDate" required
+                                           placeholder="<%= translation.purchase_date %>">
+                                </div>
+                                <div class="col-sm-4">
+                                    <label class="form-label"><%= translation.price %></label>
+                                    <input type="number" class="form-control form-control-lg" name="price" required
+                                           placeholder="<%= translation.price %>">
+                                </div>
+                                <div class="col-sm-4">
+                                    <label class="form-label"><%= translation.expense %></label>
+                                    <input type="number" class="form-control form-control-lg" name="expense" required
+                                           placeholder="<%= translation.expense %>">
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="form-label"><%= translation.expired_date %></label>
+                                    <input type="date" class="form-control form-control-lg" name="expiredDate" required
+                                           placeholder="<%= translation.expired_date %>">
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="form-label"><%= translation.stock %></label>
+                                    <input type="number" class="form-control form-control-lg" name="stock" required
+                                           placeholder="<%= translation.stock %>">
+                                </div>
+                                <div class="col-sm-12">
+                                    <textarea rows="4" class="form-control no-resize"
+                                              name="<%= translation.description %>"
+                                              placeholder="<%= translation.description %>"></textarea>
+                                </div>
+                                <div class="col-sm-12 mt-4">
+                                    <h6 class="m-0 fw-bold"><%= translation.registration_information %></h6>
+                                </div>
+                                <div class="col-sm-4">
+                                    <label class="form-label"><%= translation.staff_on_duty %></label>
+                                    <input type="text" class="form-control form-control-lg" name="employeeName"
+                                           placeholder="Employee Name" value="Marwa Ali" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary"><%= translation.save %></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div> <!-- .row end -->
+    </div>
+</div>
+
+
+<script>
+
+    const tableRows = document.querySelectorAll('tr[id^="patient_"]');
+    tableRows.forEach((row) => {
+        row.style.cursor = "pointer";
+        const patientID = row.id.split("_")[1];
+        row.addEventListener('click', () => {
+            window.location.href = "/patient-profile?id=" + patientID;
+        });
+    });
+
+</script>
+
+
+<%- include("partials/footer"); -%>

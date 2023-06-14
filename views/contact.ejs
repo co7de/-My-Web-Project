@@ -1,0 +1,246 @@
+<%- include("partials/header"); -%>
+
+
+<div class="page-body px-xl-4 px-sm-2 px-0 py-lg-2 py-1 mt-0 mt-lg-3">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="card-title m-0"><%= translation.customers_to_contact %></h6>
+                        <div class="dropdown morphing scale-left">
+                            <a href="#" class="card-fullscreen" data-bs-toggle="tooltip" aria-label="Card Full-Screen"
+                               data-bs-original-title="Card Full-Screen"><i class="icon-size-fullscreen"></i></a>
+                            <a href="#" class="more-icon dropdown-toggle" data-bs-toggle="dropdown"
+                               aria-expanded="false"><i class="fa fa-ellipsis-h"></i></a>
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="myPatientAll_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                            <div class="row dt-row">
+                                <div class="col-sm-12">
+                                    <table id="myPatientAll"
+                                           class="myTable table card-table table-hover align-middle mb-0 nowrap dataTable no-footer dtr-inline"
+                                           aria-describedby="myPatientAll_info" style="width: 1132px;">
+                                        <thead>
+                                        <tr>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="text-align: center; max-width: 30px"
+                                                aria-label="Doctor: activate to sort column ascending">#
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 196.2px; text-align: center;"
+                                                aria-label="Doctor: activate to sort column ascending"><%= translation.full_name %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 139.2px; text-align: center"
+                                                aria-label="Specialist: activate to sort column ascending"><%= translation.email %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 93.2px; text-align: center"
+                                                aria-label="Progress: activate to sort column ascending"><%= translation.tel %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 88.2px; text-align: center"
+                                                aria-label="Status: activate to sort column ascending"><%= translation.message %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 88.2px; text-align: center"
+                                                aria-label="Status: activate to sort column ascending"><%= translation.action %>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <% personsToContact.forEach(function (person, idx) { %>
+                                            <tr id="person_<%= person._id %>" class="table-row">
+                                                <form method="post" class="form">
+                                                    <td style="text-align: center"><%= idx + 1 %></td>
+                                                    <td style="text-align: center"><%= person.name %><input
+                                                                type="hidden"
+                                                                name="name"
+                                                                value='<%= person.name %>'>
+                                                    </td>
+                                                    <td style="text-align: center"><%= person.email %><input
+                                                                type="hidden"
+                                                                name="email"
+                                                                value='<%= person.email %>'>
+                                                    </td>
+                                                    <td style="text-align: center"><%= person.tel %><input
+                                                                type="hidden"
+                                                                name="tel"
+                                                                value='<%= person.tel %>'>
+                                                    </td>
+                                                    <td style="text-align: center">
+                                                        <button type="button"
+                                                                onclick="populateContact('<%= person.message %>', '<%= person.name %>')"
+                                                                class="btn color-400 btn-outline-primary"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#personPop"
+                                                        >
+                                                            <%= translation.read %>
+                                                        </button>
+                                                        <input
+                                                                type="hidden" name="message"
+                                                                value='<%= person.message %>'></td>
+                                                    <td class="btnsCell" style="text-align: center">
+                                                        <button id="<%= person._id %>_updateBtn" type="button"
+                                                                class="btn btn-link btn-sm color-400 btn-outline-warning"
+                                                                data-bs-placement="top"
+                                                                aria-label="Edit" data-bs-original-title="Edit"
+                                                                data-original-title="" title=""
+                                                                onclick="contactPerson('<%= person.name %>', '<%= person._id %>')"
+                                                        ><i class="fa fa-check"></i><span
+                                                                    class="d-none d-lg-inline-block ms-2"><%= translation.accept %></span>
+                                                        </button>
+                                                        <button id="<%= person._id %>_deleteBtn" type="button"
+                                                                class="btn btn-link btn-sm color-400 btn-outline-danger"
+                                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                aria-label="Delete" data-bs-original-title="Delete"
+                                                                data-original-title="" title=""
+                                                                onclick="deleteContact('<%= person.name %>', '<%= person._id %>' )">
+                                                            <i class="fa fa-trash"></i><span
+                                                                    class="d-none d-lg-inline-block ms-2"><%= translation.ignore %></span>
+                                                        </button>
+                                                    </td>
+                                                </form>
+                                            </tr>
+                                        <% }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- .row end -->
+    </div>
+</div>
+
+
+<!--Contacted Persons -->
+<div class="page-body px-xl-4 px-sm-2 px-0 py-lg-2 py-1 mt-0 mt-lg-3">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="card-title m-0"><%= translation.contacted_customers %></h6>
+                        <div class="dropdown morphing scale-left">
+                            <a href="#" class="card-fullscreen" data-bs-toggle="tooltip" aria-label="Card Full-Screen"
+                               data-bs-original-title="Card Full-Screen"><i class="icon-size-fullscreen"></i></a>
+                            <a href="#" class="more-icon dropdown-toggle" data-bs-toggle="dropdown"
+                               aria-expanded="false"><i class="fa fa-ellipsis-h"></i></a>
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="myPatientAll_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                            <div class="row dt-row">
+                                <div class="col-sm-12">
+                                    <table id="myPatientAll"
+                                           class="myTable table card-table table-hover align-middle mb-0 nowrap dataTable no-footer dtr-inline"
+                                           aria-describedby="myPatientAll_info" style="width: 1132px;">
+                                        <thead>
+                                        <tr>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="text-align: center; max-width: 30px"
+                                                aria-label="Doctor: activate to sort column ascending">#
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 196.2px; text-align: center;"
+                                                aria-label="Doctor: activate to sort column ascending"><%= translation.full_name %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 139.2px; text-align: center"
+                                                aria-label="Specialist: activate to sort column ascending"><%= translation.email %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 93.2px; text-align: center"
+                                                aria-label="Progress: activate to sort column ascending"><%= translation.tel %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 88.2px; text-align: center"
+                                                aria-label="Status: activate to sort column ascending"><%= translation.message %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 88.2px; text-align: center"
+                                                aria-label="Status: activate to sort column ascending"><%= translation.action %>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <% contactedPersons.forEach(function (person, idx) { %>
+                                            <tr id="person_<%= person._id %>" class="table-row">
+                                                <form method="post" class="form">
+                                                    <td style="text-align: center"><%= idx + 1 %></td>
+                                                    <td style="text-align: center"><%= person.name %><input
+                                                                type="hidden"
+                                                                name="name"
+                                                                value='<%= person.name %>'>
+                                                    </td>
+                                                    <td style="text-align: center"><%= person.email %><input
+                                                                type="hidden"
+                                                                name="email"
+                                                                value='<%= person.email %>'>
+                                                    </td>
+                                                    <td style="text-align: center"><%= person.tel %><input
+                                                                type="hidden"
+                                                                name="tel"
+                                                                value='<%= person.tel %>'>
+                                                    </td>
+                                                    <td style="text-align: center">
+                                                        <button type="button"
+                                                                onclick="populateContact('<%= person.message %>', '<%= person.name %>')"
+                                                                class="btn color-400 btn-outline-primary"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#personPop"
+                                                        >
+                                                            <%= translation.read %>
+                                                        </button>
+                                                        <input
+                                                                type="hidden" name="message"
+                                                                value='<%= person.message %>'></td>
+                                                    <td class="btnsCell" style="text-align: center">
+                                                        <button id="<%= person._id %>_deleteBtn" type="button"
+                                                                class="btn btn-link btn-sm color-400 btn-outline-danger"
+                                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                aria-label="Delete" data-bs-original-title="Delete"
+                                                                data-original-title="" title=""
+                                                                onclick="deleteContact('<%= person.name %>', '<%= person._id %>' )">
+                                                            <i
+                                                                    class="fa fa-trash"></i></button>
+                                                    </td>
+                                                </form>
+                                            </tr>
+                                        <% }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- .row end -->
+    </div>
+</div>
+
+
+<div class="modal fade" id="personPop" tabindex="-1" style="display: none;"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="popupHead" class="modal-title"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <p style="padding: 30px" id="messageDiv" class="modal-title"></p>
+        </div>
+    </div>
+</div>
+
+
+<%- include("partials/footer"); -%>

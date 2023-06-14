@@ -1,0 +1,121 @@
+<%- include("partials/header"); -%>
+
+<!-- start: page toolbar -->
+<div class="page-toolbar px-xl-4 px-sm-2 px-0 py-3">
+    <div class="container-fluid">
+        <div class="row g-3 mb-3 align-items-center">
+            <div class="col">
+                <ol class="breadcrumb bg-transparent mb-0">
+                    <li class="breadcrumb-item"><a class="text-secondary" href="/"><%= translation.home %></a></li>
+                    <li class="breadcrumb-item"><%= translation.patient %></li>
+                    <li class="breadcrumb-item active" aria-current="page"><%= translation.add %></li>
+                </ol>
+            </div>
+        </div> <!-- .row end -->
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <h1 class="fs-5 color-900 mt-1 mb-0"><%= translation.welcome_back_dr %>  <%= locals.doctor ? locals.doctor.fName : '' %>
+                    !</h1>
+                <small class="text-muted"></small>
+            </div>
+
+        </div> <!-- .row end -->
+    </div>
+</div>
+
+
+<!-- start: page body -->
+<div class="page-body px-xl-4 px-sm-2 px-0 py-lg-2 py-1 mt-0 mt-lg-3">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <form action="/add-patient" method="post">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="card-title m-0"><%= translation.add_new_patient %></h6>
+                            <div class="dropdown morphing scale-left">
+                                <a href="#" class="card-fullscreen" data-bs-toggle="tooltip"
+                                   aria-label="Card Full-Screen" data-bs-original-title="Card Full-Screen"><i
+                                            class="icon-size-fullscreen"></i></a>
+
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-sm-4">
+                                    <label class="form-label"><%= translation.id_number %></label>
+                                    <input type="text" class="form-control form-control-lg" name="idNumber" required
+                                           placeholder="<%= translation.id_number %>">
+                                </div>
+                                <div class="col-sm-4">
+                                    <label class="form-label"><%= translation.first_name %></label>
+                                    <input type="text" class="form-control form-control-lg" name="fName" required
+                                           placeholder="<%= translation.first_name %>">
+                                </div>
+                                <div class="col-sm-4">
+                                    <label class="form-label"><%= translation.last_name %></label>
+                                    <input type="text" class="form-control form-control-lg" name="lName" required
+                                           placeholder="<%= translation.last_name %>">
+                                </div>
+                                <div class="col-sm-4">
+                                    <label class="form-label"><%= translation.mobile %></label>
+                                    <input type="number" class="form-control form-control-lg" name="tel" required
+                                           placeholder="<%= translation.mobile %>">
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="form-label"><%= translation.date_of_birth %></label>
+                                    <input type="date" class="form-control form-control-lg" name="date" required
+                                           placeholder="Enter date">
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="form-label"><%= translation.age %></label>
+                                    <input type="text" class="form-control form-control-lg" name="age" required
+                                           placeholder="<%= translation.age %>">
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="form-label"><%= translation.select %></label>
+                                    <select class="form-control form-control-lg" tabindex="-98" name="gender"> required
+                                        <option value=""> <%= translation.gender %> </option>
+                                        <option value="male"><%= translation.male %></option>
+                                        <option value="female"><%= translation.female %></option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="form-label"><%= translation.enter_your_email %></label>
+                                    <input type="email" class="form-control form-control-lg" name="email" required
+                                           placeholder="<%= translation.enter_your_email %>">
+                                </div>
+                                <div class="col-sm-12">
+                                    <textarea rows="4" class="form-control no-resize"
+                                              placeholder="<%= translation.please_if_you_have_any_notes_type_them_here %>"></textarea>
+                                </div>
+                                <div class="col-sm-12">
+                                    <textarea rows="1" class="form-control no-resize" name="adress"
+                                              placeholder="<%= translation.address %>"></textarea>
+                                </div>
+                                <div class="col-sm-12">
+                                    <textarea rows="4" class="form-control no-resize" name="paragraph"
+                                              placeholder="<%= translation.description %>"></textarea>
+                                </div>
+                                <div class="col-sm-12 mt-4">
+                                    <h6 class="m-0 fw-bold"><%= translation.registration_information %></h6>
+                                </div>
+                                <div class="col-sm-4">
+                                    <label class="form-label"><%= translation.staff_on_duty %></label>
+                                    <input type="text" class="form-control form-control-lg" name="employeeName"
+                                           placeholder="Employee Name" value="Marwa Ali" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary"><%= translation.submit %></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div> <!-- .row end -->
+    </div>
+</div>
+
+
+<%- include("partials/footer"); -%>

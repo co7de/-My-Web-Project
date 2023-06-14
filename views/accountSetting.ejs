@@ -1,0 +1,481 @@
+<%- include("partials/header"); -%>
+
+<!-- start: page toolbar -->
+<div class="page-toolbar px-xl-4 px-sm-2 px-0 py-3">
+    <div class="container-fluid">
+        <div class="row g-3 mb-3 align-items-center">
+            <div class="col">
+                <ol class="breadcrumb bg-transparent mb-0">
+                    <li class="breadcrumb-item"><a class="text-secondary" href="/"><%= translation.home %></a></li>
+                    <li class="breadcrumb-item"><a class="text-secondary" href="#"><%= translation.account %></a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><%= translation.settings %></li>
+                </ol>
+            </div>
+        </div> <!-- .row end -->
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <h1 class="fs-5 color-900 mt-1 mb-0"><%= translation.welcome_back_dr %>  <%= locals.doctor ? locals.doctor.fName : '' %>!</h1>
+                <small class="text-muted"></small>
+            </div>
+
+        </div> <!-- .row end -->
+    </div>
+</div>
+
+<!-- start: page body -->
+<div class="page-body px-xl-4 px-sm-2 px-0 py-lg-2 py-1 mt-0 mt-lg-3">
+    <div class="container-fluid">
+        <div class="row g-3">
+            <div class="col-xxl-3 col-lg-4 col-md-4">
+                <div class="list-group list-group-custom sticky-top me-xl-4" style="top: 100px;">
+                    <a class="list-group-item list-group-item-action" href="#list-item-1"><%= translation.doctor_details %></a>
+                    <a class="list-group-item list-group-item-action" href="#list-item-2"><%= translation.clinic_details %></a>
+                    <a class="list-group-item list-group-item-action" href="#list-item-3"><%= translation.change_password %></a>
+                    <!--                    <a class="list-group-item list-group-item-action" href="#list-item-4">Notifications Settings</a>-->
+                    <a class="list-group-item list-group-item-action" href="#list-item-5"><%= translation.social_profiles %></a>
+                </div>
+            </div>
+            <div class="col-xxl-8 col-lg-8 col-md-8">
+                <div id="list-item-1" class="card fieldset border border-muted mt-0">
+                    <!-- form: profile details -->
+                    <span class="fieldset-tile text-muted bg-body"><%= translation.doctor_details %></span>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <form id="doctorPhotoForm" action="/doctor-photos" method="post"
+                                      enctype="multipart/form-data">
+                                    <label class="col-md-3 col-sm-4 col-form-label"><%= translation.doctor_photo %>
+                                    </label>
+                                    <div class="col-md-9 col-sm-8">
+                                        <div class="form-control image-input avatar xxl rounded-4"
+                                             style="background-image: url(<%= decodeURIComponent(lastUploadedDoctorPhoto) %>)">
+                                            <div class="avatar-wrapper rounded-4"
+                                                 style="background-image: url(<%= decodeURIComponent(lastUploadedDoctorPhoto) %>)"></div>
+                                            <div class="file-input">
+                                                <input id="file-upload2" type="file" class="form-control"
+                                                       name="doctorPhoto">
+                                                <label for="file-upload2"
+                                                       class="fa fa-pencil shadow text-muted"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <form action="/doctor-info" method="post">
+                                <div class="row mb-3">
+                                    <label class="col-md-3 col-sm-4 col-form-label"><%= translation.id_number %></label>
+                                    <div class="col-md-9 col-sm-8">
+                                        <input type="number" class="form-control form-control-lg" name="idNumber" required
+                                               value="<%= doctor ? doctor.idNumber : '' %>"
+                                               placeholder="<%= translation.id_number %>">
+                                    </div>
+                                    <label class="col-md-3 col-sm-4 col-form-label"><%= translation.username %></label>
+<!--                                    <div class="col-md-9 col-sm-8">-->
+<!--                                        <input type="email" class="form-control form-control-lg" name="username"-->
+<!--                                               value="<%= doctor ? doctor.username : '' %>"-->
+<!--                                               placeholder="<%= translation.username %>" readonly>-->
+<!--                                    </div>-->
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-md-3 col-sm-4 col-form-label"><%= translation.full_name %></label>
+                                    <div class="col-md-5 col-sm-4">
+                                        <input type="text" class="form-control form-control-lg" name="fName" required
+                                               value="<%= doctor ? doctor.fName : '' %>"
+                                               placeholder="<%= translation.first_name %>">
+                                    </div>
+                                    <div class="col-md-4 col-sm-4">
+                                        <input type="text" class="form-control form-control-lg" name="lName" required
+                                               value="<%= doctor ? doctor.lName : '' %>"
+                                               placeholder="<%= translation.last_name %>">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-md-3 col-sm-4 col-form-label"><%= translation.company %></label>
+                                    <div class="col-md-9 col-sm-8">
+                                        <input type="text" class="form-control form-control-lg" name="company"
+                                               value="<%= doctor ? doctor.company : '' %>"
+                                               placeholder="<%= translation.company %>">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-md-3 col-sm-4 col-form-label"><%= translation.contact_phone %></label>
+                                    <div class="col-md-9 col-sm-8">
+                                        <input type="number" class="form-control form-control-lg"
+                                               value="<%= doctor ? doctor.tel : '' %>"
+                                               name="tel" placeholder="<%= translation.contact_phone %>">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-md-3 col-sm-4 col-form-label"><%= translation.email %></label>
+                                    <div class="col-md-9 col-sm-8">
+                                        <input type="email" class="form-control form-control-lg" required
+                                               value="<%= doctor ? doctor.email : '' %>"
+                                               name="email" placeholder="<%= translation.email %>">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-md-3 col-sm-4 col-form-label"><%= translation.specialty %></label>
+                                    <div class="col-md-9 col-sm-8">
+                                        <input type="text" class="form-control form-control-lg" required
+                                               value="<%= doctor ? doctor.specialty : '' %>"
+                                               name="specialty" placeholder="<%= translation.specialty %>">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-md-3 col-sm-4 col-form-label"><%= translation.experience %></label>
+                                    <div class="col-md-9 col-sm-8">
+                                        <input type="text" class="form-control form-control-lg" required
+                                               value="<%= doctor ? doctor.experience : '' %>"
+                                               name="experience" placeholder="<%= translation.experience %>">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-md-3 col-sm-4 col-form-label"><%= translation.company_web_site %></label>
+                                    <div class="col-md-9 col-sm-8">
+                                        <input type="url" class="form-control form-control-lg" name="companyWebsite" required
+                                               value="<%= doctor ? doctor.companyWebsite : '' %>"
+                                               placeholder="WWW.EXAMPLE.COM">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-md-3 col-sm-4 col-form-label"><%= translation.country %></label>
+                                    <div class="col-md-9 col-sm-8">
+                                        <% if (allTimeZone.length > 0) { %>
+                                            <select class="form-control form-control-lg" name="country"> required
+                                                <% allTimeZone.forEach(function(country) { %>
+                                                    <option value="<%= country.Code %>"
+                                                            <% if (doctor && doctor.address.country === country.Code) { %>selected
+                                                            <% } %>
+                                                    >
+                                                        <%= country.Name %>
+                                                    </option>
+                                                <% }); %>
+                                            </select>
+                                        <% } else { %>
+                                            <!-- Render alternative content if allTimeZone is empty or has no elements -->
+                                        <% } %>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-md-3 col-sm-4 col-form-label"><%= translation.city %></label>
+                                    <div class="col-md-9 col-sm-8">
+                                        <input type="text" class="form-control form-control-lg" name="city" required
+                                               value="<%= doctor ? doctor.address.city : '' %>"
+                                               placeholder="<%= translation.city %>">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-md-3 col-sm-4 col-form-label"><%= translation.state_province %></label>
+                                    <div class="col-md-9 col-sm-8">
+                                        <input type="text" class="form-control form-control-lg" name="state" required
+                                               value="<%= doctor ? doctor.address.state : '' %>"
+                                               placeholder="<%= translation.state_province %>">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-md-3 col-sm-4 col-form-label"><%= translation.street %></label>
+                                    <div class="col-md-9 col-sm-8">
+                                        <input type="text" class="form-control form-control-lg" name="street" required
+                                               value="<%= doctor ? doctor.address.street : '' %>"
+                                               placeholder="<%= translation.street %>">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-md-3 col-sm-4 col-form-label"><%= translation.zip_code %></label>
+                                    <div class="col-md-9 col-sm-8">
+                                        <input type="number" class="form-control form-control-lg" name="zipCode" required
+                                               value="<%= doctor ? doctor.address.zipCode : '' %>"
+                                               placeholder="<%= translation.zip_code %>">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-md-3 col-sm-4 col-form-label"><%= translation.communication %></label>
+                                    <div class="col-md-9 col-sm-8">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="s_Phone"
+                                                   value="option1">
+                                            <label class="form-check-label" for="s_Phone"><%= translation.tel %></label>
+                                        </div>
+                                        <!--                                        <div class="form-check form-check-inline">-->
+                                        <!--                                            <input class="form-check-input" type="checkbox" id="s_Email"-->
+                                        <!--                                                   value="option2">-->
+                                        <!--                                            <label class="form-check-label" for="s_Email">Email</label>-->
+                                        <!--                                        </div>-->
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-md-3 col-sm-4 col-form-label"><%= translation.available_for_communication %></label>
+                                    <div class="col-md-9 col-sm-8">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch"
+                                                   id="">
+                                            <label class="form-check-label"><%= translation.yes_advertise_my_availability_on_website %></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer text-end">
+                                    <button class="btn btn-lg btn-primary" type="submit"><%= translation.save_changes %></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div id="list-item-2" class="card fieldset border border-muted mt-0">
+                    <!-- form: profile details -->
+                    <span class="fieldset-tile text-muted bg-body"><%= translation.clinic_details_colon %></span>
+                    <div class="card">
+                        <div class="col-12">
+                            <form action="/clinic-info" method="post">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row g-3">
+                                            <div class="col-sm-4">
+                                                <label class="form-label"><%= translation.clinic_name %></label>
+                                                <input type="text" class="form-control form-control-lg" required
+                                                       value="<%= clinic ? clinic.name : '' %>"
+                                                       name="clinicName" placeholder="Clinic Name">
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label class="form-label"><%= translation.clinic_id %></label>
+                                                <input type="text" class="form-control form-control-lg" required
+                                                       value="<%= clinic ? clinic.idNumber : '' %>"
+                                                       name="idNumber" placeholder="Clinic ID">
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label class="form-label"><%= translation.clinic_type %></label>
+                                                <select class="form-control form-control-lg" tabindex="-98"
+                                                        name="clinicType">
+                                                    <option value=""><%= translation.clinic_type %></option>
+                                                    <option value="General Medicine" <%= clinic && clinic.clinicType === 'General Medicine' ? 'selected' : '' %>>
+                                                        General Medicine
+                                                    </option>
+                                                    <option value="Pediatrics" <%= clinic && clinic.clinicType === 'Pediatrics' ? 'selected' : '' %>>
+                                                        Pediatrics
+                                                    </option>
+                                                    <option value="Gynecology" <%= clinic && clinic.clinicType === 'Gynecology' ? 'selected' : '' %>>
+                                                        Gynecology
+                                                    </option>
+                                                    <option value="Dermatology" <%= clinic && clinic.clinicType === 'Dermatology' ? 'selected' : '' %>>
+                                                        Dermatology
+                                                    </option>
+                                                    <option value="Cardiology" <%= clinic && clinic.clinicType === 'Cardiology' ? 'selected' : '' %>>
+                                                        Cardiology
+                                                    </option>
+                                                    <option value="Ophthalmology" <%= clinic && clinic.clinicType === 'Ophthalmology' ? 'selected' : '' %>>
+                                                        Ophthalmology
+                                                    </option>
+                                                    <option value="Orthopedics" <%= clinic && clinic.clinicType === 'Orthopedics' ? 'selected' : '' %>>
+                                                        Orthopedics
+                                                    </option>
+                                                    <option value="Psychiatry" <%= clinic && clinic.clinicType === 'Psychiatry' ? 'selected' : '' %>>
+                                                        Psychiatry
+                                                    </option>
+                                                    <option value="Neurology" <%= clinic && clinic.clinicType === 'Neurology' ? 'selected' : '' %>>
+                                                        Neurology
+                                                    </option>
+                                                    <option value="Dentistry" <%= clinic && clinic.clinicType === 'Dentistry' ? 'selected' : '' %>>
+                                                        Dentistry
+                                                    </option>
+                                                    <option value="Endocrinology" <%= clinic && clinic.clinicType === 'Endocrinology' ? 'selected' : '' %>>
+                                                        Endocrinology
+                                                    </option>
+                                                    <option value="Gastroenterology" <%= clinic && clinic.clinicType === 'Gastroenterology' ? 'selected' : '' %>>
+                                                        Gastroenterology
+                                                    </option>
+                                                    <option value="Hematology" <%= clinic && clinic.clinicType === 'Hematology' ? 'selected' : '' %>>
+                                                        Hematology
+                                                    </option>
+                                                    <option value="Infectious Disease" <%= clinic && clinic.clinicType === 'Infectious Disease' ? 'selected' : '' %>>
+                                                        Infectious Disease
+                                                    </option>
+                                                    <option value="Nephrology" <%= clinic && clinic.clinicType === 'Nephrology' ? 'selected' : '' %>>
+                                                        Nephrology
+                                                    </option>
+                                                    <option value="Oncology" <%= clinic && clinic.clinicType === 'Oncology' ? 'selected' : '' %>>
+                                                        Oncology
+                                                    </option>
+                                                    <option value="Pulmonology" <%= clinic && clinic.clinicType === 'Pulmonology' ? 'selected' : '' %>>
+                                                        Pulmonology
+                                                    </option>
+                                                    <option value="Radiology" <%= clinic && clinic.clinicType === 'Radiology' ? 'selected' : '' %>>
+                                                        Radiology
+                                                    </option>
+                                                    <option value="Rheumatology" <%= clinic && clinic.clinicType === 'Rheumatology' ? 'selected' : '' %>>
+                                                        Rheumatology
+                                                    </option>
+                                                    <option value="Urology" <%= clinic && clinic.clinicType === 'Urology' ? 'selected' : '' %>>
+                                                        Urology
+                                                    </option>
+                                                    <option value="Alternative Medicine" <%= clinic && clinic.clinicType === 'Alternative Medicine' ? 'selected' : '' %>>
+                                                        Alternative Medicine
+                                                    </option>
+                                                    <option value="Other" <%= clinic && clinic.clinicType === 'Other' ? 'selected' : '' %>>
+                                                        Other
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label class="form-label"><%= translation.clinic_phone %></label>
+                                                <input type="tel" class="form-control form-control-lg" required
+                                                       value="<%= clinic ? clinic.phone : '' %>"
+                                                       name="clinicPhone" placeholder="<%= translation.clinic_phone %>">
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label class="form-label"><%= translation.clinic_email %></label>
+                                                <input type="email" class="form-control form-control-lg" required
+                                                       value="<%= clinic ? clinic.email : '' %>"
+                                                       name="clinicEmail" placeholder="<%= translation.clinic_email %>">
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label class="form-label"><%= translation.clinic_address %></label>
+                                                <input type="text" class="form-control form-control-lg" required
+                                                       value="<%= clinic ? clinic.address : '' %>"
+                                                       name="clinicAddress" placeholder="<%= translation.clinic_address %>">
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label class="form-label"><%= translation.city %></label>
+                                                <input type="text" class="form-control form-control-lg" name="city" required
+                                                       value="<%= clinic ? clinic.city : '' %>"
+                                                       placeholder="<%= translation.city %>">
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label class="form-label"><%= translation.state %></label>
+                                                <input type="text" class="form-control form-control-lg" name="state" required
+                                                       value="<%= clinic ? clinic.state : '' %>"
+                                                       placeholder="<%= translation.state %>">
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label class="form-label"><%= translation.message %></label>
+                                                <textarea rows="4" class="form-control no-resize" name="clinicMessage"
+                                                          value="<%= clinic ? clinic.clinicMessage : '' %>"
+                                                          placeholder="<%= translation.message %>"><%= clinic ? clinic.clinicMessage : '' %></textarea>
+                                            </div>
+                                            <div class="card-footer text-end">
+                                                <button type="submit" class="btn btn-lg btn-primary"><%= translation.save_changes %>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="card-footer text-end">
+                                <form id="clinicPhotoForm" action="/clinic-photos" method="post"
+                                      enctype="multipart/form-data">
+                                    <div class="custom-file-upload btn m-1 btn-md btn-primary btn-animate-6">
+                                        <span class="btntext"><%= translation.upload_clinic_logo %></span>
+                                        <div class="btninfo bg-warning"><i class="fa fa-cloud-upload"></i></div>
+                                        <input id="file-upload" type="file" class="form-control" name="clinicPhoto">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="list-item-3" class="card fieldset border border-muted mt-5">
+                    <!-- form: Change Password -->
+                    <span class="fieldset-tile text-muted bg-body"><%= translation.change_password %></span>
+                    <div class="card">
+<!--                        <form action="/clinic-info" method="post">-->
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-lg-4 col-md-12">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="userName" value="<%= authentication ? authentication.username : '' %>" readonly
+                                                   placeholder="<%= translation.username %>">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-12">
+<!--                                        <div class="form-group">-->
+<!--                                            <input type="email" class="form-control" name="registrationEmail" readonly value="authentication.username"-->
+<!--                                                   placeholder="<%= translation.email %>">-->
+<!--                                        </div>-->
+                                    </div>
+                                    <div class="col-12">
+
+                                        <h6 class="border-top pt-2 mt-2 mb-3"><%= translation.change_password %></h6>
+                                        <div class="mb-3">
+                                            <input type="password" class="form-control form-control-lg" readonly
+                                                   placeholder="<%= translation.current_password %>">
+                                        </div>
+                                        <div class="mb-1">
+                                            <input type="password" class="form-control form-control-lg" readonly
+                                                   placeholder="<%= translation.new_password %>">
+                                        </div>
+                                        <div>
+                                            <input type="password" class="form-control form-control-lg" readonly
+                                                   placeholder="<%= translation.confirm_new_password %>">
+                                            <span class="text-muted small"><%= translation.minimum_8_characters %></span>
+                                        </div>
+                                    </div>
+                                    <div class="row g-3">
+                                        <div class="col-md-9 col-sm-8">
+                                            <label class="col-md-3 col-sm-4 col-form-label"><%= translation.authentication %></label>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="" readonly>
+                                                <label class="form-check-label"><%= translation.tow_factor_authentication %></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer text-end">
+                                <button disabled class="btn btn-lg btn-primary" type="submit"><%= translation.save_changes %></button>
+                            </div>
+<!--                        </form>-->
+                    </div>
+                </div>
+                <div id="list-item-5" class="card fieldset border border-muted mt-5">
+                    <!-- form: Social Profiles -->
+                    <span class="fieldset-tile text-muted bg-body"><%= translation.social_profiles %></span>
+                    <div class="card">
+                        <form action="/social-media" method="post">
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label"><%= translation.twitter %></label>
+                                    <input type="text" class="form-control form-control-lg" name="twitter"
+                                           value="<%= settingSocialMedia ? settingSocialMedia.socialMedia.twitter : '' %>"
+                                           placeholder="<%= translation.twitter %>">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><%= translation.facebook %></label>
+                                    <input type="text" class="form-control form-control-lg" name="facebook"
+                                           value="<%= settingSocialMedia ? settingSocialMedia.socialMedia.facebook : '' %>"
+                                           placeholder="<%= translation.facebook %>">
+                                </div>
+                                <div>
+                                    <label class="form-label"><%= translation.linkedin %></label>
+                                    <input type="text" class="form-control form-control-lg" name="linkedIn"
+                                           value="<%= settingSocialMedia ? settingSocialMedia.socialMedia.linkedIn : '' %>"
+                                           placeholder="<%= translation.linkedin %>">
+                                </div>
+                            </div>
+                            <div class="card-footer text-end">
+                                <button class="btn btn-lg btn-primary" type="submit"><%= translation.update_social_profiles %></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        // Add event listener to file input element
+        $('#file-upload').on('change', function () {
+            // Submit form when file is selected
+            $('#clinicPhotoForm').submit();
+        });
+
+        $('#file-upload2').on('change', function () {
+            // Submit second form when file is selected
+            $('#doctorPhotoForm').submit();
+        });
+    });
+</script>
+
+
+<%- include("partials/footer"); -%>

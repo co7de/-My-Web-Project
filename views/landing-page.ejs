@@ -1,0 +1,732 @@
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Responsive Bootstrap 5 admin dashboard template &amp; web App ui kit.">
+    <!-- Favicon-->
+    <title>:: LUNO :: Hospital Landing Page</title>
+    <!-- Application vendor css url -->
+    <script src="/bundles/SweetAlertFile2.js"></script>
+
+    <link rel="stylesheet" href="/css/swiper.min.css">
+    <link rel="stylesheet" href="/css/onepage.kit.min.css">
+    <!-- project css file  -->
+    <link rel="stylesheet" href="/css/luno-style.css">
+    <link rel="stylesheet" href="/css/custom.css">
+    <!-- Jquery Core Js -->
+    <script src="/bundles/plugins.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="true">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Mulish:wght@200;300;400;500;600;700;800;900&amp;display=swa">
+</head>
+
+<body class="landing-page" data-luno="theme-cyan" style="">
+<!-- Section: Top Bar -->
+<div class="topbar py-2 bg-card" id="topbar">
+    <div class="container">
+        <div class="row g-2">
+            <div class="col-md-8">
+                <div class="text-muted d-flex align-items-center small">
+                    <a class="me-4 text-muted" href="#"><i
+                                class="fa fa-envelope me-2"></i>info@lunoclinicistanbul.com</a>
+                    <span><i class="fa fa-phone me-2"></i>+90 1234 5678 99</span>
+                </div>
+            </div>
+
+        </div> <!-- .row end -->
+    </div>
+</div>
+<!-- Section: Header -->
+<header class="section sticky-top shadow-sm border-top py-0 bg-card" style="">
+    <nav class="navbar navbar-expand-lg navbar-light py-3">
+        <div class="container">
+            <a class="navbar-brand p-0 m-0" href="/main-page">
+                <span class="fs-3 fw-bold text-secondary">LUNO</span>
+
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main_navbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse fs-6" id="main_navbar">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
+                    <li class="nav-item me-2"><a class="nav-link" href="#about">About Us</a></li>
+                    <li class="nav-item me-2"><a class="nav-link" href="#contactSec">Contact Us</a></li>
+                    <li class="nav-item me-2"><a class="nav-link" href="#appointment">Book Appointment</a></li>
+                    <li class="nav-item me-2"><a class="btn px-4 rounded btn-warning" href="#rateSec">Rate Us</a></li>
+                    <li class="nav-item me-2"><a class="btn px-4 rounded btn-success" href="/dashboard">Sign in</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<!--  Section: Hero Section  -->
+<div class="section hero d-flex align-items-center" id="hero">
+    <div class="container">
+        <div class="row g-3 py-5 align-items-center justify-content-between">
+            <div class="col-xxl-5 col-lg-6 col-md-12">
+
+                <h2 class="bg-text color-900"><span class="text-gradient fw-bold">LUNO</span> Clinic</h2>
+                <p class="color-500 lead mb-4">Experience exceptional care and tailored treatments at our
+                    state-of-the-art clinic, where our expert team of medical professionals is dedicated to your
+                    well-being.</p>
+                <a class="btn btn-lg px-5 btn-primary text-white text-uppercase fs-6" href="#appointment">Book
+                    Appointment</a>
+
+            </div>
+            <div class="col-xxl-6 col-lg-6 col-md-12">
+                <svg class="img-fluid d-none d-lg-block" viewBox="0 0 600 449" fill="none"
+                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <path class="fill-primary" fill-rule="evenodd" clip-rule="evenodd"
+                          d="M457.559 52.7163C450.334 49.4569 442.708 48.3882 437.171 48.4057C435.791 48.4101 434.597 47.3772 434.5 45.9999V45.9999C434.403 44.6226 435.441 43.4224 436.822 43.4082C443.014 43.3447 451.513 44.5037 459.615 48.1586C468.935 52.3629 477.824 59.9261 481.883 72.7452C489.473 96.7143 542.361 253.344 567.868 328.698L567.883 328.742L567.896 328.787C570.988 339.179 572.298 354.704 565.541 367.015C562.123 373.243 556.679 378.564 548.562 381.898C540.489 385.215 529.902 386.516 516.221 384.984C463.462 379.078 365.926 360.148 321.4 350.947C320.048 350.667 319.219 349.352 319.5 348V348C319.78 346.648 321.065 345.772 322.417 346.051C366.956 355.255 464.278 374.139 516.778 380.015C529.897 381.484 539.586 380.181 546.662 377.273C553.695 374.384 558.276 369.861 561.158 364.61C566.993 353.978 566.014 340.029 563.116 330.257C537.618 254.927 484.724 98.2807 477.116 74.2546C473.576 63.0737 465.881 56.4703 457.559 52.7163Z"
+                          fill="black"></path>
+                    <path d="M358 11.5L201.5 60.5C181.334 66.5 135.2 80.1 112 86.5C88.8 92.9 76.3333 118.833 73 131C64.6668 164.667 44.3004 248.4 29.5004 314C14.7004 379.6 57.0004 388.667 80.0004 385C202 368.667 464.4 333.9 538 325.5C611.6 317.1 599.667 271 584.5 249C546 194.5 462.6 76.2 437 39C411.4 1.8 373.667 5.16667 358 11.5Z"
+                          fill="url(#pattern0)"></path>
+                    <path class="fill-primary" fill-rule="evenodd" clip-rule="evenodd"
+                          d="M123.217 82.4818C136.917 51.7616 164.945 44 177.5 44H240.5C241.881 44 243 45.1193 243 46.5V46.5C243 47.8807 241.881 49 240.5 49H177.5C166.39 49 140.484 56.0384 127.784 84.5182C114.508 114.288 58.1532 208.436 31.6798 251.728C29.5847 255.793 27.2381 262.706 27.0622 270.109C26.9035 276.79 28.5055 283.702 33.4799 289.382C34.3896 290.421 34.4476 291.995 33.5004 293V293C32.5533 294.005 30.961 294.057 30.0349 293.033C23.7787 286.115 21.8806 277.694 22.0636 269.991C22.2616 261.657 24.8867 253.96 27.2817 249.348C27.3086 249.296 27.3372 249.245 27.3676 249.196C53.9139 205.787 110.101 111.895 123.217 82.4818Z"
+                          fill="black"></path>
+                    <path class="fill-secondary" d="M56.5 23L69.0574 44.75H43.9426L56.5 23Z" fill="#C4C4C4"></path>
+                    <path class="fill-secondary" d="M319 401.5L270.25 429.646L270.25 373.354L319 401.5Z"
+                          fill="#C4C4C4"></path>
+                    <path class="fill-secondary" d="M37 43L44.7942 56.5H29.2058L37 43Z" fill="#C4C4C4"></path>
+                    <path class="fill-secondary" d="M275 358.5L244.25 376.254L244.25 340.746L275 358.5Z"
+                          fill="#C4C4C4"></path>
+                    <path class="fill-secondary" d="M55 61L62.7942 74.5H47.2058L55 61Z" fill="#C4C4C4"></path>
+                    <path class="fill-secondary" d="M234 399.5L203.25 417.254L203.25 381.746L234 399.5Z"
+                          fill="#C4C4C4"></path>
+                    <defs>
+                        <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
+                            <use xlink:href="#image0_54_6"
+                                 transform="translate(0 -0.00197126) scale(0.000444444 0.000669295)"></use>
+                        </pattern>
+                        <image id="image0_54_6" width="2250" height="1500"
+                               xlink:href="/assets/img/banner-img.png"></image>
+                    </defs>
+                </svg>
+            </div>
+        </div><!-- .row end -->
+    </div>
+</div>
+
+
+<!--  Section: About  -->
+<div class="section about bg-card" id="about">
+    <div class="container">
+        <div class="row g-3">
+            <div class="col-xl-7 col-lg-6">
+                <span class="bg-dark px-2 py-1 color-fff">LUNO</span>
+                <h2 class="mb-1 mt-4 color-900"><strong>Hospital</strong> is a premier healthcare institution committed
+                    to delivering exceptional medical services.</h2>
+                <p class="lead">With a rich history spanning over a century, our hospital has established itself as a
+                    trusted provider of high-quality healthcare. We prioritize patient care and strive to create a
+                    nurturing environment that promotes healing and well-being.</p>
+                <ul class="resume-box ps-0 pt-2">
+                    <li>
+                        <div class="icon text-center d-flex align-items-center justify-content-center">
+                            <i class="fa fa-heart"></i>
+                        </div>
+                        <h6 class="fw-bold">Our Mission</h6>
+                        <span>Our mission is to improve lives by offering comprehensive and compassionate healthcare services. We are dedicated to treating each patient with dignity, respect, and personalized attention, ensuring their comfort and recovery.</span>
+                    </li>
+                    <li>
+                        <div class="icon text-center d-flex align-items-center justify-content-center">
+                            <i class="fa fa-eye"></i>
+                        </div>
+                        <h6 class="fw-bold">Our Vision</h6>
+                        <span>We envision a future where everyone has access to world-class healthcare. Our goal is to lead the way in medical innovation, research, and education, providing cutting-edge treatments and contributing to advancements in healthcare globally.</span>
+                        <div class="ps-3 pt-3">
+                            <h6>
+                                <i class="fa fa-thumbs-o-up me-2"></i><span>We are committed to promoting wellness and disease prevention through community outreach programs, health education, and early detection initiatives.</span>
+                            </h6>
+                            <h6><i class="fa fa-thumbs-o-up me-2"></i><span>We aim to foster a culture of continuous improvement, where our dedicated healthcare professionals strive to deliver excellence in patient care and exceed expectations.</span>
+                            </h6>
+                        </div>
+                    </li>
+                </ul>
+                <p class="lead">We are proud to be at the forefront of medical advancements, continuously investing in
+                    state-of-the-art technology and attracting top talent in various medical specialties. Lorem Ipsum is
+                    simply dummy text of the printing and typesetting industry.</p>
+                <div class="ps-3">
+                    <h5 class="fw-bold">Opening Hours</h5>
+                    <ul class="list-unstyled fs-6">
+                        <li class="py-1">
+                            <label><i class="fa fa-angle-right me-2"></i>Saturday</label>
+                            <span>9:00 - 20:00</span>
+                        </li>
+                        <li class="py-1">
+                            <label><i class="fa fa-angle-right me-2"></i>Sunday</label>
+                            <span>9:00 - 20:00</span>
+                        </li>
+                        <li class="py-1">
+                            <label><i class="fa fa-angle-right me-2"></i>Monday - Friday</label>
+                            <span>9:00 - 20:00</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div> <!-- .row end -->
+    </div>
+</div>
+
+
+<!--  Section: Book Appointment  -->
+<div class="section appointment" id="appointment">
+    <div class="container">
+        <form id="add-apnt3" class="hidden" action="/online-appointment-booking" method="post">
+            <div class="col-lg-12">
+                <span class="bg-dark px-2 py-1 color-fff">Online</span>
+                <h2 class="mb-1 mt-4 color-900">Book an Appointment</h2>
+                <p class="lead">Book an appointment today and take the first step towards optimal health and wellness at
+                    our esteemed clinic in Istanbul.</p>
+            </div>
+            <div class="row g-3">
+                <div class="col-lg-4 col-md-6">
+                    <label class="form-label">ID Number</label>
+                    <input type="text" class="form-control form-control-lg" placeholder="Enter here" required
+                           name="idNumber">
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <label class="form-label">First Name</label>
+                    <input type="text" class="form-control form-control-lg" placeholder="Enter here" required
+                           name="fName">
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" class="form-control form-control-lg" placeholder="Enter here" required
+                           name="lName">
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <label class="form-label">Your Email</label>
+                    <input type="email" class="form-control form-control-lg" placeholder="Enter here" required
+                           name="email">
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <label class="form-label">Select Gender</label>
+                    <select class="form-control form-control-lg" tabindex="-98" name="gender">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <label class="form-label">Mobile</label>
+                    <input type="tel" class="form-control form-control-lg" placeholder="Enter here" required
+                           name="tel">
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <label class="form-label">Appointment Date</label>
+                    <input id="date3" type="date" class="form-control form-control-lg" required
+                           placeholder="Enter here"
+                           name="date">
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <label class="form-label">Appointment Hour</label>
+                    <input id="time3" type="text" class="form-control form-control-lg" required
+                           placeholder="Enter here" disabled
+                           name="time" autocomplete="off">
+                </div>
+                <div class="col-sm-12">
+                    <label class="form-label">Note you want to add</label>
+
+                    <textarea rows="4" class="form-control no-resize" name="paragraph"
+                              placeholder="Please type if you have any notes here..."></textarea>
+                </div>
+            </div>
+            <div class="col-12" style="margin-top: 20px">
+                <button type="submit" class="btn btn-lg btn-primary text-uppercase px-5">Book an Appointment</button>
+            </div>
+        </form> <!-- .row end -->
+    </div>
+</div>
+
+
+<!--  Section: Testimonials  -->
+<div class="section sliders-2 bg-body" style="height: 500px">
+    <div class="container">
+        <div class="testimonials-slider swiper swiper-container">
+            <div class="swiper-wrapper">
+                <% activeReviewsWithStars.forEach((review) => { %>
+                    <div class="swiper-slide">
+                        <div class="testimonial-wrap">
+                            <div class="testimonial-item">
+                                <h4 class="mb-0"><%= review.name %></h4>
+                                <h6 class="text-muted mb-3"><%= review.profession %></h6>
+                                <h6 class="lh-lg">
+                                    <i class="fa fa-quote-left"></i> <%= review.review %> <i
+                                            class="fa fa-quote-right"></i>
+                                </h6>
+                                <h6 class="text-muted mb-3"><%= review.city %></h6>
+                                <div style="font-size: 30px" id="star-rating"><%- review.stars %></div>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+</div>
+<script src="/bundles/swiper.bundle.js"></script>
+<script>
+    // Testimonials slider
+    new Swiper('.testimonials-slider', {
+        speed: 600,
+        loop: true,
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false
+        },
+        slidesPerView: 'auto',
+        pagination: {
+            el: '.swiper-pagination',
+            type: 'bullets',
+            clickable: true
+        },
+        breakpoints: {
+            320: {
+                slidesPerView: 1,
+                spaceBetween: 20
+            },
+            1200: {
+                slidesPerView: 2,
+                spaceBetween: 20
+            }
+        }
+    });
+</script>
+
+
+<!--  Section: rate us form  -->
+<div id="rateSec" class="section">
+    <div class="container">
+        <form id="ratingForm" action="/rate" method="post" onsubmit="return validateForm()">
+            <div class="row g-2">
+                <div class="col-12">
+                    <h3 class="mb-1 mt-4 color-900">Rate Us</h3>
+                    <p class="lead">Your review is important to us</p>
+                </div>
+                <div style="border: 1px solid gold; border-radius: 5px; text-align: center" class="col-md-12 col-sm-6">
+                    <div class="star-rating">
+                        <input type="radio" id="star5" name="rating" value="5">
+                        <label for="star5"></label>
+                        <input type="radio" id="star4" name="rating" value="4">
+                        <label for="star4"></label>
+                        <input type="radio" id="star3" name="rating" value="3">
+                        <label for="star3"></label>
+                        <input type="radio" id="star2" name="rating" value="2">
+                        <label for="star2"></label>
+                        <input type="radio" id="star1" name="rating" value="1">
+                        <label for="star1"></label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" name="name" placeholder="Your Name">
+                        <label>Your Name</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" name="profession" placeholder="Your Profession">
+                        <label>Your Profession</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" name="city" placeholder="Your City">
+                        <label>Your City</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating">
+                    <textarea class="form-control" name="review" placeholder="Please write your review of us here.."
+                              style="height: 160px"></textarea>
+
+                    </div>
+                </div>
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-lg btn-primary text-uppercase fs-6">Send</button>
+                </div>
+            </div><!-- .row end -->
+        </form>
+    </div>
+</div>
+
+<!--Contact Section-->
+<div id="contactSec" class="section bg-card">
+    <form id="contactingForm" action="/contact" method="post">
+        <div class="container">
+            <div class="row g-2">
+                <div class="col-12">
+                    <span class="bg-dark px-2 py-1 color-fff">Contact Information</span>
+                    <h3 class="mb-1 mt-4 color-900">Get in touch</h3>
+                    <p class="lead">Get in touch with our dedicated team of professionals today, and let us provide you
+                        with the personalized care you deserve at our renowned clinic in Istanbul.</p>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" name="name" placeholder="Your Name" required>
+                        <label>Your Name</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="form-floating">
+                        <input type="email" class="form-control" name="email" placeholder="Your email" required>
+                        <label>Your email</label>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-12">
+                    <div class="form-floating">
+                        <input type="tel" class="form-control" name="tel" placeholder="Your Phone" required>
+                        <label>Your Phone</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="Message (Optional)" name="message" required
+                                  style="height: 160px"></textarea>
+                    </div>
+                </div>
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-lg btn-primary text-uppercase fs-6">Send</button>
+                </div>
+            </div><!-- .row end -->
+        </div>
+    </form>
+</div>
+
+<!-- Section: Footer -->
+<div class="section footer">
+    <div class="container">
+        <div class="row g-3 mb-4">
+            <div class="col-lg-4 col-md-6 col-12">
+                <h3 class="mb-1 fw-bold color-900">LUNO</h3>
+                <p>Experience exceptional care and tailored treatments at our state-of-the-art clinic, where our expert
+                    team of medical professionals is dedicated to your well-being.</p>
+                <ul class="mt-3 fs-6 lh-lg">
+                    <li><span>Address:</span> 123 Istanbul Street, Istanbul, Turkey</li>
+                    <li><span>Email:</span> info@lunoclinicistanbul.com</li>
+                    <li><span>Call:</span> +90 555 123 4567</li>
+                </ul>
+            </div>
+            <div class="col-lg-8 col-12">
+                <div class="row g-3">
+
+
+                    <div class="col-lg-4 col-md-12 col-12">
+                        <h5 class="mb-4 color-900">Join Our Newsletter</h5>
+                        <form>
+                            <div class="form-floating mb-1">
+                                <input type="email" class="form-control rounded">
+                                <label>Enter email address</label>
+                            </div>
+                            <button type="button" class="btn btn-block btn-primary">Subscribe Now!</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- .row end -->
+        <div class="row g-3 border-top pt-3">
+            <div class="col-lg-6 col-md-12 text-center text-lg-start">
+                <span>© 2023 <a rel="nofollow" target="_blank">LUNO</a>. All Rights Reserved.</span>
+            </div>
+
+        </div> <!-- .row end -->
+    </div>
+</div>
+<!-- Modal: Setting -->
+<div class="modal fade" id="SettingsModal" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div style="height: 300px" class="modal-dialog modal-dialog-vertical right-side modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="px-xl-4 modal-header">
+                <h5 class="modal-title">Theme Setting</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="px-xl-4 modal-body custom_scroll">
+                <!-- start: color setting -->
+                <div class="card fieldset border border-primary p-3 setting-theme mb-4">
+                    <span class="fieldset-tile text-primary bg-card">Color Settings</span>
+                    <ul class="list-unstyled d-flex choose-skin mb-0">
+                        <li data-theme="black">
+                            <div class="black"></div>
+                        </li>
+                        <li data-theme="indigo">
+                            <div class="indigo"></div>
+                        </li>
+                        <li data-theme="blue">
+                            <div class="blue"></div>
+                        </li>
+                        <li data-theme="cyan">
+                            <div class="cyan"></div>
+                        </li>
+                        <li data-theme="green">
+                            <div class="green"></div>
+                        </li>
+                        <li data-theme="orange">
+                            <div class="orange"></div>
+                        </li>
+                        <li data-theme="blush">
+                            <div class="blush"></div>
+                        </li>
+                        <li data-theme="red">
+                            <div class="red"></div>
+                        </li>
+                        <li data-theme="dynamic">
+                            <div class="dynamic"><i class="fa fa-paint-brush"></i></div>
+                        </li>
+                    </ul>
+                    <!-- Settings: Theme dynamics -->
+                    <div class="card fieldset border border-primary p-3 dt-setting mt-4">
+                        <span class="fieldset-tile text-primary bg-card">Dynamic Color Settings</span>
+                        <div class="row g-3">
+                            <div class="col-7">
+                                <ul class="list-unstyled mb-0">
+                                    <li>
+                                        <button id="primaryColorPicker"
+                                                class="btn bg-primary avatar xs me-2 colorpicker-element"></button>
+                                        <label>Primary Color</label>
+                                    </li>
+                                    <li>
+                                        <button id="secondaryColorPicker"
+                                                class="btn bg-secondary avatar xs me-2 colorpicker-element"></button>
+                                        <label>Secondary Color</label>
+                                    </li>
+                                    <li>
+                                        <button id="BodyColorPicker"
+                                                class="btn btn-outline-secondary bg-body avatar xs me-2 colorpicker-element"></button>
+                                        <label>Site Background</label>
+                                    </li>
+                                    <li>
+                                        <button id="CardColorPicker"
+                                                class="btn btn-outline-secondary bg-card avatar xs me-2 colorpicker-element"></button>
+                                        <label>Widget Background</label>
+                                    </li>
+                                    <li>
+                                        <button id="BorderColorPicker"
+                                                class="btn btn-outline-secondary bg-card avatar xs me-2 colorpicker-element"></button>
+                                        <label>Border Color</label>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-5">
+                                <ul class="list-unstyled mb-0">
+                                    <li>
+                                        <button id="chartColorPicker1"
+                                                class="btn chart-color1 avatar xs me-2 colorpicker-element"></button>
+                                        <label>Chart Color 1</label>
+                                    </li>
+                                    <li>
+                                        <button id="chartColorPicker2"
+                                                class="btn chart-color2 avatar xs me-2 colorpicker-element"></button>
+                                        <label>Chart Color 2</label>
+                                    </li>
+                                    <li>
+                                        <button id="chartColorPicker3"
+                                                class="btn chart-color3 avatar xs me-2 colorpicker-element"></button>
+                                        <label>Chart Color 3</label>
+                                    </li>
+                                    <li>
+                                        <button id="chartColorPicker4"
+                                                class="btn chart-color4 avatar xs me-2 colorpicker-element"></button>
+                                        <label>Chart Color 4</label>
+                                    </li>
+                                    <li>
+                                        <button id="chartColorPicker5"
+                                                class="btn chart-color5 avatar xs me-2 colorpicker-element"></button>
+                                        <label>Chart Color 5</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- start: Light/dark -->
+                <div class="card fieldset border setting-mode mb-4">
+                    <span class="fieldset-tile bg-card">Light/Dark &amp; Contrast Layout</span>
+                    <div class="c_radio d-flex text-center">
+                        <label class="m-1 theme-switch" for="theme-switch">
+                            <input type="checkbox" id="theme-switch" name="darkMode" value="dark"
+                                   onchange="updateTheme(this, 'dark')">
+
+                            <span class="card p-2">
+                            <img class="img-fluid"
+                                 src="/assets/img/dark-version.svg"
+                                 alt="Dark Mode">
+                        </span>
+                        </label>
+                        <label class="m-1 theme-dark" for="theme-dark">
+                            <input type="checkbox" id="theme-dark" name="themeDarkMode" value="theme-dark"
+                                   onchange="updateTheme(this, 'theme-dark')">
+                            <span class="card p-2">
+                            <img class="img-fluid"
+                                 src="/assets/img/dark-theme.svg"
+                                 alt="Theme Dark Mode">
+                        </span>
+                        </label>
+                        <label class="m-1 theme-high-contrast" for="theme-high-contrast">
+                            <input type="checkbox" id="theme-high-contrast" name="themeHighContrast"
+                                   value="high-contrast" onchange="updateTheme(this, 'theme-high-contrast')">
+                            <span class="card p-2">
+                            <img class="img-fluid"
+                                 src="/assets/img/high-version.svg"
+                                 alt="High Contrast">
+                        </span>
+                        </label>
+                        <input type="hidden" id="theme-value" name="themeValue">
+                        <label class="m-1 theme-rtl" for="theme-rtl">
+                            <input type="checkbox" id="theme-rtl" name="themeRtl" value="true">
+                            <span class="card p-2">
+                            <img class="img-fluid"
+                                 src="/assets/img/rtl-version.svg"
+                                 alt="RTL Mode!">
+                        </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<a class="rounded page-setting text-center d-flex align-items-center justify-content-center" href="#" title="Settings"
+   data-bs-toggle="modal" data-bs-target="#SettingsModal"><i
+            class="fa fa-gear text-light"></i></a>
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="fa fa-arrow-up"></i></a>
+<script src="/bundles/theme.js"></script>
+
+
+<div class="colorpicker dropdown-menu colorpicker-hidden colorpicker-with-alpha colorpicker-right">
+    <div class="colorpicker-saturation"><i><b></b></i></div>
+    <div class="colorpicker-hue"><i></i></div>
+    <div class="colorpicker-alpha"><i></i></div>
+    <div class="colorpicker-color">
+        <div></div>
+        <div class="colorpicker-selectors"></div>
+    </div>
+</div>
+<div class="colorpicker dropdown-menu colorpicker-hidden colorpicker-with-alpha colorpicker-right">
+    <div class="colorpicker-saturation"><i><b></b></i></div>
+    <div class="colorpicker-hue"><i></i></div>
+    <div class="colorpicker-alpha"><i></i></div>
+    <div class="colorpicker-color">
+        <div></div>
+        <div class="colorpicker-selectors"></div>
+    </div>
+</div>
+<div class="colorpicker dropdown-menu colorpicker-hidden colorpicker-with-alpha colorpicker-right">
+    <div class="colorpicker-saturation"><i><b></b></i></div>
+    <div class="colorpicker-hue"><i></i></div>
+    <div class="colorpicker-alpha"><i></i></div>
+    <div class="colorpicker-color">
+        <div></div>
+        <div class="colorpicker-selectors"></div>
+    </div>
+</div>
+<div class="colorpicker dropdown-menu colorpicker-hidden colorpicker-with-alpha colorpicker-right">
+    <div class="colorpicker-saturation"><i><b></b></i></div>
+    <div class="colorpicker-hue"><i></i></div>
+    <div class="colorpicker-alpha"><i></i></div>
+    <div class="colorpicker-color">
+        <div></div>
+        <div class="colorpicker-selectors"></div>
+    </div>
+</div>
+<div class="colorpicker dropdown-menu colorpicker-hidden colorpicker-with-alpha colorpicker-right">
+    <div class="colorpicker-saturation"><i><b></b></i></div>
+    <div class="colorpicker-hue"><i></i></div>
+    <div class="colorpicker-alpha"><i></i></div>
+    <div class="colorpicker-color">
+        <div></div>
+        <div class="colorpicker-selectors"></div>
+    </div>
+</div>
+<div class="colorpicker dropdown-menu colorpicker-hidden colorpicker-with-alpha colorpicker-right">
+    <div class="colorpicker-saturation"><i><b></b></i></div>
+    <div class="colorpicker-hue"><i></i></div>
+    <div class="colorpicker-alpha"><i></i></div>
+    <div class="colorpicker-color">
+        <div></div>
+        <div class="colorpicker-selectors"></div>
+    </div>
+</div>
+<div class="colorpicker dropdown-menu colorpicker-hidden colorpicker-with-alpha colorpicker-right">
+    <div class="colorpicker-saturation"><i><b></b></i></div>
+    <div class="colorpicker-hue"><i></i></div>
+    <div class="colorpicker-alpha"><i></i></div>
+    <div class="colorpicker-color">
+        <div></div>
+        <div class="colorpicker-selectors"></div>
+    </div>
+</div>
+<div class="colorpicker dropdown-menu colorpicker-hidden colorpicker-with-alpha colorpicker-right">
+    <div class="colorpicker-saturation"><i><b></b></i></div>
+    <div class="colorpicker-hue"><i></i></div>
+    <div class="colorpicker-alpha"><i></i></div>
+    <div class="colorpicker-color">
+        <div></div>
+        <div class="colorpicker-selectors"></div>
+    </div>
+</div>
+<div class="colorpicker dropdown-menu colorpicker-hidden colorpicker-with-alpha colorpicker-right">
+    <div class="colorpicker-saturation"><i><b></b></i></div>
+    <div class="colorpicker-hue"><i></i></div>
+    <div class="colorpicker-alpha"><i></i></div>
+    <div class="colorpicker-color">
+        <div></div>
+        <div class="colorpicker-selectors"></div>
+    </div>
+</div>
+<div class="colorpicker dropdown-menu colorpicker-hidden colorpicker-with-alpha colorpicker-right">
+    <div class="colorpicker-saturation"><i><b></b></i></div>
+    <div class="colorpicker-hue"><i></i></div>
+    <div class="colorpicker-alpha"><i></i></div>
+    <div class="colorpicker-color">
+        <div></div>
+        <div class="colorpicker-selectors"></div>
+    </div>
+</div>
+
+
+<div id="ovLay" class="ovLay">
+    <div id="popup" class="popup">
+        <div><span id="close"><i class="fa fa-times"></i></span></div>
+        <div class="hours">
+            <% hoursList.forEach(hour => { %>
+                <div class="hour"><%= hour %></div>
+            <% }) %>
+        </div>
+        <div class="timeslots"></div>
+    </div>
+</div>
+
+<script>
+    function validateForm() {
+        // Retrieve form fields within the specific form
+        var form = document.getElementById('ratingForm');
+        var rating = form.querySelector('input[name="rating"]:checked');
+        var name = form.querySelector('input[name="name"]');
+        var profession = form.querySelector('input[name="profession"]');
+        var city = form.querySelector('input[name="city"]');
+        var review = form.querySelector('textarea[name="review"]');
+
+        // Check if all required fields are filled
+        if (!rating || !name.value || !profession.value || !city.value || !review.value) {
+            alert("Please fill all the required fields.");
+            return false; // Prevent form submission
+        }
+
+        return true; // Allow form submission
+    }
+</script>
+
+<script>
+    <% const foundAppointmentsJSON = JSON.stringify(foundAppointments); %>
+    const foundAppointments = JSON.parse('<%- foundAppointmentsJSON %>');
+</script>
+
+<script src="/bundles/custom2.js"></script>
+
+
+</body>
+</html>
+

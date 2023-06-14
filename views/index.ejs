@@ -1,0 +1,371 @@
+<%- include("partials/header"); -%>
+
+
+<!-- Main Content -->
+<div class="page-toolbar px-xl-4 px-sm-2 px-0 py-3">
+    <div class="container-fluid">
+        <div class="row g-3 mb-3 align-items-center">
+            <div class="col">
+                <ol class="breadcrumb bg-transparent mb-0">
+                    <li class="breadcrumb-item"><a class="text-secondary"
+                                                   href="index-2.html"><%= translation.home %></a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><%= translation.dashboard %></li>
+                </ol>
+            </div>
+        </div> <!-- .row end -->
+        <div class="row align-items-center">
+            <div class="col">
+                <h1 class="fs-5 color-900 mt-1 mb-0"><%= translation.welcome_back_dr %> <%= locals.doctor ? locals.doctor.fName : '' %>
+                    !</h1>
+                <small class="text-muted"></small>
+            </div>
+        </div> <!-- .row end -->
+    </div>
+</div>
+<div class="page-body px-xl-4 px-sm-2 px-0 py-lg-2 py-1 mt-0 mt-lg-3">
+    <div class="container-fluid">
+        <div class="row g-3 row-deck">
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="card">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="avatar rounded-circle no-thumbnail bg-light"><i class="fa fa-dollar fa-lg"></i>
+                        </div>
+                        <div class="flex-fill ms-3 text-truncate">
+                            <div class="small"><%= translation.revenue %>
+                            </div>
+                            <% let totalAmountPaid = 0; %>
+                            <% invoices.forEach(function(invoice) { %>
+                                <% totalAmountPaid += invoice.amountPaid; %>
+                            <% }); %>
+                            <span class="h5 mb-0">$<%= totalAmountPaid.toLocaleString() %></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="card">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="avatar rounded-circle no-thumbnail bg-light"><i class="fa fa-male fa-lg"></i>
+                        </div>
+                        <div class="flex-fill ms-3 text-truncate">
+                            <% let male_patients = 0; %>
+                            <% patients.forEach(function(patient) { %>
+                                <% if (patient.gender === "male") { %>
+                                    <% male_patients += 1; %>
+                                <% } %>
+                            <% }); %>
+                            <div class="small"><%= translation.male_patients %></div>
+                            <span class="h5 mb-0"><%= male_patients.toLocaleString() %></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="card">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="avatar rounded-circle no-thumbnail bg-light"><i class="fa fa-smile-o fa-lg"></i>
+                        </div>
+                        <div class="flex-fill ms-3 text-truncate">
+                            <% let happy_clients = 0; %>
+                            <% reviews.forEach(function(client) { %>
+                                <% if (client.rating >= 3) { %>
+                                    <% happy_clients += 1; %>
+                                <% } %>
+                            <% }); %>
+                            <div class="small"><%= translation.happy_clients %></div>
+                            <span class="h5 mb-0"><%= happy_clients.toLocaleString() %></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="card">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="avatar rounded-circle no-thumbnail bg-light"><i
+                                    class="fa fa-address-book fa-lg"></i>
+                        </div>
+                        <div class="flex-fill ms-3 text-truncate">
+                            <div class="small"><%= translation.contacts %></div>
+                            <span class="h5 mb-0"><%= contacts.length.toLocaleString() %></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="card">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="avatar rounded-circle no-thumbnail bg-light"><i class="fa fa-credit-card fa-lg"></i>
+                        </div>
+                        <div class="flex-fill ms-3 text-truncate">
+                            <div class="small"><%= translation.expense %></div>
+                            <% let expenses = 0; %>
+                            <% drugs.forEach(function(drug) { %>
+                                <% expenses += drug.thePriceOfTheQuantityPurchased; %>
+                            <% }); %>
+                            <span class="h5 mb-0">$<%= expenses.toLocaleString() %></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="card">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="avatar rounded-circle no-thumbnail bg-light"><i class="fa fa-female fa-lg"></i>
+                        </div>
+                        <div class="flex-fill ms-3 text-truncate">
+                            <% let female_patients = 0; %>
+                            <% patients.forEach(function(patient) { %>
+                                <% if (patient.gender === "female") { %>
+                                    <% female_patients += 1; %>
+                                <% } %>
+                            <% }); %>
+                            <div class="small"><%= translation.female_patients %></div>
+                            <span class="h5 mb-0"><%= female_patients.toLocaleString() %></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="card">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="avatar rounded-circle no-thumbnail bg-light"><i class="fa fa-frown-o fa-lg"></i>
+                        </div>
+                        <div class="flex-fill ms-3 text-truncate">
+                            <% let unhappy_clients = 0; %>
+                            <% reviews.forEach(function(client) { %>
+                                <% if (client.rating <= 2) { %>
+                                    <% unhappy_clients += 1; %>
+                                <% } %>
+                            <% }); %>
+                            <div class="small"><%= translation.unhappy_clients %></div>
+                            <span class="h5 mb-0"><%= unhappy_clients.toLocaleString() %></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="card">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="avatar rounded-circle no-thumbnail bg-light"><i class="fa fa-medkit fa-lg"></i>
+                        </div>
+                        <div class="flex-fill ms-3 text-truncate">
+                            <div class="small"><%= translation.drug %></div>
+                            <span class="h5 mb-0"><%= drugs.length.toLocaleString() %></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xxl-6 col-xl-6 col-lg-4 col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="card-title m-0"><%= translation.male_patients %> <%= translation.and %> <%= translation.female_patients %></h6>
+                        <div class="dropdown morphing scale-left">
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="col-10" id="genderChart"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xxl-6 col-xl-6 col-lg-4 col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="card-title m-0"><%= translation.happy_clients %> <%= translation.and %> <%= translation.unhappy_clients %></h6>
+                        <div class="dropdown morphing scale-left">
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="col-10" id="satisfactionChart"></div>
+                    </div>
+                </div>
+            </div>
+            <script>
+                // Calculate unhappy_clients and happy_clients
+                var unhappy_clients = 0;
+                var happy_clients = 0;
+                <% reviews.forEach(function(client) { %>
+                <% if (client.rating <= 2) { %>
+                unhappy_clients += 1;
+                <% } else if (client.rating >= 3) { %>
+                happy_clients += 1;
+                <% } %>
+                <% }); %>
+
+
+                // Calculate male_patients and female_patients
+                var male_patients = 0;
+                var female_patients = 0;
+                <% patients.forEach(function(patient) { %>
+                <% if (patient.gender === "male") { %>
+                male_patients += 1;
+                <% } else if (patient.gender === "female") { %>
+                female_patients += 1;
+                <% } %>
+                <% }); %>
+
+
+                var options2 = {
+                    chart: {
+                        type: 'bar',
+                        height: 350,
+                    },
+                    series: [{
+                        name: '<%= translation.patients %>',
+                        data: [male_patients, female_patients],
+                    }],
+                    xaxis: {
+                        categories: ['<%= translation.male_patients %>', '<%= translation.female_patients %>'],
+                    },
+                    plotOptions: {
+                        bar: {
+                            colors: {
+                                backgroundBarColors: ['var(--chart-color1)', 'var(--chart-color2)'], // Specify custom colors for each bar
+                                backgroundBarOpacity: 1,
+                            },
+                        },
+                    },
+                };
+
+                var chart2 = new ApexCharts(document.querySelector("#genderChart"), options2);
+                chart2.render();
+
+                var options3 = {
+                    chart: {
+                        type: 'donut',
+                        height: 350,
+                    },
+                    series: [happy_clients, unhappy_clients], // Assuming 80% happy clients and 20% unhappy clients
+                    colors: ['var(--chart-color1)', 'var(--chart-color2)'], // Specify custom colors for each bar
+
+                    labels: ['<%= translation.happy %>', '<%= translation.unhappy %>'],
+                };
+
+                var chart3 = new ApexCharts(document.querySelector("#satisfactionChart"), options3);
+                chart3.render();
+            </script>
+
+
+            <div class="page-body px-xl-4 px-sm-2 px-0 py-lg-2 py-1 mt-0 mt-lg-3">
+                <div class="container-fluid">
+                    <div class="row g-3 row-deck">
+                        <div class="col-12">
+                            <div class="card my-todo">
+                                <div class="card-header">
+                                    <h6 class="mb-0"><%= translation.my_to_do_list %></h6>
+                                </div>
+                                <div class="bg-light todo-wrapper p-4">
+                                    <div class="form-floating mb-2">
+                                        <input type="text" class="form-control" id="TodoInput">
+                                        <label><%= translation.what_you_need_to_do %></label>
+                                    </div>
+                                    <button type="button"
+                                            class="btn btn-success btn-todo-add"><%= translation.add %></button>
+                                    <span class="todo-error text-danger small ms-3" style="display: none;">Input can't be empty!</span>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled mb-0 todo-list">
+                                        <% todos.forEach(todoItem => { %>
+                                            <li class="<%= todoItem.done ? 'active' : '' %>"
+                                                data-id="<%= todoItem._id %>">
+                                                <span><%= todoItem.text %></span>
+                                                <div class="todo-action">
+                                                    <span class="btn done p-1 fa fa-check"></span>
+                                                    <span class="btn text-danger close p-1 fa fa-trash-o"></span>
+                                                </div>
+                                            </li>
+                                        <% }) %>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        $(document).ready(function () {
+                            // Attach event listeners to existing and dynamically added todo items
+                            $('.todo-list').on('click', '.close', function () {
+                                const listItem = $(this).closest('li');
+                                const itemId = listItem.attr('data-id');
+                                deleteTodoItem(itemId, listItem);
+                            });
+
+                            $('.todo-list').on('click', '.done', function () {
+                                const listItem = $(this).closest('li');
+                                const itemId = listItem.attr('data-id');
+                                markTodoItemAsDone(itemId, listItem);
+                            });
+
+                            $('.btn-todo-add').on('click', function () {
+                                let item = $('#TodoInput').val();
+                                if (item) {
+                                    fetch('/todos', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({text: item})
+                                    })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            const newTodo = $('<li>').addClass(data.done ? 'active' : '').attr('data-id', data._id);
+                                            newTodo.append($('<span>').text(data.text));
+                                            newTodo.append($('<div>').addClass('todo-action')
+                                                .append($('<span>').addClass('btn done p-1 fa fa-check'))
+                                                .append($('<span>').addClass('btn text-danger close p-1 fa fa-trash-o')));
+
+                                            $('.todo-list').append(newTodo);
+                                            $('input[type="text"]').val('');
+                                            $('.todo-error').hide();
+                                        })
+                                        .catch(error => {
+                                            console.error('Error:', error);
+                                        });
+                                } else {
+                                    $('.todo-error').show();
+                                }
+                            });
+
+                            function deleteTodoItem(itemId, listItem) {
+                                fetch(`/todos/${itemId}`, {
+                                    method: 'DELETE'
+                                })
+                                    .then(() => {
+                                        listItem.remove();
+                                    })
+                                    .catch(error => {
+                                        console.error('Error:', error);
+                                    });
+                            }
+
+                            function markTodoItemAsDone(itemId, listItem) {
+                                fetch(`/todos/${itemId}`, {
+                                    method: 'PUT',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({done: true})
+                                })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        listItem.toggleClass('active');
+                                    })
+                                    .catch(error => {
+                                        console.error('Error:', error);
+                                    });
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<%- include("partials/footer"); -%>

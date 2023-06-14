@@ -1,0 +1,149 @@
+<%- include("partials/header"); -%>
+
+<!-- start: page toolbar -->
+<div class="page-toolbar px-xl-4 px-sm-2 px-0 py-3">
+    <div class="container-fluid">
+        <div class="row g-3 mb-3 align-items-center">
+            <div class="col">
+                <ol class="breadcrumb bg-transparent mb-0">
+                    <li class="breadcrumb-item"><a class="text-secondary" href="/"><%= translation.home %></a></li>
+                    <li class="breadcrumb-item"><%= translation.patient %></li>
+                    <li class="breadcrumb-item active" aria-current="page"><%= translation.list %></li>
+                </ol>
+            </div>
+        </div> <!-- .row end -->
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <h1 class="fs-5 color-900 mt-1 mb-0"><%= translation.welcome_back_dr %>  <%= locals.doctor ? locals.doctor.fName : '' %>
+                    !</h1>
+                <small class="text-muted"></small>
+            </div>
+
+        </div> <!-- .row end -->
+    </div>
+</div>
+
+<!-- start: page body -->
+<div class="page-body px-xl-4 px-sm-2 px-0 py-lg-2 py-1 mt-0 mt-lg-3">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="card-title m-0"><%= translation.patient_list %></h6>
+                        <div class="dropdown morphing scale-left">
+                            <a href="#" class="card-fullscreen" data-bs-toggle="tooltip" aria-label="Card Full-Screen"
+                               data-bs-original-title="Card Full-Screen"><i class="icon-size-fullscreen"></i></a>
+                            <a href="#" class="more-icon dropdown-toggle" data-bs-toggle="dropdown"
+                               aria-expanded="false"><i class="fa fa-ellipsis-h"></i></a>
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="myPatientAll_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                            <div class="row dt-row">
+                                <div class="col-sm-12">
+                                    <table id="myPatientAll"
+                                           class="myTable table card-table table-hover align-middle mb-0 nowrap dataTable no-footer dtr-inline"
+                                           aria-describedby="myPatientAll_info" style="width: 1132px;">
+                                        <thead>
+                                        <tr>
+                                            <th class="sorting" tabindex="0" aria-controls="myPatientAll" rowspan="1"
+                                                colspan="1" style="width: 62.2px; text-align: center"
+                                                aria-label="ID: activate to sort column ascending"><%= translation.patient_list %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myPatientAll" rowspan="1"
+                                                colspan="1" style="width: 63.2px; text-align: center"
+                                                aria-label="First Name: activate to sort column ascending"><%= translation.full_name %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myPatientAll" rowspan="1"
+                                                colspan="1" style="width: 33.2px; text-align: center"
+                                                aria-label="Age: activate to sort column ascending"><%= translation.age %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myPatientAll" rowspan="1"
+                                                colspan="1" style="width: 92.2px; text-align: center"
+                                                aria-label="Number: activate to sort column ascending"><%= translation.tel %>
+                                            </th>
+                                            <th class="dt-body-right sorting" tabindex="0" aria-controls="myPatientAll"
+                                                rowspan="1" colspan="1" style="width: 63.2px; text-align: center"
+                                                aria-label="Status: activate to sort column ascending"><%= translation.status %>
+                                            </th>
+                                            <th class="dt-body-right sorting" tabindex="0" aria-controls="myPatientAll"
+                                                rowspan="1" colspan="1" style="width: 63.2px; text-align: center"
+                                                aria-label="APPOINTMENT TIME: activate to sort column ascending">
+                                                <%= translation.appointment_hour %>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <% foundPatients.forEach(function (patient) { %>
+                                            <tr id="patient_<%= patient._id %>" class="table-row">
+                                                <form action="/patient-profile" method="GET" class="form">
+                                                    <td style="text-align: center"><%= patient.idNumber %><input
+                                                                type="hidden" name="idNumber"
+                                                                value='<%= patient.idNumber %>'></td>
+                                                    <td style="text-align: center">
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="/assets/img/<%= patient.gender %>.png"
+                                                                 class="rounded-circle sm avatar"
+                                                                 alt="">
+                                                            <div class="ms-2 mb-0"><%= patient.fName %> <%= patient.lName %></div>
+                                                        </div>
+                                                    </td>
+                                                    <td style="text-align: center"><%= patient.age %><input
+                                                                type="hidden"
+                                                                name="age"
+                                                                value='<%= patient.age %>'>
+                                                    </td>
+                                                    <td style="text-align: center"><%= patient.tel %><input
+                                                                type="hidden"
+                                                                name="tel"
+                                                                value='<%= patient.tel %>'>
+                                                    </td>
+
+                                                    <td style="text-align: center"><span
+                                                                class="badge <%= patient.status === 'Under treatment' ? 'bg-danger' : 'bg-success' %>">
+  <%= patient.status %>
+</span>
+                                                        <input
+                                                                type='hidden' name='status'
+                                                                value='<%= patient.status %>'>
+                                                    </td>
+                                                    <td style="text-align: center"><%= patient.time %><input
+                                                                type='hidden'
+                                                                name='time'
+                                                                value='<%= patient.time %>'>
+                                                    </td>
+                                                    <input type="hidden" name="patientID" value="<%= patient._id %>">
+                                                </form>
+                                            </tr>
+                                        <% }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- .row end -->
+    </div>
+</div>
+
+
+<!--Opening patient profile-->
+<script>
+
+    const tableRows1 = document.querySelectorAll('table#myPatientAll tr[id^="patient_"]');
+    tableRows1.forEach((row) => {
+        row.style.cursor = "pointer";
+        const patientID = row.id.split("_")[1];
+        row.addEventListener('click', () => {
+            window.location.href = "/patient-profile?id=" + patientID;
+        });
+    });
+
+</script>
+
+
+<%- include("partials/footer"); -%>

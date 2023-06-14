@@ -1,0 +1,91 @@
+<%- include("partials/header"); -%>
+
+
+<!-- Main Content -->
+<div class="page-body px-xl-4 px-sm-2 px-0 py-lg-2 py-1 mt-0 mt-lg-3">
+    <div class="container-fluid">
+        <div class="row g-2 row-deck">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="card-title m-0"><%= translation.canceled_appointments %></h6>
+                        <div class="dropdown morphing scale-left">
+                            <a href="#" class="card-fullscreen" data-bs-toggle="tooltip" aria-label="Card Full-Screen"
+                               data-bs-original-title="Card Full-Screen"><i class="icon-size-fullscreen"></i></a>
+                            <a href="#" class="more-icon dropdown-toggle" data-bs-toggle="dropdown"
+                               aria-expanded="false"><i class="fa fa-ellipsis-h"></i></a>
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="myAllDoctor_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                            <div class="row dt-row">
+                                <div class="col-sm-12">
+                                    <table id=""
+                                           class="myTable display table card-table table-hover align-middle mb-0 nowrap dataTable no-footer dtr-inline"
+                                           aria-describedby="myAllDoctor_info" style="width: 1133px;">
+                                        <thead>
+                                        <tr>
+                                            <th class="sorting sorting_asc" tabindex="0" aria-controls="myAllDoctor"
+                                                rowspan="1" colspan="1" style="width: 60px; text-align: center;"
+                                                aria-sort="ascending"
+                                                aria-label="#: activate to sort column descending"><%= translation.id_number %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 196.2px; text-align: center;"
+                                                aria-label="Doctor: activate to sort column ascending"><%= translation.first_name %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 139.2px; text-align: center"
+                                                aria-label="Specialist: activate to sort column ascending"><%= translation.last_name %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 123.2px; text-align: center"
+                                                aria-label="Schedule: activate to sort column ascending"><%= translation.tel %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 93.2px; text-align: center"
+                                                aria-label="Progress: activate to sort column ascending"><%= translation.disease %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 106.2px; text-align: center"
+                                                aria-label="Date Join: activate to sort column ascending"><%= translation.date %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 88.2px; text-align: center"
+                                                aria-label="Status: activate to sort column ascending"><%= translation.appointment_hour %>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <% foundCanceledAppointments.forEach(function (appointment) { %>
+                                            <form class="deleteAndUpdateForm"
+                                                  id="approvedAppointment_<%= appointment._id %>">
+                                                <tr id="appointment_<%= appointment._id %>" class="deleteRow">
+                                                    <td style="text-align: center"><%= appointment.idNumber %></td>
+                                                    <td style="text-align: center"><%= appointment.fName %></td>
+                                                    <td style="text-align: center"><%= appointment.lName %></td>
+                                                    <td style="text-align: center"><%= appointment.tel %></td>
+                                                    <td style="text-align: center"><%= appointment.service %></td>
+                                                    <td style="text-align: center"><%= appointment.date %></td>
+                                                    <td style="text-align: center"><%= appointment.time %></td>
+                                                </tr>
+                                                <input type="hidden" name="appointmentID"
+                                                       value="<%= appointment._id %>">
+                                                <input type="hidden" name="tableName" value="approved appointments">
+                                            </form>
+                                        <% }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<%- include("partials/footer"); -%>

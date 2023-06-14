@@ -1,0 +1,397 @@
+
+</div>
+
+<!--dark_mode-->
+<script>
+    $("#dark_mode").on("click", function () {
+        $(this).toggleClass("active");
+        var currentTheme = localStorage.getItem('theme');
+        if (currentTheme == 'light') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            settingData.layout_mode = "dark";
+            localStorage.setItem('theme', 'dark');
+            $('#theme-switch').prop('checked', true);
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            settingData.layout_mode = "light";
+            localStorage.setItem('theme', 'light');
+            $('#theme-switch').prop('checked', false);
+        }
+    });
+</script>
+
+<!--date range picker-->
+<script>
+    // date range picker
+    $(function () {
+        $('input[name="daterange"]').daterangepicker({
+            opens: 'left'
+        }, function (start, end, label) {
+            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+        });
+    })
+</script>
+
+<!--theme-->
+<script>
+    let root = document.documentElement;
+    let settingData = {
+        "_token": "l6qucGZa8yWBPXz3P9PzNMSHcIy4PPSGCfj0GoW7",
+        'layout': 'layout-1',
+        'theme': 'theme-indigo',
+        'primary_color': '#0D6EFD',
+        'secondary_color': '#FFD55C',
+        'site_background': '#837878',
+        'card_background': '#ffffff',
+        'card_border': '#ffffff',
+        'chart_color_1': '#191A1C',
+        'chart_color_2': '#837788',
+        'chart_color_3': '#374765',
+        'chart_color_4': '#484261',
+        'chart_color_5': '#717788',
+        'layout_mode': 'dark',
+        'rtl_mode': 'N',
+        'font': 'font-opensans',
+        'horizontal_menu': 'N',
+        'page_header_fix': 'Y',
+        'page_header_dark_mode': 'N',
+        'border_radius_none': 'N',
+        'sidebar_mode_dark': 'N',
+        'sidebar_bg_image': 'N',
+        'sidebar_bg_image_path': '/assets/img/sidebar-2.jpg',
+        'container_fluid': 'N',
+        'card_box_shadow': 'N',
+        'fullscreen_menu': 'N',
+        'sidebar_mini': 'N'
+    };
+
+    $(function () {
+        //Color Settings
+        $('.choose-skin li').on('click', function () {
+            var $body = $('body');
+            var $this = $(this);
+            var existTheme = $('.choose-skin li.active').data('theme');
+            $('.choose-skin li').removeClass('active');
+            $this.addClass('active');
+            var selectedTheme = $this.data('theme');
+            $body.attr('data-luno', 'theme-' + selectedTheme);
+            settingData.theme = 'theme-' + selectedTheme
+        });
+
+        // Dynamic theme color setting
+        $('#primaryColorPicker').colorpicker().on('changeColor', function () {
+            root.style.setProperty('--primary-color', $(this).colorpicker('getValue', '#ffffff'));
+            settingData.primary_color = $(this).colorpicker('getValue', '#ffffff');
+        });
+        $('#secondaryColorPicker').colorpicker().on('changeColor', function () {
+            root.style.setProperty('--secondary-color', $(this).colorpicker('getValue', '#ffffff'));
+            settingData.secondary_color = $(this).colorpicker('getValue', '#ffffff');
+        });
+        $('#BodyColorPicker').colorpicker().on('changeColor', function () {
+            root.style.setProperty('--body-color', $(this).colorpicker('getValue', '#ffffff'));
+            settingData.site_background = $(this).colorpicker('getValue', '#ffffff');
+        });
+        $('#CardColorPicker').colorpicker().on('changeColor', function () {
+            root.style.setProperty('--card-color', $(this).colorpicker('getValue', '#ffffff'));
+            settingData.card_background = $(this).colorpicker('getValue', '#ffffff');
+        });
+        $('#BorderColorPicker').colorpicker().on('changeColor', function () {
+            root.style.setProperty('--border-color', $(this).colorpicker('getValue', '#ffffff'));
+            settingData.card_border = $(this).colorpicker('getValue', '#ffffff');
+        });
+        $('#chartColorPicker1').colorpicker().on('changeColor', function () {
+            root.style.setProperty('--chart-color1', $(this).colorpicker('getValue', '#ffffff'));
+            settingData.chart_color_1 = $(this).colorpicker('getValue', '#ffffff');
+        });
+        $('#chartColorPicker2').colorpicker().on('changeColor', function () {
+            root.style.setProperty('--chart-color2', $(this).colorpicker('getValue', '#ffffff'));
+            settingData.chart_color_2 = $(this).colorpicker('getValue', '#ffffff');
+        });
+        $('#chartColorPicker3').colorpicker().on('changeColor', function () {
+            root.style.setProperty('--chart-color3', $(this).colorpicker('getValue', '#ffffff'));
+            settingData.chart_color_3 = $(this).colorpicker('getValue', '#ffffff');
+        });
+        $('#chartColorPicker4').colorpicker().on('changeColor', function () {
+            root.style.setProperty('--chart-color4', $(this).colorpicker('getValue', '#ffffff'));
+            settingData.chart_color_4 = $(this).colorpicker('getValue', '#ffffff');
+        });
+        $('#chartColorPicker5').colorpicker().on('changeColor', function () {
+            root.style.setProperty('--chart-color5', $(this).colorpicker('getValue', '#ffffff'));
+            settingData.chart_color_5 = $(this).colorpicker('getValue', '#ffffff');
+        });
+
+        // light and dark theme setting js
+        var toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+        var toggleHcSwitch = document.querySelector('.theme-high-contrast input[type="checkbox"]');
+        var toggleTDSwitch = document.querySelector('.theme-dark input[type="checkbox"]');
+
+        function switchTheme(e) {
+            if (e.target.checked) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                settingData.layout_mode = "dark";
+                toggleHcSwitch.checked = false;
+                toggleTDSwitch.checked = false;
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                settingData.layout_mode = "light";
+            }
+        }
+
+        function switchTD(e) {
+            if (e.target.checked) {
+                document.documentElement.setAttribute('data-theme', 'theme-dark');
+                settingData.layout_mode = "theme-dark";
+                toggleSwitch.checked = false;
+                toggleHcSwitch.checked = false;
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                settingData.layout_mode = "light";
+            }
+        }
+
+        function switchHc(e) {
+            if (e.target.checked) {
+                document.documentElement.setAttribute('data-theme', 'high-contrast');
+                settingData.layout_mode = "high-contrast";
+                toggleSwitch.checked = false;
+                toggleTDSwitch.checked = false;
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                settingData.layout_mode = "light";
+            }
+        }
+
+        toggleSwitch.addEventListener('change', switchTheme, false);
+        toggleHcSwitch.addEventListener('change', switchHc, false);
+        toggleTDSwitch.addEventListener('change', switchTD, false);
+
+        // quick action light/dark
+        $(".quick-light-dark").on("click", function () {
+            $(this).toggleClass("active");
+            var currentTheme = localStorage.getItem('theme');
+            if (currentTheme == 'light') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                settingData.layout_mode = "dark";
+                localStorage.setItem('theme', 'dark');
+                $('#theme-switch').prop('checked', true);
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                settingData.layout_mode = "light";
+                localStorage.setItem('theme', 'light');
+                $('#theme-switch').prop('checked', false);
+            }
+        });
+
+        // LTR/RTL active js
+        $('.theme-rtl input:checkbox').on('click', function () {
+            if ($(this).is(":checked")) {
+                $('body').addClass("rtl_mode");
+                settingData.rtl_mode = 'Y'
+            } else {
+                $('body').removeClass("rtl_mode");
+                settingData.rtl_mode = 'N'
+            }
+            var left = $('.scale-left');
+            var right = $('.scale-right');
+            left.addClass("scale-right");
+            left.removeClass("scale-left");
+            right.addClass("scale-left");
+            right.removeClass("scale-right");
+        });
+
+        // google font setting
+        $('.font_setting input:radio').on('click', function () {
+            var others = $("[name='" + this.name + "']").map(function () {
+                return this.value
+            }).get().join(" ")
+            $('body').removeClass(others).addClass(this.value)
+            settingData.font = this.value
+        });
+
+        // 0. horizontal menu
+        $('.h-menu-switch input:checkbox').on('click', function () {
+            if ($(this).is(":checked")) {
+                $('body').addClass("h-menu");
+                settingData.horizontal_menu = 'Y'
+            } else {
+                $('body').removeClass("h-menu");
+                settingData.horizontal_menu = 'N'
+            }
+        });
+
+        // 1. Page Header Fix
+        $('.pageheader-switch input:checkbox').on('click', function () {
+            if ($(this).is(":checked")) {
+                $('.page-header').addClass("sticky-top");
+                settingData.page_header_fix = 'Y'
+            } else {
+                $('.page-header').removeClass("sticky-top");
+                settingData.page_header_fix = 'N'
+            }
+        });
+
+        // 2. Page Header dark
+        $('.pageheader-dark-switch input:checkbox').on('click', function () {
+            if ($(this).is(":checked")) {
+                $('.page-header').addClass("dark");
+                settingData.page_header_dark_mode = 'Y'
+            } else {
+                $('.page-header').removeClass("dark");
+                settingData.page_header_dark_mode = 'N'
+            }
+        });
+
+        // 3. Border Radius none
+        $('.radius-switch input:checkbox').on('click', function () {
+            if ($(this).is(":checked")) {
+                $('body').addClass("radius-0");
+                settingData.border_radius_none = 'Y'
+            } else {
+                $('body').removeClass("radius-0");
+                settingData.border_radius_none = 'N'
+            }
+        });
+
+        // 4. Enable Dark! ( Sidebar )
+        $('.sidebardark-switch input:checkbox').on('click', function () {
+            if ($(this).is(":checked")) {
+                $('.sidebar').addClass("dark");
+                settingData.sidebar_mode_dark = 'Y'
+            } else {
+                $('.sidebar').removeClass("dark");
+                settingData.sidebar_mode_dark = 'N'
+            }
+        });
+
+        // 5. Background Image (Sidebar)
+        $('.imagebg-switch input:checkbox').on('click', function () {
+            if ($(this).is(":checked")) {
+                $('.bg-images').addClass("show");
+                $('.sidebar').addClass("sidebar-img-bg");
+                settingData.sidebar_bg_image = 'Y'
+            } else {
+                $('.bg-images').removeClass("show");
+                $('.sidebar').removeClass("sidebar-img-bg");
+                settingData.sidebar_bg_image = 'N'
+            }
+        });
+
+        $('.sidebar-img').on('click', function () {
+            var eleId = $(this).attr("id");
+            eleId = eleId.split("-");
+            root.style.setProperty('--sidebar-img', 'url(/assets/img/sidebar-' + eleId[1] + '.jpg)');
+            $('.sidebar-img-active').removeClass('sidebar-img-active');
+            $('.sidebar-img-' + eleId[1]).addClass('sidebar-img-active');
+            settingData.sidebar_bg_image_path = '/assets/img/sidebar-' + eleId[1] + '.jpg';
+        });
+
+        // 6. Container Fluid
+        $('.fluid-switch input:checkbox').on('click', function () {
+            if ($(this).is(":checked")) {
+                $('.container').addClass("container-fluid");
+                $('.container').removeClass("container");
+                settingData.container_fluid = 'Y'
+            } else {
+                $('.container-fluid').addClass("container");
+                $('.container-fluid').removeClass("container-fluid");
+                settingData.container_fluid = 'N'
+            }
+        });
+
+        // 7. Card box shadow
+        $('.shadow-switch input:checkbox').on('click', function () {
+            if ($(this).is(":checked")) {
+                $('.card').addClass("shadow-active");
+                settingData.card_box_shadow = 'Y'
+            } else {
+                $('.card').removeClass("shadow-active");
+                settingData.card_box_shadow = 'N'
+            }
+        });
+    });
+</script>
+
+<!--toggleFullScreen-->
+<script>
+    function toggleFullScreen(e) {
+        void 0 !== document.fullScreenElement && null === document.fullScreenElement || void 0 !== document.msFullscreenElement && null === document.msFullscreenElement || void 0 !== document.mozFullScreen && !document.mozFullScreen || void 0 !== document.webkitIsFullScreen && !document.webkitIsFullScreen ? e.requestFullScreen ? e.requestFullScreen() : e.mozRequestFullScreen ? e.mozRequestFullScreen() : e.webkitRequestFullScreen ? e.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT) : e.msRequestFullscreen && e.msRequestFullscreen() : document.cancelFullScreen ? document.cancelFullScreen() : document.mozCancelFullScreen ? document.mozCancelFullScreen() : document.webkitCancelFullScreen ? document.webkitCancelFullScreen() : document.msExitFullscreen && document.msExitFullscreen()
+    }
+
+    $(function () {
+        "use strict";
+        var t = document.querySelector('.theme-switch input[type="checkbox"]'),
+            c = document.querySelector('.theme-high-contrast input[type="checkbox"]'),
+            o = document.querySelector('.theme-dark input[type="checkbox"]'),
+            e = localStorage.getItem("theme");
+        e && (document.documentElement.setAttribute("data-theme", e), "dark" === e && (t.checked = !0, o.checked = !1, c.checked = !1), "theme-dark" === e && (o.checked = !0, c.checked = !1, t.checked = !1), "high-contrast" === e) && (c.checked = !0, t.checked = !1, o.checked = !1), t.addEventListener("change", function (e) {
+            e.target.checked ? (document.documentElement.setAttribute("data-theme", "dark"), localStorage.setItem("theme", "dark"), c.checked = !1, o.checked = !1) : (document.documentElement.setAttribute("data-theme", "light"), localStorage.setItem("theme", "light"))
+        }, !1), c.addEventListener("change", function (e) {
+            e.target.checked ? (document.documentElement.setAttribute("data-theme", "high-contrast"), localStorage.setItem("theme", "high-contrast"), t.checked = !1, o.checked = !1) : (document.documentElement.setAttribute("data-theme", "light"), localStorage.setItem("theme", "light"))
+        }, !1), o.addEventListener("change", function (e) {
+            e.target.checked ? (document.documentElement.setAttribute("data-theme", "theme-dark"), localStorage.setItem("theme", "theme-dark"), t.checked = !1, c.checked = !1) : (document.documentElement.setAttribute("data-theme", "light"), localStorage.setItem("theme", "light"))
+        }, !1), $(".quick-light-dark").on("click", function () {
+            $(this).toggleClass("active"), "light" == localStorage.getItem("theme") ? (document.documentElement.setAttribute("data-theme", "dark"), localStorage.setItem("theme", "dark"), $("#theme-switch").prop("checked", !0)) : (document.documentElement.setAttribute("data-theme", "light"), localStorage.setItem("theme", "light"), $("#theme-switch").prop("checked", !1))
+        })
+    })
+
+</script>
+
+<!--dynamic color set-->
+<script>
+    //dynamic color set
+    window.onload = function () {
+        let root = document.documentElement;
+        root.setAttribute('data-theme', 'dark')
+        if ("theme-indigo" == "theme-dynamic") {
+            root.style.setProperty('--primary-color', "#0D6EFD");
+            root.style.setProperty('--secondary-color', "#FFD55C");
+            root.style.setProperty('--body-color', "#837878");
+            root.style.setProperty('--card-color', "#ffffff");
+            root.style.setProperty('--border-color', "#ffffff");
+            root.style.setProperty('--chart-color1', "#191A1C");
+            root.style.setProperty('--chart-color2', "#837788");
+            root.style.setProperty('--chart-color3', "#374765");
+            root.style.setProperty('--chart-color4', "#484261");
+            root.style.setProperty('--chart-color5', "#717788");
+        }
+        if ("N" == "Y") {
+            root.style.setProperty('--sidebar-img', 'url(/assets/img/sidebar-2.jpg)');
+        }
+    };
+</script>
+
+<!--jQuery search feature for tables-->
+<script>
+    $(document).ready(function() {
+        $('.myTable').addClass('nowrap').dataTable({
+            responsive: true,
+        });
+    });
+</script>
+
+<!--bootstrap search feature for tables-->
+<script>
+    $(document).ready(function(){
+        $("#myInput").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#example3 tbody tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
+
+
+
+<!-- Plugin Js -->
+<!--daterangepicker-->
+<script src="/bundles/daterangepicker.bundle.js"></script>
+<!-- Plugin Js -->
+<script src="/bundles/prism.js"></script>
+<script src="/bundles/SweetAlert.js"></script>
+<!--Custom-->
+<script src="/bundles/custom.js"></script>
+
+</body>
+</html>
+

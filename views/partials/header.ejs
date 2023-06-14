@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html class="no-js " lang="en" data-theme="">
+
+<script src="/bundles/libscripts.bundle.js"></script>
+<script src="/bundles/theme.js"></script>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>LUNO Dashboard</title>
+    <!-- plugin css file  -->
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/daterangepicker.min.css">
+    <link rel="stylesheet" href="/css/luno.style.min.css">
+    <link rel="stylesheet" href="/css/prism.css">
+    <link rel="stylesheet" href="/css/dataTables.min.css">
+    <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/css/print.css" media="print">
+    <script type="text/javascript" src="/bundles/popper.min.js"></script>
+    <script src="/bundles/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@latest"></script>
+    <link rel="stylesheet" type="text/css" href="/css/datatables.min.css"/>
+    <script type="text/javascript" src="/bundles/datatables.min.js"></script>
+</head>
+
+<body class="layout-1 <%= userPrefrences ? userPrefrences.font : '' %> <%= userPrefrences ? userPrefrences.h_menu : '' %>"
+      data-luno="theme-<%= userPrefrences ? userPrefrences.theme : '' %>" style="">
+<script>
+    // Access the translation variable
+    var translation = <%- JSON.stringify(translation) %>;
+    // Now you can use the translation object in your client-side code
+    console.log(translation.dashboard);
+</script>
+
+<!-- page sidebar -->
+<div id="sidebarDiv" class="sidebar p-2 py-md-3 @@cardClass sidebar-mini">
+    <div class="container-fluid">
+        <!-- sidebar: menu list -->
+        <div class="main-menu flex-grow-1">
+            <ul class="menu-list">
+
+                <li>
+                    <a class="m-link" href="/dashboard">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                  d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6zm5-.793V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"></path>
+                            <path class="fill-secondary" fill-rule="evenodd"
+                                  d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z"></path>
+                        </svg>
+                        <span class="ms-2"><%= translation.dashboard %></span>
+                    </a>
+                </li>
+                <li>
+                    <a style="position: relative" class="m-link" href="/reviews">
+                        <svg class="avatar xs" viewBox="0 0 16 16" fill="fill-primary"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path class="fill-secondary"
+                                  d="M5.25665 12.3397C5.0154 12.4634 4.74165 12.2465 4.7904 11.9697L5.30915 9.01342L3.10728 6.91593C2.90166 6.71968 3.00853 6.36093 3.28416 6.32218L6.3454 5.88718L7.7104 3.18281C7.83352 2.93906 8.16664 2.93906 8.28977 3.18281L9.65477 5.88718L12.716 6.32218C12.9916 6.36093 13.0985 6.71968 12.8923 6.91593L10.691 9.01342L11.2098 11.9697C11.2585 12.2465 10.9848 12.4634 10.7435 12.3397L7.99914 10.9297L5.25603 12.3397H5.25665Z"
+                                  fill="black"></path>
+                            <path class="fill-secondary" fill-rule="evenodd" clip-rule="evenodd"
+                                  d="M15 2C15 1.73478 14.8946 1.48043 14.7071 1.29289C14.5196 1.10536 14.2652 1 14 1H2C1.73478 1 1.48043 1.10536 1.29289 1.29289C1.10536 1.48043 1 1.73478 1 2V14C1 14.2652 1.10536 14.5196 1.29289 14.7071C1.48043 14.8946 1.73478 15 2 15H14C14.2652 15 14.5196 14.8946 14.7071 14.7071C14.8946 14.5196 15 14.2652 15 14V2ZM0 2C0 1.46957 0.210714 0.960859 0.585786 0.585786C0.960859 0.210714 1.46957 0 2 0L14 0C14.5304 0 15.0391 0.210714 15.4142 0.585786C15.7893 0.960859 16 1.46957 16 2V14C16 14.5304 15.7893 15.0391 15.4142 15.4142C15.0391 15.7893 14.5304 16 14 16H2C1.46957 16 0.960859 15.7893 0.585786 15.4142C0.210714 15.0391 0 14.5304 0 14V2Z"
+                                  fill="black"></path>
+                        </svg>
+                        <span class="ms-2"><%= translation.client_reviews %></span>
+                        <% let new_reviews = 0; %>
+                        <% reviews.forEach(function(review) { %>
+                            <% if (review.viewed === "false") { %>
+                                <% new_reviews += 1; %>
+                            <% } %>
+                        <% }); %>
+                        <div id="new-reviews-count"
+                             style="position: absolute; top: 5px; left: 3px; transform: translate(-50%, -50%); background-color: red; width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 12px; font-weight: bold;"><%= new_reviews %></div>
+                    </a>
+                </li>
+
+                <li>
+                    <a style="position: relative" class="m-link" href="/contact-requests">
+                        <svg class="avatar sm" viewBox="0 0 16 16" fill="fill-primary"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path class="fill-secondary"
+                                  d="M7.99997 1C5.785 1 4.51323 1.52678 3.57555 2.46447C2.63787 3.40215 2.11108 4.67392 2.11108 6V7H3.11108C3.3763 7 3.63065 7.10536 3.81819 7.29289C4.00573 7.48043 4.11108 7.73478 4.11108 8V11C4.11108 11.2652 4.00573 11.5196 3.81819 11.7071C3.63065 11.8946 3.3763 12 3.11108 12H2.11108C1.84587 12 1.59151 11.8946 1.40398 11.7071C1.21644 11.5196 1.11108 11.2652 1.11108 11V6C1.11108 5.21207 1.26628 4.43185 1.56781 3.7039C1.86933 2.97595 2.31129 2.31451 2.86844 1.75736C3.4256 1.20021 4.08703 0.758251 4.81498 0.456723C5.54294 0.155195 6.32315 0 7.99997 0C9.67679 0 10.457 0.155195 11.185 0.456723C11.9129 0.758251 12.5744 1.20021 13.1315 1.75736C13.6887 2.31451 14.1306 2.97595 14.4321 3.7039C14.7337 4.43185 14.8889 5.21207 14.8889 6V12C14.8889 12.663 14.6255 13.2989 14.1566 13.7678C13.6878 14.2366 13.0519 14.5 12.3889 14.5H10.2549C10.1671 14.652 10.0409 14.7783 9.88885 14.866C9.73683 14.9538 9.56439 15 9.38886 15H8.38886C8.12365 15 7.86929 14.8946 7.68176 14.7071C7.49422 14.5196 7.38886 14.2652 7.38886 14C7.38886 13.7348 7.49422 13.4804 7.68176 13.2929C7.86929 13.1054 8.12365 13 8.38886 13H9.38886C9.56439 13 9.73683 13.0462 9.88885 13.134C10.0409 13.2217 10.1671 13.348 10.2549 13.5H12.3889C12.7867 13.5 13.1682 13.342 13.4495 13.0607C13.7308 12.7794 13.8889 12.3978 13.8889 12H12.8889C12.6236 12 12.3693 11.8946 12.1818 11.7071C11.9942 11.5196 11.8889 11.2652 11.8889 11V8C11.8889 7.73478 11.9942 7.48043 12.1818 7.29289C12.3693 7.10536 12.6236 7 12.8889 7H13.8889V6C13.8889 5.34339 13.7595 4.69321 13.5083 4.08658C13.257 3.47995 12.8887 2.92876 12.4244 2.46447C11.9601 2.00017 11.4089 1.63188 10.8023 1.3806C10.1957 1.12933 8.65658 1 7.99997 1Z"></path>
+                            <path class="fill-secondary"
+                                  d="M5.7777 11.5555C5.7777 11.5555 5.33325 11.5555 5.33325 11.1407C5.33325 10.7259 5.7777 9.48146 7.99992 9.48146C10.2221 9.48146 10.6666 10.7259 10.6666 11.1407C10.6666 11.5555 10.2221 11.5555 10.2221 11.5555H5.7777ZM7.99992 9.06665C8.35354 9.06665 8.69268 8.93554 8.94273 8.70216C9.19278 8.46878 9.33325 8.15225 9.33325 7.8222C9.33325 7.49215 9.19278 7.17563 8.94273 6.94225C8.69268 6.70887 8.35354 6.57776 7.99992 6.57776C7.6463 6.57776 7.30716 6.70887 7.05711 6.94225C6.80706 7.17563 6.66659 7.49215 6.66659 7.8222C6.66659 8.15225 6.80706 8.46878 7.05711 8.70216C7.30716 8.93554 7.6463 9.06665 7.99992 9.06665Z"></path>
+                            <path class="fill-secondary"
+                                  d="M6.28723 5.68738C6.24555 5.64848 6.22214 5.59573 6.22214 5.54072C6.22214 5.48571 6.24555 5.43296 6.28723 5.39406C6.3289 5.35516 6.38543 5.33331 6.44436 5.33331H9.55547C9.61441 5.33331 9.67093 5.35516 9.71261 5.39406C9.75428 5.43296 9.7777 5.48571 9.7777 5.54072C9.7777 5.59573 9.75428 5.64848 9.71261 5.68738C9.67093 5.72628 9.61441 5.74813 9.55547 5.74813H6.44436C6.38543 5.74813 6.3289 5.72628 6.28723 5.68738Z"></path>
+                        </svg>
+                        <span class="ms-2"><%= translation.contact_requests %></span>
+                        <% let new_contacts = 0; %>
+                        <% contacts.forEach(function(contact) { %>
+                            <% if (contact.viewed === "false") { %>
+                                <% new_contacts += 1; %>
+                            <% } %>
+                        <% }); %>
+                        <div id="new-contacts-count"
+                             style="position: absolute; top: 5px; left: 3px; transform: translate(-50%, -50%); background-color: red; width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 12px; font-weight: bold;"><%= new_contacts %></div>
+
+                    </a>
+                </li>
+                <li class="collapsed">
+                    <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu-Account" href="#"
+                       aria-expanded="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                  d="M2 1C1.46957 1 0.960859 1.21071 0.585786 1.58579C0.210714 1.96086 0 2.46957 0 3L0 13C0 13.5304 0.210714 14.0391 0.585786 14.4142C0.960859 14.7893 1.46957 15 2 15H14C14.5304 15 15.0391 14.7893 15.4142 14.4142C15.7893 14.0391 16 13.5304 16 13V3C16 2.46957 15.7893 1.96086 15.4142 1.58579C15.0391 1.21071 14.5304 1 14 1H2ZM1 3C1 2.73478 1.10536 2.48043 1.29289 2.29289C1.48043 2.10536 1.73478 2 2 2H14C14.2652 2 14.5196 2.10536 14.7071 2.29289C14.8946 2.48043 15 2.73478 15 3V13C15 13.2652 14.8946 13.5196 14.7071 13.7071C14.5196 13.8946 14.2652 14 14 14H2C1.73478 14 1.48043 13.8946 1.29289 13.7071C1.10536 13.5196 1 13.2652 1 13V3ZM2 5.5C2 5.36739 2.05268 5.24021 2.14645 5.14645C2.24021 5.05268 2.36739 5 2.5 5H6C6.13261 5 6.25979 5.05268 6.35355 5.14645C6.44732 5.24021 6.5 5.36739 6.5 5.5C6.5 5.63261 6.44732 5.75979 6.35355 5.85355C6.25979 5.94732 6.13261 6 6 6H2.5C2.36739 6 2.24021 5.94732 2.14645 5.85355C2.05268 5.75979 2 5.63261 2 5.5ZM2 8.5C2 8.36739 2.05268 8.24021 2.14645 8.14645C2.24021 8.05268 2.36739 8 2.5 8H6C6.13261 8 6.25979 8.05268 6.35355 8.14645C6.44732 8.24021 6.5 8.36739 6.5 8.5C6.5 8.63261 6.44732 8.75979 6.35355 8.85355C6.25979 8.94732 6.13261 9 6 9H2.5C2.36739 9 2.24021 8.94732 2.14645 8.85355C2.05268 8.75979 2 8.63261 2 8.5ZM2 10.5C2 10.3674 2.05268 10.2402 2.14645 10.1464C2.24021 10.0527 2.36739 10 2.5 10H6C6.13261 10 6.25979 10.0527 6.35355 10.1464C6.44732 10.2402 6.5 10.3674 6.5 10.5C6.5 10.6326 6.44732 10.7598 6.35355 10.8536C6.25979 10.9473 6.13261 11 6 11H2.5C2.36739 11 2.24021 10.9473 2.14645 10.8536C2.05268 10.7598 2 10.6326 2 10.5Z"></path>
+                            <path class="fill-secondary"
+                                  d="M8.5 11C8.5 11 8 11 8 10.5C8 10 8.5 8.5 11 8.5C13.5 8.5 14 10 14 10.5C14 11 13.5 11 13.5 11H8.5ZM11 8C11.3978 8 11.7794 7.84196 12.0607 7.56066C12.342 7.27936 12.5 6.89782 12.5 6.5C12.5 6.10218 12.342 5.72064 12.0607 5.43934C11.7794 5.15804 11.3978 5 11 5C10.6022 5 10.2206 5.15804 9.93934 5.43934C9.65804 5.72064 9.5 6.10218 9.5 6.5C9.5 6.89782 9.65804 7.27936 9.93934 7.56066C10.2206 7.84196 10.6022 8 11 8V8Z"></path>
+                        </svg>
+                        <span class="ms-2"><%= translation.account %></span>
+                        <span class="arrow fa fa-angle-right ms-auto text-end"></span>
+                    </a>
+                    <!-- Menu: Sub menu ul -->
+                    <ul class="sub-menu collapse show" id="menu-Account" style="">
+                        <li><a class="ms-link" href="/doctor-profile"><%= translation.doctor_profile %></a></li>
+                        <li><a class="ms-link" href="/account-settings"><%= translation.settings %></a></li>
+                    </ul>
+                </li>
+                <li class="collapsed">
+                    <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu_doctor" href="#"
+                       aria-expanded="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" fill="currentColor" viewBox="0 0 18 18">
+                            <path d="M13.5 4.5C14.5 5.5 14.8958 4.16351 14.8958 5.81323C14.8958 7.17269 16 7 14.8958 7.86936C14.9492 9.24213 14.9661 10.5596 14.7708 11.8964C14.5612 13.3424 14.125 14.5873 13.345 15.4954C12.5299 16.4448 11.3802 17 9.78511 17C7.50775 17 6.21998 15.9854 5.49732 14.5487C4.90356 13.369 4.73169 11.9323 4.69913 10.5782C4.37361 10.3439 4.04678 10.0243 3.72647 9.64484C3.26162 9.09227 2.79938 8.40389 2.38531 7.67423C2.26813 7.46652 2.26162 7.22419 2.34755 7.02047C2.32542 6.97653 2.30328 6.93393 2.28115 6.88999C1.3788 5.08315 0.790252 3.11388 1.0702 2.25373C1.20171 1.84896 1.51682 1.58266 1.98036 1.43487C2.35537 1.31636 2.84105 1.27642 3.41527 1.30571C3.46605 1.25911 3.52465 1.21384 3.59235 1.17123C3.66657 1.1233 3.7421 1.08602 3.81631 1.05805C4.52856 0.787762 5.25773 1.5081 4.9296 2.25107C4.78117 2.58794 4.45304 2.83293 4.10017 2.82361C3.76944 2.81429 3.51032 2.59326 3.32152 2.33362L3.3098 2.30966C2.8736 2.29235 2.52073 2.31898 2.26943 2.39887C2.11839 2.4468 2.02594 2.50405 2.0038 2.5693C1.80719 3.17246 2.35797 4.83017 3.15746 6.42929C3.19001 6.49453 3.22256 6.55978 3.25641 6.62369C3.40485 6.68094 3.53506 6.78879 3.621 6.94058C3.9934 7.59834 4.40226 8.20949 4.8046 8.6875C5.01684 8.93915 5.22127 9.1482 5.41008 9.30265C5.43482 9.30265 5.45956 9.30398 5.48299 9.30664C5.66268 9.17483 5.8619 8.98309 6.07024 8.74875C6.49602 8.27207 6.92832 7.64095 7.32155 6.96189C7.40749 6.81409 7.53509 6.7089 7.68092 6.65165C8.51687 5.07117 9.11974 3.38151 8.99604 2.71576C8.96739 2.56397 8.83588 2.46544 8.64447 2.4002C8.39968 2.31631 8.08067 2.28303 7.73431 2.27371C7.7252 2.29368 7.71478 2.31365 7.70436 2.33495C7.51556 2.5946 7.25644 2.81562 6.92571 2.82494C6.57284 2.83426 6.24602 2.58927 6.09628 2.2524C5.76815 1.50943 6.49732 0.789093 7.20957 1.05805C7.28509 1.08602 7.35931 1.12463 7.43353 1.17123C7.4804 1.20052 7.52207 1.23248 7.56113 1.2631C8.06634 1.26444 8.55593 1.30438 8.95567 1.44286C9.48042 1.62394 9.85672 1.95415 9.96349 2.52935C10.1236 3.39615 9.49344 5.31217 8.59109 7.0471C8.67703 7.25348 8.66921 7.49715 8.54942 7.70619C8.10931 8.46647 7.61582 9.18148 7.12363 9.73272C6.7968 10.0989 6.46086 10.4025 6.12623 10.6142C6.15748 11.7699 6.30071 12.9629 6.76165 13.879C7.24993 14.8496 8.15098 15.5367 9.7799 15.5367C10.9244 15.5367 11.7239 15.1679 12.2669 14.5354C12.8463 13.8617 13.1784 12.8697 13.3515 11.686C13.5299 10.4597 13.5143 9.22748 13.4648 7.92395C12.1471 7.63635 13 6.93668 13 5.5C14 5 13.5 6 13.5 4.5Z"></path>
+                            <path class="fill-secondary"
+                                  d="M16.1213 7.12132C15.5587 7.68393 14.7956 8 14 8C13.2044 8 12.4413 7.68393 11.8787 7.12132C11.3161 6.55871 11 5.79565 11 5C11 4.20435 11.3161 3.44129 11.8787 2.87868C12.4413 2.31607 13.2044 2 14 2C14.7956 2 15.5587 2.31607 16.1213 2.87868C16.6839 3.44129 17 4.20435 17 5C17 5.79565 16.6839 6.55871 16.1213 7.12132Z"></path>
+                        </svg>
+                        <span class="ms-2"><%= translation.doctor %></span>
+                        <span class="arrow fa fa-angle-right ms-auto text-end"></span>
+                    </a>
+                    <!-- Menu: Sub menu ul -->
+                    <ul class="sub-menu collapse show" id="menu_doctor" style="">
+
+
+                        <li><a class="ms-link" href="/book-appointment"><%= translation.book_appointment %></a></li>
+                        <li><a class="ms-link"
+                               href="/approved-appointments"><%= translation.approved_appointments %></a></li>
+                        <li><a class="ms-link"
+                               href="/canceled-appointments"><%= translation.canceled_appointments %></a></li>
+                    </ul>
+                </li>
+                <li class="collapsed">
+                    <a class="m-link active collapsed" data-bs-toggle="collapse" data-bs-target="#menu_patient" href="#"
+                       aria-expanded="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" fill="currentColor" viewBox="0 0 18 18">
+                            <path d="M13.5 17L14.625 17C15.2217 17 15.794 16.7629 16.216 16.341C16.6379 15.919 16.875 15.3467 16.875 14.75L16.875 2.9375C16.875 2.34076 16.6379 1.76847 16.216 1.34651C15.794 0.924553 15.2217 0.6875 14.625 0.6875L3.375 0.687501C2.77826 0.687501 2.20597 0.924555 1.78401 1.34651C1.36205 1.76847 1.125 2.34076 1.125 2.9375L1.125 14.75C1.125 15.3467 1.36205 15.919 1.78401 16.341C2.20597 16.7629 2.77826 17 3.375 17L4.5 17L4.5 15.875L3.375 15.875C3.07663 15.875 2.79048 15.7565 2.5795 15.5455C2.36853 15.3345 2.25 15.0484 2.25 14.75L2.25 2.9375C2.25 2.63913 2.36853 2.35298 2.5795 2.14201C2.79048 1.93103 3.07663 1.8125 3.375 1.8125L14.625 1.8125C14.9234 1.8125 15.2095 1.93103 15.4205 2.14201C15.6315 2.35298 15.75 2.63913 15.75 2.9375L15.75 14.75C15.75 15.0484 15.6315 15.3345 15.4205 15.5455C15.2095 15.7565 14.9234 15.875 14.625 15.875L13.5 15.875L13.5 17Z"></path>
+                            <path class="fill-secondary"
+                                  d="M4 18C4 18 3 18 3 17C3 16 4 13 9 13C14 13 15 16 15 17C15 18 14 18 14 18H4ZM9 12C9.79565 12 10.5587 11.6839 11.1213 11.1213C11.6839 10.5587 12 9.79565 12 9C12 8.20435 11.6839 7.44129 11.1213 6.87868C10.5587 6.31607 9.79565 6 9 6C8.20435 6 7.44129 6.31607 6.87868 6.87868C6.31607 7.44129 6 8.20435 6 9C6 9.79565 6.31607 10.5587 6.87868 11.1213C7.44129 11.6839 8.20435 12 9 12Z"></path>
+                            <path class="fill-secondary"
+                                  d="M5.14645 3.85355C5.05268 3.75979 5 3.63261 5 3.5C5 3.36739 5.05268 3.24021 5.14645 3.14645C5.24021 3.05268 5.36739 3 5.5 3H12.5C12.6326 3 12.7598 3.05268 12.8536 3.14645C12.9473 3.24021 13 3.36739 13 3.5C13 3.63261 12.9473 3.75979 12.8536 3.85355C12.7598 3.94732 12.6326 4 12.5 4H5.5C5.36739 4 5.24021 3.94732 5.14645 3.85355Z"></path>
+                        </svg>
+                        <span class="ms-2"><%= translation.patient %></span>
+                        <span class="arrow fa fa-angle-right ms-auto text-end"></span>
+                    </a>
+                    <!-- Menu: Sub menu ul -->
+                    <ul class="sub-menu collapse show" id="menu_patient" style="">
+                        <li><a class="ms-link" href="/patients"><%= translation.patients %></a></li>
+                        <li><a class="ms-link" href="/add-patient"><%= translation.add_new_patient %></a></li>
+                        <!--                        <li><a class="ms-link active" href="/patient-profile">Patient Profile</a></li>-->
+                        <li><a class="ms-link" href="/invoices"><%= translation.patient_invoices %></a></li>
+                    </ul>
+                </li>
+                <li class="collapsed">
+                    <a class="m-link" data-bs-toggle="collapse" data-bs-target="#menu_Pharmacy" href="#"
+                       aria-expanded="true">
+                        <svg class="avatar sm" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path class="fill-secondary"
+                                  d="M15.7861 6.44653C14.9806 6.45001 12.0361 6.61664 9.84444 8.72709C8.92222 9.57709 8.36111 10.5104 8 11.3882C7.63889 10.5096 7.07639 9.5757 6.15611 8.75292C3.96667 6.61876 1.02083 6.45209 0.215278 6.44653C0.09375 6.44653 0 6.54098 0 6.66598C0.00694444 7.44042 0.197917 10.1715 2.46528 12.2021C4.8 14.4743 7.11111 14.4215 8 14.4215C8.88889 14.4215 11.2 14.45 13.5361 12.1757C15.8028 10.1688 15.9944 7.4382 16 6.66598C16 6.54098 15.9056 6.44653 15.7861 6.44653Z"
+                                  fill="black"></path>
+                            <path class="fill-secondary"
+                                  d="M9.22588 8.11598C8.76727 8.5257 8.35421 8.99459 8.00005 9.51876C7.64171 8.99376 7.22227 8.5132 6.75033 8.08598C6.22949 7.57903 5.67033 7.17987 5.10449 6.85348C5.56283 4.89514 6.54199 3.1632 7.79199 2.07292C7.90644 1.97569 8.09741 1.97569 8.21199 2.07292C9.46199 3.16458 10.4412 4.9007 10.8995 6.85903C10.3231 7.18903 9.75366 7.59876 9.22588 8.11598Z"
+                                  fill="black"></path>
+                        </svg>
+                        <span class="ms-2"><%= translation.pharmacy %></span>
+                        <span class="arrow fa fa-angle-right ms-auto text-end"></span>
+                    </a>
+                    <!-- Menu: Sub menu ul -->
+                    <ul class="sub-menu collapse show" id="menu_Pharmacy" style="">
+                        <li><a class="ms-link" href="/add-drug"><%= translation.add_medicine %></a></li>
+                        <li><a class="ms-link" href="/drugs"><%= translation.medicine_list %></a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <!-- sidebar: footer link -->
+        <ul class="menu-list nav navbar-nav flex-row text-center menu-footer-link">
+            <li class="nav-item flex-fill p-2">
+                <a class="d-inline-block w-100 color-400"
+                   href="/logout" title="sign-out">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M7.5 1v7h1V1h-1z"></path>
+                        <path class="fill-secondary"
+                              d="M3 8.812a4.999 4.999 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812z"></path>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- Modal: Setting -->
+<div class="modal fade" id="SettingsModal" tabindex="-1" style="display: none;" aria-hidden="true">
+    <form id="prefrencesForm" action="/user-prefrences" method="post">
+        <div class="modal-dialog modal-dialog-vertical right-side modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="px-xl-4 modal-header">
+                    <h5 class="modal-title"><%= translation.theme_setting %>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="px-xl-4 modal-body custom_scroll">
+                    <!-- start: color setting -->
+                    <div class="card fieldset border border-primary p-3 setting-theme mb-4">
+                        <span class="fieldset-tile text-primary bg-card"><%= translation.color_settings %></span>
+                        <ul class="list-unstyled d-flex choose-skin mb-0">
+                            <li data-theme="black"
+                                class="<% if (userPrefrences && userPrefrences.theme === 'black') { %>
+
+                                   active
+                                    <% } %>">
+                                <div class="black"></div>
+                                <input type="radio" name="theme" value="black" id="theme-black" style="display: none;"
+                                <% if (userPrefrences && userPrefrences.theme === 'black') { %>
+                                       checked
+                                        <% } %>
+                                >
+                            </li>
+                            <li data-theme="indigo"
+                                class="<% if (userPrefrences && userPrefrences.theme === 'indigo') { %>
+                                   active
+                                    <% } %>">
+                                <div class="indigo"></div>
+                                <input type="radio" name="theme" value="indigo" id="theme-indigo" style="display: none;"
+                                <% if (userPrefrences && userPrefrences.theme === 'indigo') { %>
+                                       checked
+                                        <% } %>
+                                >
+                            </li>
+                            <li data-theme="blue" class="<% if (userPrefrences && userPrefrences.theme === 'blue') { %>
+                                   active
+                                    <% } %>">
+                                <div class="blue"></div>
+                                <input type="radio" name="theme" value="blue" id="theme-blue" style="display: none;"
+                                <% if (userPrefrences && userPrefrences.theme === 'blue') { %>
+                                       checked
+                                        <% } %>
+                                >
+                            </li>
+                            <li data-theme="cyan" class="<% if (userPrefrences && userPrefrences.theme === 'cyan') { %>
+                                   active
+                                    <% } %>">
+                                <div class="cyan"></div>
+                                <input type="radio" name="theme" value="cyan" id="theme-cyan" style="display: none;"
+                                <% if (userPrefrences && userPrefrences.theme === 'cyan') { %>
+                                       checked
+                                        <% } %>
+                                >
+                            </li>
+                            <li data-theme="green"
+                                class="<% if (userPrefrences && userPrefrences.theme === 'green') { %>
+                                   active
+                                    <% } %>">
+                                <div class="green"></div>
+                                <input type="radio" name="theme" value="green" id="theme-green" style="display: none;"
+                                <% if (userPrefrences && userPrefrences.theme === 'green') { %>
+                                       checked
+                                        <% } %>
+                                >
+                            </li>
+                            <li data-theme="orange"
+                                class="<% if (userPrefrences && userPrefrences.theme === 'orange') { %>
+                                   active
+                                    <% } %>">
+                                <div class="orange"></div>
+                                <input type="radio" name="theme" value="orange" id="theme-orange" style="display: none;"
+                                <% if (userPrefrences && userPrefrences.theme === 'orange') { %>
+                                       checked
+                                        <% } %>
+                                >
+                            </li>
+                            <li data-theme="blush"
+                                class="<% if (userPrefrences && userPrefrences.theme === 'blush') { %>
+                                   active
+                                    <% } %>">
+                                <div class="blush"></div>
+                                <input type="radio" name="theme" value="blush" id="theme-blush" style="display: none;"
+                                <% if (userPrefrences && userPrefrences.theme === 'blush') { %>
+                                       checked
+                                        <% } %>
+                                >
+                            </li>
+                            <li data-theme="red" class="<% if (userPrefrences && userPrefrences.theme === 'red') { %>
+                                   active
+                                    <% } %>">
+                                <div class="red"></div>
+                                <input type="radio" name="theme" value="red" id="theme-red" style="display: none;"
+                                <% if (userPrefrences && userPrefrences.theme === 'red') { %>
+                                       checked
+                                        <% } %>
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- start: Light/dark -->
+                    <div class="card fieldset border setting-mode mb-4">
+                        <span class="fieldset-tile bg-card"><%= translation.light_dark_contrast_layout %></span>
+                        <div class="c_radio d-flex text-center">
+                            <label class="m-1 theme-switch" for="theme-switch">
+                                <input type="checkbox" id="theme-switch" name="darkMode" value="dark"
+                                       onchange="updateTheme(this, 'dark')">
+
+                                <span class="card p-2">
+                            <img class="img-fluid"
+                                 src="/assets/img/dark-version.svg"
+                                 alt="Dark Mode">
+                        </span>
+                            </label>
+                            <label class="m-1 theme-dark" for="theme-dark">
+                                <input type="checkbox" id="theme-dark" name="themeDarkMode" value="theme-dark"
+                                       onchange="updateTheme(this, 'theme-dark')">
+                                <span class="card p-2">
+                            <img class="img-fluid"
+                                 src="/assets/img/dark-theme.svg"
+                                 alt="Theme Dark Mode">
+                        </span>
+                            </label>
+                            <label class="m-1 theme-high-contrast" for="theme-high-contrast">
+                                <input type="checkbox" id="theme-high-contrast" name="themeHighContrast"
+                                       value="high-contrast" onchange="updateTheme(this, 'theme-high-contrast')">
+                                <span class="card p-2">
+                            <img class="img-fluid"
+                                 src="/assets/img/high-version.svg"
+                                 alt="High Contrast">
+                        </span>
+                            </label>
+                            <input type="hidden" id="theme-value" name="themeValue">
+                            <label class="m-1 theme-rtl" for="theme-rtl">
+                                <input type="checkbox" id="theme-rtl" name="themeRtl" value="true">
+                                <span class="card p-2">
+                            <img class="img-fluid"
+                                 src="/assets/img/rtl-version.svg"
+                                 alt="RTL Mode!">
+                        </span>
+                            </label>
+                        </div>
+                    </div>
+                    <!-- start: Font setting -->
+                    <div class="card fieldset border setting-font mb-4">
+                        <span class="fieldset-tile bg-card"><%= translation.google_font_settings %></span>
+                        <div class="c_radio d-flex text-center font_setting">
+                            <label class="m-1" for="font-opensans">
+                                <input type="radio" name="font" id="font-opensans" value="font-opensans"
+                                <% if (userPrefrences && userPrefrences.font === 'font-opensans') { %>
+                                       checked
+                                        <% } %>
+                                >
+                                <span class="card p-2">
+                            <img class="img-fluid"
+                                 src="/assets/img/font-opensans.svg"
+                                 alt="Dark Mode">
+                        </span>
+                            </label>
+                            <label class="m-1" for="font-quicksand">
+                                <input type="radio" name="font" id="font-quicksand" value="font-quicksand"
+                                <% if (userPrefrences && userPrefrences.font === 'font-quicksand') { %>
+                                       checked
+                                        <% } %>
+                                >
+                                <span class="card p-2">
+                            <img class="img-fluid"
+                                 src="/assets/img/font-quicksand.svg"
+                                 alt="Dark Mode">
+                        </span>
+                            </label>
+                            <label class="m-1" for="font-nunito">
+                                <input type="radio" name="font" id="font-nunito" value="font-nunito"
+                                <% if (userPrefrences && userPrefrences.font === 'font-nunito') { %>
+                                       checked
+                                        <% } %>
+                                >
+                                <span class="card p-2">
+                            <img class="img-fluid"
+                                 src="/assets/img/font-nunito.svg"
+                                 alt="Dark Mode">
+                        </span>
+                            </label>
+                            <label class="m-1" for="font-raleway">
+                                <input type="radio" name="font" id="font-raleway" value="font-raleway"
+                                <% if (userPrefrences && userPrefrences.font === 'font-raleway') { %>
+                                       checked
+                                        <% } %>
+                                >
+                                <span class="card p-2">
+                            <img class="img-fluid"
+                                 src="/assets/img/font-raleway.svg"
+                                 alt="Dark Mode">
+                        </span>
+                            </label>
+                        </div>
+                    </div>
+                    <!-- start: Extra setting -->
+                    <div class="setting-more mb-4">
+                        <h6 class="card-title"><%= translation.more_setting %></h6>
+                        <ul class="list-group list-group-flush list-group-custom fs-6">
+                            <!-- Settings: Horizontal menu version -->
+                            <li class="list-group-item">
+                                <div class="form-check form-switch h-menu-switch mb-1">
+                                    <input class="form-check-input" type="checkbox" id="h_menu" name="h_menu"
+                                           value="true">
+                                    <label class="form-check-label"
+                                           for="h_menu"><%= translation.horizontal_menu_version %></label>
+                                </div>
+                            </li>
+                            <!-- Settings: page header top Fix -->
+                            <li class="list-group-item">
+                                <div class="form-check form-switch pageheader-switch mb-1">
+                                    <input class="form-check-input" type="checkbox" id="PageHeader" name="headerFixed"
+                                           value="true">
+                                    <label class="form-check-label"
+                                           for="PageHeader"><%= translation.page_header_fix %></label>
+                                </div>
+                            </li>
+                            <!-- Settings: page header Dark version  -->
+                            <li class="list-group-item">
+                                <div class="form-check form-switch pageheader-dark-switch mb-1">
+                                    <input class="form-check-input" type="checkbox" id="PageHeader_dark"
+                                           name="headerDarkMode" value="true">
+                                    <label class="form-check-label"
+                                           for="PageHeader_dark"><%= translation.page_header_dark_mode %></label>
+                                </div>
+                            </li>
+                            <!-- Settings: Border radius -->
+                            <li class="list-group-item">
+                                <div class="form-check form-switch radius-switch mb-1">
+                                    <input class="form-check-input" type="checkbox" id="BorderRadius"
+                                           name="borderRadios" value="true">
+                                    <label class="form-check-label"
+                                           for="BorderRadius"><%= translation.border_radius_none %></label>
+                                </div>
+                            </li>
+                            <!-- Settings: sidebar dark -->
+                            <li class="list-group-item">
+                                <div class="form-check form-switch sidebardark-switch mb-1">
+                                    <input class="form-check-input" type="checkbox" id="SidebarDark" name="sidebarDark"
+                                           value="true">
+                                    <label class="form-check-label"
+                                           for="SidebarDark"><%= translation.enable_dark_sidebar %></label>
+                                </div>
+                            </li>
+                            <!-- Settings: Sidebar bg image -->
+                            <li class="list-group-item">
+                                <div class="setting-img">
+                                    <div class="form-check form-switch imagebg-switch mb-1">
+                                        <input class="form-check-input" type="checkbox" id="CheckImage"
+                                               name="checkImage" value="true">
+                                        <label class="form-check-label"
+                                               for="CheckImage"><%= translation.background_image_sidebar %></label>
+                                    </div>
+                                    <div class="bg-images" id="bg-images">
+                                        <ul class="list-unstyled d-flex">
+                                            <li class="sidebar-img-1 me-1" onclick="selectImage('1')">
+                                                <a class="rounded sidebar-img" id="img-1" href="#">
+                                                    <img src="/assets/img/sidebar-1.jpg" alt="">
+                                                </a>
+                                            </li>
+                                            <li class="sidebar-img-2 me-1 sidebar-img-active"
+                                                onclick="selectImage('2')">
+                                                <a class="rounded sidebar-img" id="img-2" href="#">
+                                                    <img src="/assets/img/sidebar-2.jpg" alt="">
+                                                </a>
+                                            </li>
+                                            <li class="sidebar-img-3 me-1" onclick="selectImage('3')">
+                                                <a class="rounded sidebar-img" id="img-3" href="#">
+                                                    <img src="/assets/img/sidebar-3.jpg" alt="">
+                                                </a>
+                                            </li>
+                                            <li class="sidebar-img-4 me-1" onclick="selectImage('4')">
+                                                <a class="rounded sidebar-img" id="img-4" href="#">
+                                                    <img src="/assets/img/sidebar-4.jpg" alt="">
+                                                </a>
+                                            </li>
+                                            <li class="sidebar-img-1 me-1" onclick="selectImage('5')">
+                                                <a class="rounded sidebar-img" id="img-5" href="#">
+                                                    <img src="/assets/img/sidebar-5.jpg" alt="">
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <input type="hidden" id="picInput" name="pic" value="">
+
+                                </div>
+                            </li>
+                            <!-- Settings: Container Fluid -->
+                            <li class="list-group-item">
+                                <div class="form-check form-switch fluid-switch mb-1">
+                                    <input class="form-check-input" type="checkbox" id="FluidLayout" name="fluidLayout"
+                                           value="true">
+                                    <label class="form-check-label"
+                                           for="fluidLayout"><%= translation.container_fluid %></label>
+                                </div>
+                            </li>
+                            <!-- Settings: Card box shadow  -->
+                            <li class="list-group-item">
+                                <div class="form-check form-switch shadow-switch mb-1">
+                                    <input class="form-check-input" type="checkbox" id="Card_shadow" name="cardShadow"
+                                           value="true">
+                                    <label class="form-check-label"
+                                           for="card_shadow"><%= translation.card_box_shadow %></label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="px-xl-4 modal-footer d-flex justify-content-start text-center">
+                    <button type="submit" id="save_changes" class="btn flex-fill btn-primary lift"
+                            data-bs-dismiss="modal">
+                        <%= translation.save_changes %>
+                    </button>
+                    <button type="button" class="btn flex-fill btn-white border lift"
+                            data-bs-dismiss="modal"><%= translation.close %>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- This div element is intentionally not closed in this file -->
+<div class="wrapper">
+    <!-- start: page header -->
+    <header class="page-header sticky-top px-xl-4 px-sm-2 px-0 py-lg-2 py-1">
+        <div class="container-fluid">
+            <nav class="navbar">
+                <!-- start: toggle btn -->
+                <div class="d-flex">
+                    <button id="sidebar-toggle-btn" type="button"
+                            class="btn btn-link d-none d-xl-block sidebar-mini-btn p-0 text-primary">
+                        <input type="hidden" name="sidebarMini">
+                        <span class="hamburger-icon">
+                <span class="line"></span>
+                <span class="line"></span>
+                <span class="line"></span>
+              </span>
+                    </button>
+                    <button type="button" class="btn btn-link d-block d-xl-none menu-toggle p-0 text-primary">
+              <span class="hamburger-icon">
+                <span class="line"></span>
+                <span class="line"></span>
+                <span class="line"></span>
+              </span>
+                    </button>
+                    <a href="/dashboard"
+                       class="brand-icon d-flex align-items-center mx-2 mx-sm-3 text-primary">
+                        <svg height="22" viewBox="0 0 67 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path class="fill-muted"
+                                  d="M0.863281 18.9997V1.14968H3.11328V16.9997H10.9133V18.9997H0.863281Z"></path>
+                            <path class="fill-muted"
+                                  d="M27.3045 12.6997C27.3045 13.933 27.0545 15.0497 26.5545 16.0497C26.0545 17.033 25.2878 17.8163 24.2545 18.3997C23.2378 18.9663 21.9378 19.2497 20.3545 19.2497C18.1378 19.2497 16.4462 18.6497 15.2795 17.4497C14.1295 16.233 13.5545 14.633 13.5545 12.6497V1.14968H15.8045V12.7247C15.8045 14.1747 16.1878 15.2997 16.9545 16.0997C17.7378 16.8997 18.9128 17.2997 20.4795 17.2997C21.5628 17.2997 22.4378 17.108 23.1045 16.7247C23.7878 16.3247 24.2878 15.783 24.6045 15.0997C24.9212 14.3997 25.0795 13.5997 25.0795 12.6997V1.14968H27.3045V12.6997Z"></path>
+                            <path class="fill-secondary"
+                                  d="M46.5286 0.765681C46.6246 0.82568 46.6726 0.92168 46.6726 1.05368L46.5466 18.6037C46.5466 18.8677 46.3906 18.9937 46.0786 18.9817H44.4586L33.1546 3.62768L33.1006 13.1677L37.5646 13.1857C37.6726 13.1857 37.7626 13.2217 37.8346 13.2937C37.9186 13.3657 37.9606 13.4617 37.9606 13.5817L37.9426 14.8957C37.9426 15.0157 37.9066 15.1237 37.8346 15.2197C37.7626 15.3037 37.6666 15.3457 37.5466 15.3457L31.3726 15.2917H31.3546C31.1026 15.2917 30.9706 15.1837 30.9586 14.9677L31.0666 0.98168C31.0666 0.849679 31.1026 0.74768 31.1746 0.675681C31.2586 0.59168 31.3666 0.555679 31.4986 0.56768H33.1726C33.3406 0.56768 33.4726 0.63368 33.5686 0.765681L44.4406 15.4177L44.5486 0.94568C44.5966 0.741679 44.7286 0.639679 44.9446 0.639679L46.2046 0.65768C46.3126 0.65768 46.4206 0.69368 46.5286 0.765681ZM39.7786 16.7857C39.8986 16.7977 39.9946 16.8397 40.0666 16.9117C40.1386 16.9717 40.1746 17.0677 40.1746 17.1997L40.1566 18.4957C40.1566 18.6157 40.1206 18.7237 40.0486 18.8197C39.9886 18.9037 39.8926 18.9457 39.7606 18.9457H31.3546C31.2346 18.9457 31.1386 18.9097 31.0666 18.8377C30.9946 18.7657 30.9586 18.6697 30.9586 18.5497V17.2357C30.9586 17.1157 30.9946 17.0137 31.0666 16.9297C31.1386 16.8337 31.2406 16.7857 31.3726 16.7857H35.5666C38.0266 16.7857 39.4306 16.7857 39.7786 16.7857Z"></path>
+                            <path class="fill-muted"
+                                  d="M66.0301 10.0497C66.0301 11.433 65.8551 12.6913 65.5051 13.8247C65.1551 14.9413 64.6301 15.908 63.9301 16.7247C63.2467 17.5413 62.3884 18.1663 61.3551 18.5997C60.3384 19.033 59.1551 19.2497 57.8051 19.2497C56.4051 19.2497 55.1884 19.033 54.1551 18.5997C53.1217 18.1497 52.2634 17.5247 51.5801 16.7247C50.8967 15.908 50.3884 14.933 50.0551 13.7997C49.7217 12.6663 49.5551 11.408 49.5551 10.0247C49.5551 8.19135 49.8551 6.59135 50.4551 5.22468C51.0551 3.85801 51.9634 2.79135 53.1801 2.02468C54.4134 1.25801 55.9634 0.87468 57.8301 0.87468C59.6134 0.87468 61.1134 1.25801 62.3301 2.02468C63.5467 2.77468 64.4634 3.84135 65.0801 5.22468C65.7134 6.59135 66.0301 8.19968 66.0301 10.0497ZM51.9301 10.0497C51.9301 11.5497 52.1384 12.8413 52.5551 13.9247C52.9717 15.008 53.6134 15.8413 54.4801 16.4247C55.3634 17.008 56.4717 17.2997 57.8051 17.2997C59.1551 17.2997 60.2551 17.008 61.1051 16.4247C61.9717 15.8413 62.6134 15.008 63.0301 13.9247C63.4467 12.8413 63.6551 11.5497 63.6551 10.0497C63.6551 7.79968 63.1884 6.04135 62.2551 4.77468C61.3217 3.49135 59.8467 2.84968 57.8301 2.84968C56.4801 2.84968 55.3634 3.14135 54.4801 3.72468C53.6134 4.29135 52.9717 5.11635 52.5551 6.19968C52.1384 7.26635 51.9301 8.54968 51.9301 10.0497Z"></path>
+                        </svg>
+                    </a>
+                </div>
+                <!-- start: search area -->
+                <div class="header-left flex-grow-1 d-none d-md-block">
+                    <div class="main-search px-3 flex-fill">
+                        <input class="form-control" type="text"
+                               placeholder="<%= translation.enter_your_search_key_word %>">
+                        <div style="z-index: 1000;" class="card shadow rounded-4 search-result slidedown">
+                            <div id="patientsSearchResults" class="card-body">
+                                <div id="myPatientAll_wrapper"
+                                     class="table-container dataTables_wrapper dt-bootstrap5 no-footer">
+                                    <div class="row dt-row">
+                                        <div class="col-sm-12">
+                                            <table id="myOtherTable"
+                                                   class="myPatientAll table card-table table-hover align-middle mb-0 nowrap dataTable no-footer dtr-inline"
+                                                   aria-describedby="myPatientAll_info" style="width: 1132px;">
+                                                <thead>
+                                                <tr>
+                                                    <th class="sorting" tabindex="0" aria-controls="myPatientAll"
+                                                        rowspan="1"
+                                                        colspan="1" style="width: 62.2px; text-align: center"
+                                                        aria-label="ID: activate to sort column ascending"><%= translation.id %>
+                                                    </th>
+                                                    <th class="sorting" tabindex="0" aria-controls="myPatientAll"
+                                                        rowspan="1"
+                                                        colspan="1" style="width: 63.2px; text-align: center"
+                                                        aria-label="First Name: activate to sort column ascending"><%= translation.name %>
+                                                    </th>
+
+                                                    <th class="sorting" tabindex="0" aria-controls="myPatientAll"
+                                                        rowspan="1"
+                                                        colspan="1" style="width: 92.2px; text-align: center"
+                                                        aria-label="Number: activate to sort column ascending"><%= translation.tel %>
+                                                    </th>
+
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <% patients.forEach(function (patient) { %>
+                                                    <tr id="patient_<%= patient._id %>" class="table-row">
+                                                        <form action="/patient-profile" method="GET" class="form">
+                                                            <td style="text-align: center"><%= patient.idNumber %><input
+                                                                        type="hidden" name="idNumber"
+                                                                        value='<%= patient.idNumber %>'></td>
+                                                            <td style="text-align: center; display: flex; align-items: center; justify-content: center;">
+                                                                <div>
+                                                                    <img src="/assets/img/<%= patient.gender %>.png"
+                                                                         class="rounded-circle sm avatar" alt="">
+                                                                    <div class="ms-2 mb-0"><%= patient.fName %> <%= patient.lName %></div>
+                                                                </div>
+                                                            </td>
+
+
+                                                            <td style="text-align: center"><%= patient.tel %><input
+                                                                        type="hidden"
+                                                                        name="tel"
+                                                                        value='<%= patient.tel %>'>
+                                                            </td>
+
+                                                            <input type="hidden" name="patientID"
+                                                                   value="<%= patient._id %>">
+                                                        </form>
+                                                    </tr>
+                                                <% }) %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- start: link -->
+                <ul class="header-right justify-content-end d-flex align-items-center mb-0">
+                    <!-- start: quick light dark -->
+                    <li class="d-none d-xl-inline-block">
+                        <a class="nav-link fullscreen" href="javascript:void(0);"
+                           onclick="toggleFullScreen(documentElement)">
+                            <svg viewBox="0 0 16 16" width="18px" fill="currentColor"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                      d="M5.8279 10.172C5.73414 10.0783 5.60698 10.0256 5.4744 10.0256C5.34182 10.0256 5.21467 10.0783 5.1209 10.172L1.0249 14.268V11.5C1.0249 11.3674 0.972224 11.2402 0.878456 11.1464C0.784688 11.0527 0.657511 11 0.524902 11C0.392294 11 0.265117 11.0527 0.171349 11.1464C0.0775808 11.2402 0.0249023 11.3674 0.0249023 11.5V15.475C0.0249023 15.6076 0.0775808 15.7348 0.171349 15.8285C0.265117 15.9223 0.392294 15.975 0.524902 15.975H4.4999C4.63251 15.975 4.75969 15.9223 4.85346 15.8285C4.94722 15.7348 4.9999 15.6076 4.9999 15.475C4.9999 15.3424 4.94722 15.2152 4.85346 15.1214C4.75969 15.0277 4.63251 14.975 4.4999 14.975H1.7319L5.8279 10.879C5.92164 10.7852 5.9743 10.6581 5.9743 10.5255C5.9743 10.3929 5.92164 10.2658 5.8279 10.172ZM10.1719 10.172C10.2657 10.0783 10.3928 10.0256 10.5254 10.0256C10.658 10.0256 10.7851 10.0783 10.8789 10.172L14.9749 14.268V11.5C14.9749 11.3674 15.0276 11.2402 15.1213 11.1464C15.2151 11.0527 15.3423 11 15.4749 11C15.6075 11 15.7347 11.0527 15.8285 11.1464C15.9222 11.2402 15.9749 11.3674 15.9749 11.5V15.475C15.9749 15.6076 15.9222 15.7348 15.8285 15.8285C15.7347 15.9223 15.6075 15.975 15.4749 15.975H11.4999C11.3673 15.975 11.2401 15.9223 11.1463 15.8285C11.0526 15.7348 10.9999 15.6076 10.9999 15.475C10.9999 15.3424 11.0526 15.2152 11.1463 15.1214C11.2401 15.0277 11.3673 14.975 11.4999 14.975H14.2679L10.1719 10.879C10.0782 10.7852 10.0255 10.6581 10.0255 10.5255C10.0255 10.3929 10.0782 10.2658 10.1719 10.172ZM5.8279 5.82799C5.73414 5.92173 5.60698 5.97439 5.4744 5.97439C5.34182 5.97439 5.21467 5.92173 5.1209 5.82799L1.0249 1.73199V4.49999C1.0249 4.6326 0.972224 4.75978 0.878456 4.85355C0.784688 4.94732 0.657511 4.99999 0.524902 4.99999C0.392294 4.99999 0.265117 4.94732 0.171349 4.85355C0.0775808 4.75978 0.0249023 4.6326 0.0249023 4.49999V0.524994C0.0249023 0.392386 0.0775808 0.265209 0.171349 0.17144C0.265117 0.0776723 0.392294 0.0249939 0.524902 0.0249939H4.4999C4.63251 0.0249939 4.75969 0.0776723 4.85346 0.17144C4.94722 0.265209 4.9999 0.392386 4.9999 0.524994C4.9999 0.657602 4.94722 0.784779 4.85346 0.878547C4.75969 0.972315 4.63251 1.02499 4.4999 1.02499H1.7319L5.8279 5.12099C5.92164 5.21476 5.9743 5.34191 5.9743 5.47449C5.9743 5.60708 5.92164 5.73423 5.8279 5.82799Z"></path>
+                                <path class="fill-secondary"
+                                      d="M10.5253 5.97439C10.3927 5.97439 10.2655 5.92173 10.1718 5.82799C10.078 5.73423 10.0254 5.60708 10.0254 5.47449C10.0254 5.34191 10.078 5.21476 10.1718 5.12099L14.2678 1.02499H11.4998C11.3672 1.02499 11.24 0.972315 11.1462 0.878547C11.0525 0.784779 10.9998 0.657602 10.9998 0.524994C10.9998 0.392386 11.0525 0.265209 11.1462 0.17144C11.24 0.0776723 11.3672 0.0249939 11.4998 0.0249939H15.4748C15.6074 0.0249939 15.7346 0.0776723 15.8283 0.17144C15.9221 0.265209 15.9748 0.392386 15.9748 0.524994V4.49999C15.9748 4.6326 15.9221 4.75978 15.8283 4.85355C15.7346 4.94732 15.6074 4.99999 15.4748 4.99999C15.3422 4.99999 15.215 4.94732 15.1212 4.85355C15.0275 4.75978 14.9748 4.6326 14.9748 4.49999V1.73199L10.8788 5.82799C10.785 5.92173 10.6579 5.97439 10.5253 5.97439Z"></path>
+                            </svg>
+                        </a>
+                    </li>
+                    <!-- start: Language dropdown-menu -->
+                    <li class="d-none d-xl-inline-block">
+                        <div class="dropdown morphing Language scale-left">
+                            <a style="margin-top: -8px" class="nav-link dropdown-toggle after-none" href="#"
+                               role="button"
+                               data-bs-toggle="dropdown">
+                                <span style="border-radius: 5px"
+                                      class="flag-icon flag-icon-<%= translation.lang %> la-2x"></span>
+                            </a>
+                            <div class="dropdown-menu rounded-4 shadow border-0 p-0" data-bs-popper="none">
+                                <div class="card">
+                                    <div class="list-group list-group-custom" style="width: 200px;">
+                                        <a href="/switch-language/en" class="list-group-item"><span
+                                                    class="flag-icon flag-icon-us me-2"></span>English</a>
+                                        <a href="/switch-language/tr" class="list-group-item"><span
+                                                    class="flag-icon flag-icon-tr me-2"></span>Türkçe</a>
+                                        <a href="/switch-language/ar" class="list-group-item"><span
+                                                    class="flag-icon flag-icon-ae me-2"></span>العربية</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- start: Grid app dropdown-menu -->
+                    <li class="d-none d-lg-inline-block">
+                        <div class="dropdown morphing grid-menu scale-left">
+                            <div class="dropdown-menu rounded-4 shadow border-0 p-0" data-bs-popper="none">
+                                <div class="card">
+                                    <div class="row g-1 text-center p-3" style="width: 302px;">
+                                        <div class="col-6">
+                                            <a class="card p-3 color-600 lift align-items-center"
+                                               href="https://www.wrraptheme.com/templates/luno/dashboard.html" title="">
+                                                <svg viewBox="0 0 16 16" width="30px" class="mb-3" fill="currentColor"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path class="fill-secondary"
+                                                          d="M8 4a.5.5 0 0 1 .5.5V6a.5.5 0 0 1-1 0V4.5A.5.5 0 0 1 8 4zM3.732 5.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707zM2 10a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 10zm9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5zm.754-4.246a.389.389 0 0 0-.527-.02L7.547 9.31a.91.91 0 1 0 1.302 1.258l3.434-4.297a.389.389 0 0 0-.029-.518z"></path>
+                                                    <path fill-rule="evenodd"
+                                                          d="M0 10a8 8 0 1 1 15.547 2.661c-.442 1.253-1.845 1.602-2.932 1.25C11.309 13.488 9.475 13 8 13c-1.474 0-3.31.488-4.615.911-1.087.352-2.49.003-2.932-1.25A7.988 7.988 0 0 1 0 10zm8-7a7 7 0 0 0-6.603 9.329c.203.575.923.876 1.68.63C4.397 12.533 6.358 12 8 12s3.604.532 4.923.96c.757.245 1.477-.056 1.68-.631A7 7 0 0 0 8 3z"></path>
+                                                </svg>
+                                                <p class="mb-0 color-600">Dashboard</p>
+                                                <small class="text-muted">View All</small>
+                                            </a>
+                                        </div>
+                                        <div class="col-6">
+                                            <a class="card p-3 color-600 lift align-items-center"
+                                               href="https://www.wrraptheme.com/templates/luno/app.html" title="">
+                                                <svg viewBox="0 0 16 16" width="30px" class="mb-3" fill="currentColor"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M5.5 2A3.5 3.5 0 0 0 2 5.5v5A3.5 3.5 0 0 0 5.5 14h5a3.5 3.5 0 0 0 3.5-3.5V8a.5.5 0 0 1 1 0v2.5a4.5 4.5 0 0 1-4.5 4.5h-5A4.5 4.5 0 0 1 1 10.5v-5A4.5 4.5 0 0 1 5.5 1H8a.5.5 0 0 1 0 1H5.5z"></path>
+                                                    <path class="fill-secondary"
+                                                          d="M16 3a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"></path>
+                                                </svg>
+                                                <p class="mb-0 color-600">Application</p>
+                                                <small class="text-muted">View All</small>
+                                            </a>
+                                        </div>
+                                        <div class="col-6">
+                                            <a class="card p-3 color-600 lift align-items-center"
+                                               href="https://www.wrraptheme.com/templates/luno/crafted-page.html"
+                                               title="">
+                                                <svg viewBox="0 0 16 16" width="30px" class="mb-3" fill="currentColor"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M14 4.5V9H13V4.5H11C10.6022 4.5 10.2206 4.34196 9.93934 4.06066C9.65804 3.77936 9.5 3.39782 9.5 3V1H4C3.73478 1 3.48043 1.10536 3.29289 1.29289C3.10536 1.48043 3 1.73478 3 2V9H2V2C2 1.46957 2.21071 0.960859 2.58579 0.585786C2.96086 0.210714 3.46957 0 4 0L9.5 0L14 4.5ZM13 12H14V14C14 14.5304 13.7893 15.0391 13.4142 15.4142C13.0391 15.7893 12.5304 16 12 16H4C3.46957 16 2.96086 15.7893 2.58579 15.4142C2.21071 15.0391 2 14.5304 2 14V12H3V14C3 14.2652 3.10536 14.5196 3.29289 14.7071C3.48043 14.8946 3.73478 15 4 15H12C12.2652 15 12.5196 14.8946 12.7071 14.7071C12.8946 14.5196 13 14.2652 13 14V12Z"></path>
+                                                    <path class="fill-secondary"
+                                                          d="M0.146447 10.1464C0.240215 10.0527 0.367392 10 0.5 10H15.5C15.6326 10 15.7598 10.0527 15.8536 10.1464C15.9473 10.2402 16 10.3674 16 10.5C16 10.6326 15.9473 10.7598 15.8536 10.8536C15.7598 10.9473 15.6326 11 15.5 11H0.5C0.367392 11 0.240215 10.9473 0.146447 10.8536C0.0526784 10.7598 0 10.6326 0 10.5C0 10.3674 0.0526784 10.2402 0.146447 10.1464Z"
+                                                          fill="black"></path>
+                                                </svg>
+                                                <p class="mb-0 color-600">Pages</p>
+                                                <small class="text-muted">Crafted Pages</small>
+                                            </a>
+                                        </div>
+                                        <div class="col-6">
+                                            <a class="card p-3 color-600 lift align-items-center"
+                                               href="https://www.wrraptheme.com/templates/luno/layouts.html" title="">
+                                                <svg viewBox="0 0 16 16" width="30px" class="mb-3" fill="currentColor"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M14 2a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h12zM2 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H2z"></path>
+                                                    <path class="fill-secondary"
+                                                          d="M3 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4z"></path>
+                                                </svg>
+                                                <p class="mb-0 color-600">Layouts</p>
+                                                <small class="text-muted">Crafted Layout</small>
+                                            </a>
+                                        </div>
+                                    </div> <!-- .row end -->
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <!-- start: quick light dark -->
+                    <li id="theme-toggle">
+                        <a class="nav-link">
+                            <svg viewBox="0 0 16 16" width="18px" fill="currentColor"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278zM4.858 1.311A7.269 7.269 0 0 0 1.025 7.71c0 4.02 3.279 7.276 7.319 7.276a7.316 7.316 0 0 0 5.205-2.162c-.337.042-.68.063-1.029.063-4.61 0-8.343-3.714-8.343-8.29 0-1.167.242-2.278.681-3.286z"></path>
+                                <path class="fill-secondary"
+                                      d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"></path>
+                            </svg>
+                        </a>
+                    </li>
+                    <!-- start: User dropdown-menu -->
+                    <li>
+                        <div class="dropdown morphing user-profile mx-lg-3 mx-2 scale-left">
+                            <a class="nav-link dropdown-toggle rounded-circle after-none p-0" href="#" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="true">
+                                <img class="avatar img-thumbnail rounded-circle shadow"
+                                     src="<%= decodeURIComponent(lastUploadedDoctorPhoto) %>" alt="">
+                            </a>
+                            <div class="dropdown-menu border-0 rounded-4 shadow p-0">
+                                <div class="card border-0 w240">
+                                    <div class="card-body border-bottom d-flex">
+                                        <img class="avatar rounded-circle"
+                                             src="<%= decodeURIComponent(lastUploadedDoctorPhoto) %>" alt="">
+                                        <div class="flex-fill ms-3">
+                                            <h6 class="card-title mb-0"><%= locals.doctor ? locals.doctor.fName : '' %>
+                                                <%= locals.doctor ? locals.doctor.lName : '' %></h6>
+                                            <span class="text-muted"><%= locals.doctor ? locals.doctor.email : '' %></span>
+                                        </div>
+                                    </div>
+                                    <div class="list-group m-2 mb-3">
+                                        <a class="list-group-item list-group-item-action border-0"
+                                           href="/doctor-profile"><i
+                                                    class="w30 fa fa-user"></i><%= translation.my_profile %></a>
+                                        <a class="list-group-item list-group-item-action border-0"
+                                           href="/account-settings"><i
+                                                    class="w30 fa fa-gear"></i><%= translation.settings %></a>
+                                    </div>
+                                    <a href="/logout"
+                                       class="btn flex-fill btn-primary text-light text-uppercase rounded-0"><%= translation.sign_out %>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <!-- start: Settings toggle modal -->
+                    <li>
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#SettingsModal"
+                           title="Settings">
+                            <svg viewBox="0 0 16 16" width="18px" fill="currentColor"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path class="fill-secondary"
+                                      d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"></path>
+                                <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"></path>
+                            </svg>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <script>
+        const tableRows2 = document.querySelectorAll('table#myOtherTable tr[id^="patient_"]');
+        tableRows2.forEach((row) => {
+            row.style.cursor = "pointer";
+            const patientID = row.id.split("_")[1];
+            row.addEventListener('click', () => {
+                window.location.href = "/patient-profile?id=" + patientID;
+            });
+        });
+    </script>
+
+    <script>
+        const eventSource = new EventSource('/sse/reviews');
+
+        eventSource.addEventListener('message', (event) => {
+            const newReview = JSON.parse(event.data);
+
+            // Update the new_reviews count immediately
+            const newReviewsCount = document.querySelector('#new-reviews-count');
+            newReviewsCount.textContent = parseInt(newReviewsCount.textContent) + 1;
+            if (newReviewsCount.textContent === '0') {
+                newReviewsCount.style.display = 'none'
+            }
+            newReviewsCount.style.display = 'flex'
+        });
+    </script>
+
+    <script>
+        // Function to fetch the updated count of unviewed reviews
+        async function fetchUpdatedReviewsCount() {
+            const response = await fetch('/reviews/count');
+            const data = await response.json();
+            const newReviewsCount = data.count;
+
+            // Update the count of new reviews in the HTML
+            let notification = document.getElementById('new-reviews-count');
+            notification.textContent = newReviewsCount;
+            if (notification.textContent === '0') {
+                notification.style.display = 'none'
+            }
+            notification.style.display = true
+        }
+
+        // Fetch the updated count when the page loads
+        window.addEventListener('load', fetchUpdatedReviewsCount);
+    </script>
+
+    <script>
+        const eventSource1 = new EventSource('/sse/contacts');
+        console.log(eventSource)
+
+        eventSource1.addEventListener('message', (event) => {
+            const newContact = JSON.parse(event.data);
+
+            // Update the new_contacts count immediately
+            const newContactsCount = document.querySelector('#new-contacts-count');
+            newContactsCount.textContent = parseInt(newContactsCount.textContent) + 1;
+            if (newContactsCount.textContent === '0') {
+                newContactsCount.style.display = 'none'
+            }
+            newContactsCount.style.display = 'flex'
+        });
+    </script>
+
+    <script>
+        // Function to fetch the updated count of unviewed contacts
+        async function fetchUpdatedContactsCount() {
+            const response = await fetch('/contacts/count');
+            const data = await response.json();
+            const newContactsCount = data.count;
+
+            // Update the count of new contacts in the HTML
+            let notification = document.getElementById('new-contacts-count');
+            notification.textContent = newContactsCount;
+            if (notification.textContent === '0') {
+                notification.style.display = 'none'
+            }
+            notification.style.display = true
+        }
+
+        // Fetch the updated count when the page loads
+        window.addEventListener('load', fetchUpdatedContactsCount);
+    </script>
+
+

@@ -1,0 +1,107 @@
+<%- include("partials/header"); -%>
+
+
+<!-- start: page toolbar -->
+<div class="page-toolbar px-xl-4 px-sm-2 px-0 py-3">
+    <div class="container-fluid">
+        <div class="row g-3 mb-3 align-items-center">
+            <div class="col">
+                <ol class="breadcrumb bg-transparent mb-0">
+                    <li class="breadcrumb-item"><a class="text-secondary" href="/"><%= translation.home %></a></li>
+                    <li class="breadcrumb-item"><%= translation.doctor %></li>
+                    <li class="breadcrumb-item active" aria-current="page"><%= translation.profile %></li>
+                </ol>
+            </div>
+        </div> <!-- .row end -->
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <h1 class="fs-5 color-900 mt-1 mb-0"><%= translation.welcome_back_dr %> <%= locals.doctor ? locals.doctor.fName : '' %>
+                    !</h1>
+                <small class="text-muted"></small>
+            </div>
+        </div> <!-- .row end -->
+    </div>
+</div>
+
+
+<!-- start: page body -->
+<div class="page-body px-xl-4 px-sm-2 px-0 py-lg-2 py-1 mt-0 mt-lg-3">
+    <div class="container-fluid">
+        <div class="row g-3">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap flex-md-nowrap justify-content-between">
+                            <div class="doctor-avatar order-0 order-md-1">
+                                <img src="<%= decodeURIComponent(lastUploadedDoctorPhoto) %>" class="img-thumbnail"
+                                     alt="..." style="width: 260px;">
+                                <ul class="list-unstyled custom d-flex mb-3 mt-3">
+                                    <li class="me-3 text-muted"><%= translation.follow %></li>
+                                    <li class="me-3"><a
+                                                href="<%= locals.settingSocialMedia ? 'http://' + locals.settingSocialMedia.socialMedia.facebook : '' %>"
+                                                class="card-link"><i class="fa fa-lg fa-facebook"></i></a></li>
+                                    <li class="me-3"><a
+                                                href="<%= locals.settingSocialMedia ? 'http://' + locals.settingSocialMedia.socialMedia.twitter : '' %>"
+                                                class="card-link"><i class="fa fa-lg fa-twitter"></i></a></li>
+                                    <li class="me-3"><a
+                                                href="<%= locals.settingSocialMedia ? 'http://' + locals.settingSocialMedia.socialMedia.linkedIn : '' %>"
+                                                class="card-link"><i class="fa fa-lg fa-linkedin"></i></a></li>
+                                </ul>
+                            </div>
+                            <div class="doctor-detail order-1 order-md-0">
+                                <h3><%= translation.dr %>
+                                    <%= locals.doctor ? locals.doctor.fName : '' %> <%= locals.doctor ? locals.doctor.lName : '' %></h3>
+                                <div class="d-flex flex-row flex-wrap align-items-center mb-3 mt-2">
+                                    <div class="me-3 me-md-5">
+                                        <small class="text-muted"><%= translation.specialist %>
+                                        </small>
+                                        <div class="mb-0 fw-bold"><%= locals.doctor ? locals.doctor.specialty : '' %></div>
+                                    </div>
+                                    <div class="me-3 me-md-5">
+                                        <small class="text-muted"><%= translation.experience %></small>
+                                        <div class="mb-0 fw-bold"><%= locals.doctor ? locals.doctor.experience : '' %></div>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted"><%= translation.city %></small>
+                                        <div class="mb-0 fw-bold"><%= locals.doctor ? locals.doctor.address.city : '' %></div>
+                                    </div>
+                                </div>
+                                <span><%= locals.doctor ? locals.doctor.about : '' %></span>
+                                <ul class="resume-box">
+                                    <li>
+                                        <div class="icon text-center">
+                                            <i class="fa fa-map-marker"></i>
+                                        </div>
+                                        <div class="fw-bold mb-0"><%= translation.address %></div>
+                                        <span>
+                                            <%= locals.doctor ? locals.doctor.address.state : '' %>,
+                                            <%= locals.doctor ? locals.doctor.address.street : '' %>,
+                                            <%= locals.doctor ? locals.doctor.address.city : '' %>,
+                                            <%= locals.doctor ? locals.doctor.address.zipCode : '' %></span>
+                                    </li>
+                                    <li>
+                                        <div class="icon text-center">
+                                            <i class="fa fa-mobile"></i>
+                                        </div>
+                                        <div class="fw-bold mb-0"><%= translation.mobile %></div>
+                                        <span><%= locals.doctor ? locals.doctor.tel : '' %></span>
+                                    </li>
+                                    <li>
+                                        <div class="icon text-center">
+                                            <i class="fa fa-envelope"></i>
+                                        </div>
+                                        <div class="fw-bold mb-0"><%= translation.email_address %></div>
+                                        <span><%= locals.doctor ? locals.doctor.email : '' %></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- .row end -->
+    </div>
+</div>
+
+
+<%- include("partials/footer"); -%>

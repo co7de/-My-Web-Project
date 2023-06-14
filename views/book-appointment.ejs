@@ -1,0 +1,492 @@
+<%- include("partials/header"); -%>
+
+
+<div class="page-body px-xl-4 px-sm-2 px-0 py-lg-2 py-1 mt-0 mt-lg-3">
+    <div class="container-fluid">
+        <div class="row g-3">
+            <div class="col-12">
+                <div class="card">
+                    <form id="add-apnt" class="hidden" action="/book-appointment" method="post">
+                        <div class="card-header">
+                            <h6 class="card-title m-0"><%= translation.book_appointment %></h6>
+                            <div class="dropdown morphing scale-left">
+
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="form-label"><%= translation.id_number %></label>
+                                    <input type="text" class="form-control form-control-lg" required
+                                           placeholder="<%= translation.enter_here %>"
+                                           name="idNumber">
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="form-label"><%= translation.first_name %></label>
+                                    <input type="text" class="form-control form-control-lg" required
+                                           placeholder="<%= translation.enter_here %>"
+                                           name="fName">
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="form-label"><%= translation.last_name %></label>
+                                    <input type="text" class="form-control form-control-lg" required
+                                           placeholder="<%= translation.enter_here %>"
+                                           name="lName">
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="form-label"><%= translation.your_email %></label>
+                                    <input type="email" class="form-control form-control-lg" required
+                                           placeholder="<%= translation.enter_here %>"
+                                           name="email">
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="form-label"><%= translation.select_gender %></label>
+                                    <select class="form-control form-control-lg" tabindex="-98" name="gender">
+                                        <option value="Male"><%= translation.male %>
+                                        </option>
+                                        <option value="Female"><%= translation.female %>
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="form-label"><%= translation.mobile %></label>
+                                    <input type="tel" class="form-control form-control-lg" required
+                                           placeholder="<%= translation.enter_here %>"
+                                           name="tel">
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="form-label"><%= translation.appointment_date %></label>
+                                    <input id="date" type="date" class="form-control form-control-lg" required
+                                           placeholder="<%= translation.enter_here %>"
+                                           name="date">
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <label class="form-label"><%= translation.appointment_hour %></label>
+                                    <input id="time" type="text" class="form-control form-control-lg" required
+                                           placeholder="<%= translation.enter_here %>"
+                                           name="time" autocomplete="off" disabled>
+                                </div>
+                                <div class="col-sm-12">
+                                <textarea rows="4" class="form-control no-resize" name="paragraph"
+                                          placeholder="<%= translation.please_type_if_you_have_any_notes_here %>"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary"><%= translation.book_appointment %></button>
+                            <button id="cancel-btn" type="button"
+                                    class="btn btn-secondary"><%= translation.cancel %></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div> <!-- .row end -->
+    </div>
+</div>
+
+
+<!-- Main Content -->
+<div class="page-body px-xl-4 px-sm-2 px-0 py-lg-2 py-1 mt-0 mt-lg-3">
+    <div class="container-fluid">
+        <div class="row g-2 row-deck">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="card-title m-0"><%= translation.booked_appointments %></h6>
+                        <div class="dropdown morphing scale-left">
+                            <a href="#" class="card-fullscreen" data-bs-toggle="tooltip" aria-label="Card Full-Screen"
+                               data-bs-original-title="Card Full-Screen"><i class="icon-size-fullscreen"></i></a>
+                            <a href="#" class="more-icon dropdown-toggle" data-bs-toggle="dropdown"
+                               aria-expanded="false"><i class="fa fa-ellipsis-h"></i></a>
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="myAllDoctor_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                            <div class="row dt-row">
+                                <div class="col-sm-12">
+                                    <input class="form-control" id="myInput" type="text"
+                                           placeholder="<%= translation.search %>">
+                                    <table id="example3" class="display table table-striped m-b-0">
+                                        <thead>
+                                        <tr>
+                                            <th class="sorting sorting_asc" tabindex="0" aria-controls="myAllDoctor"
+                                                rowspan="1" colspan="1" style="width: 60px; text-align: center;"
+                                                aria-sort="ascending"
+                                                aria-label="#: activate to sort column descending"><%= translation.id_number %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 196.2px; text-align: center;"
+                                                aria-label="Doctor: activate to sort column ascending"><%= translation.first_name %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 139.2px; text-align: center"
+                                                aria-label="Specialist: activate to sort column ascending"><%= translation.last_name %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 123.2px; text-align: center"
+                                                aria-label="Schedule: activate to sort column ascending"><%= translation.tel %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 93.2px; text-align: center"
+                                                aria-label="Progress: activate to sort column ascending"><%= translation.disease %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 106.2px; text-align: center"
+                                                aria-label="Date Join: activate to sort column ascending"><%= translation.date %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 88.2px; text-align: center"
+                                                aria-label="Status: activate to sort column ascending"><%= translation.appointment_hour %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 88.2px; text-align: center"
+                                                aria-label="Status: activate to sort column ascending"><%= translation.action %>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <% foundAppointments.forEach(function (appointment) { %>
+                                            <form class="deleteAndUpdateForm"
+                                                  id="deleteAndUpdate_<%= appointment._id %>"
+                                                  action="/delete-appointment" method="post"
+                                                  onsubmit="return deleteButton(this, '<%= appointment.fName %>', '<%= appointment._id %>')">
+                                                <tr id="appointment_<%= appointment._id %>">
+
+                                                    <td style="text-align: center"><%= appointment.idNumber %><input
+                                                                type='hidden' name='idNumber'
+                                                                value='<%= appointment.idNumber %>'></td>
+                                                    <td style="text-align: center"><%= appointment.fName %><input
+                                                                type='hidden' name='fName'
+                                                                value='<%= appointment.fName %>'></td>
+                                                    <td style="text-align: center"><%= appointment.lName %><input
+                                                                type='hidden' name='lName'
+                                                                value='<%= appointment.lName %>'></td>
+                                                    <td style="text-align: center"><a href="#" class="dropdown-toggle"
+                                                                                      data-bs-toggle="dropdown"
+                                                                                      aria-expanded="false"><%= appointment.tel %></a>
+                                                        <ul class="dropdown-menu shadow border-0 p-2">
+                                                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                                                   data-bs-target="#sendSMS">Send SMS</a></li>
+                                                            <li><a class="dropdown-item" href="#">Phone call</a></li>
+                                                        </ul>
+                                                        <input
+                                                                type='hidden' name='tel'
+                                                                value='<%= appointment.tel %>'></td>
+                                                    <td style="text-align: center"><%= appointment.service %><input
+                                                                type='hidden' name='service'
+                                                                value='<%= appointment.service %>'></td>
+                                                    <td style="text-align: center"><%= appointment.date %><input
+                                                                type='hidden' name='date'
+                                                                value='<%= appointment.date %>'></td>
+                                                    <td style="text-align: center"><%= appointment.time %><input
+                                                                type='hidden' name='time'
+                                                                value='<%= appointment.time %>'></td>
+                                                    <td class="btnsCell" style="text-align: center">
+                                                        <a href="#add-apnt">
+                                                            <button id="<%= appointment._id %>_updateBtn" type="button"
+                                                                    href="#add-apnt"
+                                                                    onclick="updateButton('<%= appointment._id %>', this)"
+                                                                    class="btn btn-link btn-sm color-400 btn-outline-warning"
+                                                                    data-bs-placement="top"
+                                                                    aria-label="Edit" data-bs-original-title="Edit"
+                                                                    data-original-title="" title=""><i
+                                                                        class="fa fa-pencil"></i></button>
+                                                        </a>
+                                                        <button id="<%= appointment._id %>_deleteBtn" type="submit"
+                                                                class="btn btn-link btn-sm color-400 btn-outline-danger"
+                                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                aria-label="Delete" data-bs-original-title="Delete"
+                                                                data-original-title="" title=""><i
+                                                                    class="fa fa-trash"></i></button>
+                                                        <button id="<%= appointment._id %>_acceptBtn" type="button"
+                                                                onclick="approveButton('<%= appointment._id %>', this, '<%= appointment.fName %>')"
+                                                                class="btn btn-link btn-sm color-400 btn-outline-success"
+                                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                aria-label="Approve" data-bs-original-title="Approve"
+                                                                data-original-title="" title=""><i
+                                                                    class="fa fa-thumbs-up"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <input type="hidden" name="gender" value="<%= appointment.gender %>">
+                                                <input type="hidden" name="appointmentID"
+                                                       value="<%= appointment._id %>">
+                                                <input type="hidden" name="tableName" value="new appointments">
+                                            </form>
+                                        <% }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="sendSMS" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-sm-12">
+                            <textarea rows="4" class="form-control no-resize" name="paragraph"
+                                      placeholder="Please type the message here..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Send SMS</button>
+                <button id="cancel-btn" type="button" class="btn btn-success">Send SMS and add the number to my
+                    contacts
+                </button>
+                <button id="cancel-btn" type="button" class="btn btn-secondary">Add the number to my contacts</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="page-body px-xl-4 px-sm-2 px-0 py-lg-2 py-1 mt-0 mt-lg-3">
+    <div class="container-fluid">
+        <div class="row g-2 row-deck">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="card-title m-0"><%= translation.approved_appointments %></h6>
+                        <div class="dropdown morphing scale-left">
+                            <a href="#" class="card-fullscreen" data-bs-toggle="tooltip" aria-label="Card Full-Screen"
+                               data-bs-original-title="Card Full-Screen"><i class="icon-size-fullscreen"></i></a>
+                            <a href="#" class="more-icon dropdown-toggle" data-bs-toggle="dropdown"
+                               aria-expanded="false"><i class="fa fa-ellipsis-h"></i></a>
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="myAllDoctor_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                            <div class="row dt-row">
+                                <div class="col-sm-12">
+                                    <table id=""
+                                           class="myTable display table card-table table-hover align-middle mb-0 nowrap dataTable no-footer dtr-inline"
+                                           aria-describedby="myAllDoctor_info" style="width: 1133px;">
+                                        <thead>
+                                        <tr>
+                                            <th class="sorting sorting_asc" tabindex="0" aria-controls="myAllDoctor"
+                                                rowspan="1" colspan="1" style="width: 60px; text-align: center;"
+                                                aria-sort="ascending"
+                                                aria-label="#: activate to sort column descending"><%= translation.id_number %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 196.2px; text-align: center;"
+                                                aria-label="Doctor: activate to sort column ascending"><%= translation.first_name %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 139.2px; text-align: center"
+                                                aria-label="Specialist: activate to sort column ascending"><%= translation.last_name %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 123.2px; text-align: center"
+                                                aria-label="Schedule: activate to sort column ascending"><%= translation.tel %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 93.2px; text-align: center"
+                                                aria-label="Progress: activate to sort column ascending"><%= translation.disease %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 106.2px; text-align: center"
+                                                aria-label="Date Join: activate to sort column ascending"><%= translation.date %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 88.2px; text-align: center"
+                                                aria-label="Status: activate to sort column ascending"><%= translation.appointment_hour %>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <% foundApprovedAppointments.forEach(function (appointment) { %>
+                                            <form class="deleteAndUpdateForm"
+                                                  id="approvedAppointment_<%= appointment._id %>">
+                                                <tr id="appointment_<%= appointment._id %>" class="deleteRow">
+                                                    <td style="text-align: center"><%= appointment.idNumber %></td>
+                                                    <td style="text-align: center"><%= appointment.fName %></td>
+                                                    <td style="text-align: center"><%= appointment.lName %></td>
+                                                    <td style="text-align: center"><%= appointment.tel %></td>
+                                                    <td style="text-align: center"><%= appointment.service %></td>
+                                                    <td style="text-align: center"><%= appointment.date %></td>
+                                                    <td style="text-align: center"><%= appointment.time %></td>
+                                                </tr>
+                                                <input type="hidden" name="appointmentID"
+                                                       value="<%= appointment._id %>">
+                                                <input type="hidden" name="tableName" value="approved appointments">
+                                            </form>
+                                        <% }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="page-body px-xl-4 px-sm-2 px-0 py-lg-2 py-1 mt-0 mt-lg-3">
+    <div class="container-fluid">
+        <div class="row g-2 row-deck">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="card-title m-0"><%= translation.canceled_appointments %></h6>
+                        <div class="dropdown morphing scale-left">
+                            <a href="#" class="card-fullscreen" data-bs-toggle="tooltip" aria-label="Card Full-Screen"
+                               data-bs-original-title="Card Full-Screen"><i class="icon-size-fullscreen"></i></a>
+                            <a href="#" class="more-icon dropdown-toggle" data-bs-toggle="dropdown"
+                               aria-expanded="false"><i class="fa fa-ellipsis-h"></i></a>
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="myAllDoctor_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                            <div class="row dt-row">
+                                <div class="col-sm-12">
+                                    <table id=""
+                                           class="myTable display table card-table table-hover align-middle mb-0 nowrap dataTable no-footer dtr-inline"
+                                           aria-describedby="myAllDoctor_info" style="width: 1133px;">
+                                        <thead>
+                                        <tr>
+                                            <th class="sorting sorting_asc" tabindex="0" aria-controls="myAllDoctor"
+                                                rowspan="1" colspan="1" style="width: 60px; text-align: center;"
+                                                aria-sort="ascending"
+                                                aria-label="#: activate to sort column descending"><%= translation.id_number %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 196.2px; text-align: center;"
+                                                aria-label="Doctor: activate to sort column ascending"><%= translation.first_name %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 139.2px; text-align: center"
+                                                aria-label="Specialist: activate to sort column ascending"><%= translation.last_name %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 123.2px; text-align: center"
+                                                aria-label="Schedule: activate to sort column ascending"><%= translation.tel %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 93.2px; text-align: center"
+                                                aria-label="Progress: activate to sort column ascending"><%= translation.disease %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 106.2px; text-align: center"
+                                                aria-label="Date Join: activate to sort column ascending"><%= translation.date %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 88.2px; text-align: center"
+                                                aria-label="Status: activate to sort column ascending"><%= translation.appointment_hour %>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <% foundCanceledAppointments.forEach(function (appointment) { %>
+                                            <form class="deleteAndUpdateForm"
+                                                  id="approvedAppointment_<%= appointment._id %>">
+                                                <tr id="appointment_<%= appointment._id %>" class="deleteRow">
+                                                    <td style="text-align: center"><%= appointment.idNumber %></td>
+                                                    <td style="text-align: center"><%= appointment.fName %></td>
+                                                    <td style="text-align: center"><%= appointment.lName %></td>
+                                                    <td style="text-align: center"><%= appointment.tel %></td>
+                                                    <td style="text-align: center"><%= appointment.service %></td>
+                                                    <td style="text-align: center"><%= appointment.date %></td>
+                                                    <td style="text-align: center"><%= appointment.time %></td>
+                                                </tr>
+                                                <input type="hidden" name="appointmentID"
+                                                       value="<%= appointment._id %>">
+                                                <input type="hidden" name="tableName" value="approved appointments">
+                                            </form>
+                                        <% }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="ovLay" class="ovLay">
+    <div id="popup" class="popup">
+        <div><span id="close"><i class="fa fa-times"></i></span></div>
+        <div class="hours">
+            <% hoursList.forEach(hour => { %>
+                <div class="hour"><%= hour %></div>
+            <% }) %>
+        </div>
+        <div class="timeslots"></div>
+    </div>
+</div>
+
+
+<script>
+    <% const foundAppointmentsJSON = JSON.stringify(foundAppointments); %>
+    const foundAppointments = JSON.parse('<%- foundAppointmentsJSON %>');
+</script>
+
+<script>
+    // add an event listener to the cancel button
+    document.getElementById('cancel-btn').addEventListener('click', function () {
+        // display the SweetAlert popup
+        swal({
+            title: "Are you sure?",
+            text: "Do you want to cancel the appointment booking process?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+            customClass: {
+                content: 'text-center'
+            }
+        })
+            .then((willCancel) => {
+                // if the user clicks "Yes"
+                if (willCancel) {
+                    // clear the form inputs
+                    document.getElementById('add-apnt').reset();
+                }
+            });
+    });
+</script>
+
+<div class="modal fade" id="sendSMS" tabindex="-1" style="display: none;"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="col-sm-12">
+            <textarea rows="4" class="form-control no-resize" name="paragraph"
+                      placeholder="Please type if you have any notes here..."></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <button type="submit" class="btn btn-primary">Book appointment</button>
+        <button id="cancel-btn" type="button" class="btn btn-secondary">Cancel</button>
+    </div>
+</div>
+
+
+<%- include("partials/footer"); -%>

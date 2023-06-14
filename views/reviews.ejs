@@ -1,0 +1,265 @@
+<%- include("partials/header"); -%>
+
+
+<div class="page-body px-xl-4 px-sm-2 px-0 py-lg-2 py-1 mt-0 mt-lg-3">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="card-title m-0"><%= translation.inactive_reviews %></h6>
+                        <div class="dropdown morphing scale-left">
+                            <a href="#" class="card-fullscreen" data-bs-toggle="tooltip" aria-label="Card Full-Screen"
+                               data-bs-original-title="Card Full-Screen"><i class="icon-size-fullscreen"></i></a>
+                            <a href="#" class="more-icon dropdown-toggle" data-bs-toggle="dropdown"
+                               aria-expanded="false"><i class="fa fa-ellipsis-h"></i></a>
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="myPatientAll_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                            <div class="row dt-row">
+                                <div class="col-sm-12">
+                                    <table id="myPatientAll"
+                                           class="myTable table card-table table-hover align-middle mb-0 nowrap dataTable no-footer dtr-inline"
+                                           aria-describedby="myPatientAll_info" style="width: 1132px;">
+                                        <thead>
+                                        <tr>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="text-align: center; max-width: 30px"
+                                                aria-label="Doctor: activate to sort column ascending">#
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 196.2px; text-align: center;"
+                                                aria-label="Doctor: activate to sort column ascending"><%= translation.full_name %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 139.2px; text-align: center"
+                                                aria-label="Specialist: activate to sort column ascending"><%= translation.profession %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 93.2px; text-align: center"
+                                                aria-label="Progress: activate to sort column ascending"><%= translation.city %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 106.2px; text-align: center"
+                                                aria-label="Date Join: activate to sort column ascending"><%= translation.rate %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 88.2px; text-align: center"
+                                                aria-label="Status: activate to sort column ascending"><%= translation.review %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 88.2px; text-align: center"
+                                                aria-label="Status: activate to sort column ascending"><%= translation.action %>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <% inactiveReviews.forEach(function (review, idx) { %>
+                                            <tr id="review_<%= review._id %>" class="table-row">
+                                                <form method="post" class="form">
+                                                    <td style="text-align: center"><%= idx + 1 %></td>
+                                                    <td style="text-align: center"><%= review.name %><input
+                                                                type="hidden"
+                                                                name="name"
+                                                                value='<%= review.name %>'>
+                                                    </td>
+                                                    <td style="text-align: center"><%= review.profession %><input
+                                                                type="hidden"
+                                                                name="profession"
+                                                                value='<%= review.profession %>'>
+                                                    </td>
+                                                    <td style="text-align: center"><%= review.city %><input
+                                                                type="hidden"
+                                                                name="city"
+                                                                value='<%= review.city %>'>
+                                                    </td>
+                                                    <td style="text-align: center; color: gold"><%- review.stars %>
+                                                        <input
+                                                                type="hidden" name="rating"
+                                                                value='<%= review.rating %>'></td>
+                                                    <td style="text-align: center">
+                                                        <button type="button"
+                                                                onclick="populateReview('<%= review.review %>', '<%= review.name %>', '<%- review.stars %>')"
+                                                                class="btn color-400 btn-outline-primary"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#reviewPop"
+                                                        >
+                                                            <%= translation.read %></button>
+                                                        <input
+                                                                type="hidden" name="review"
+                                                                value='<%= review.review %>'></td>
+                                                    <td class="btnsCell" style="text-align: center">
+                                                        <button id="<%= review._id %>_updateBtn" type="button"
+                                                                class="btn btn-link btn-sm color-400 btn-outline-warning"
+                                                                data-bs-placement="top"
+                                                                aria-label="Edit" data-bs-original-title="Edit"
+                                                                data-original-title="" title=""
+                                                                onclick="activeReview('<%= review.name %>', '<%= review._id %>')"
+                                                        ><i class="fa fa-toggle-off"></i>
+                                                        </button>
+                                                        <button id="<%= review._id %>_deleteBtn" type="button"
+                                                                class="btn btn-link btn-sm color-400 btn-outline-danger"
+                                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                aria-label="Delete" data-bs-original-title="Delete"
+                                                                data-original-title="" title=""
+                                                                onclick="deleteReview('<%= review.name %>', '<%= review._id %>' )">
+                                                            <i
+                                                                    class="fa fa-trash"></i></button>
+                                                    </td>
+                                                </form>
+                                            </tr>
+                                        <% }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- .row end -->
+    </div>
+</div>
+
+
+<div class="page-body px-xl-4 px-sm-2 px-0 py-lg-2 py-1 mt-0 mt-lg-3">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="card-title m-0"><%= translation.active_reviews %></h6>
+                        <div class="dropdown morphing scale-left">
+                            <a href="#" class="card-fullscreen" data-bs-toggle="tooltip" aria-label="Card Full-Screen"
+                               data-bs-original-title="Card Full-Screen"><i class="icon-size-fullscreen"></i></a>
+                            <a href="#" class="more-icon dropdown-toggle" data-bs-toggle="dropdown"
+                               aria-expanded="false"><i class="fa fa-ellipsis-h"></i></a>
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="myPatientAll_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                            <div class="row dt-row">
+                                <div class="col-sm-12">
+                                    <table id="myPatientAll"
+                                           class="myTable table card-table table-hover align-middle mb-0 nowrap dataTable no-footer dtr-inline"
+                                           aria-describedby="myPatientAll_info" style="width: 1132px;">
+                                        <thead>
+                                        <tr>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="text-align: center; max-width: 30px"
+                                                aria-label="Doctor: activate to sort column ascending">#
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 196.2px; text-align: center;"
+                                                aria-label="Doctor: activate to sort column ascending"><%= translation.full_name %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 139.2px; text-align: center"
+                                                aria-label="Specialist: activate to sort column ascending"><%= translation.profession %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 93.2px; text-align: center"
+                                                aria-label="Progress: activate to sort column ascending"><%= translation.city %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 106.2px; text-align: center"
+                                                aria-label="Date Join: activate to sort column ascending"><%= translation.rate %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 88.2px; text-align: center"
+                                                aria-label="Status: activate to sort column ascending"><%= translation.review %>
+                                            </th>
+                                            <th class="sorting" tabindex="0" aria-controls="myAllDoctor" rowspan="1"
+                                                colspan="1" style="width: 88.2px; text-align: center"
+                                                aria-label="Status: activate to sort column ascending"><%= translation.action %>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <% activeReviews.forEach(function (review, idx) { %>
+                                            <tr id="review_<%= review._id %>" class="table-row">
+                                                <form method="post" class="form">
+                                                    <td style="text-align: center"><%= idx + 1 %></td>
+                                                    <td style="text-align: center"><%= review.name %><input
+                                                                type="hidden"
+                                                                name="name"
+                                                                value='<%= review.name %>'>
+                                                    </td>
+                                                    <td style="text-align: center"><%= review.profession %><input
+                                                                type="hidden"
+                                                                name="profession"
+                                                                value='<%= review.profession %>'>
+                                                    </td>
+                                                    <td style="text-align: center"><%= review.city %><input
+                                                                type="hidden"
+                                                                name="city"
+                                                                value='<%= review.city %>'>
+                                                    </td>
+                                                    <td style="text-align: center; color: gold"><%- review.stars %>
+                                                        <input
+                                                                type="hidden" name="rating"
+                                                                value='<%= review.rating %>'></td>
+                                                    <td style="text-align: center">
+                                                        <button type="button"
+                                                                onclick="populateReview('<%= review.review %>', '<%= review.name %>', '<%- review.stars %>')"
+                                                                class="btn color-400 btn-outline-primary"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#reviewPop"
+                                                                >
+                                                            <%= translation.read %></button>
+                                                        <input
+                                                                type="hidden" name="review"
+                                                                value='<%= review.review %>'></td>
+                                                    <td class="btnsCell" style="text-align: center">
+                                                        <button id="<%= review._id %>_updateBtn" type="button"
+                                                                class="btn btn-link btn-sm color-400 btn-outline-info"
+                                                                data-bs-placement="top"
+                                                                aria-label="Edit" data-bs-original-title="Edit"
+                                                                data-original-title="" title=""
+                                                                onclick="inactiveReview('<%= review.name %>', '<%= review._id %>')"
+                                                        ><i class="fa fa-toggle-on"></i>
+                                                        </button>
+                                                        <button id="<%= review._id %>_deleteBtn" type="button"
+                                                                class="btn btn-link btn-sm color-400 btn-outline-danger"
+                                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                aria-label="Delete" data-bs-original-title="Delete"
+                                                                data-original-title="" title=""
+                                                                onclick="deleteReview('<%= review.name %>', '<%= review._id %>' )">
+                                                            <i
+                                                                    class="fa fa-trash"></i></button>
+                                                    </td>
+                                                </form>
+                                            </tr>
+                                        <% }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- .row end -->
+    </div>
+</div>
+
+
+<div class="modal fade" id="reviewPop" tabindex="-1" style="display: none;"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="popupRating" class="modal-title"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <p style="padding: 30px" id="reviewDiv" class="modal-title">HHHHHHHHiiiiiiiiiiii</p>
+        </div>
+    </div>
+</div>
+
+
+<%- include("partials/footer"); -%>

@@ -1,0 +1,531 @@
+<%- include("partials/header"); -%>
+
+<!-- start: page toolbar -->
+<div class="page-toolbar px-xl-4 px-sm-2 px-0 py-3">
+    <div class="container-fluid">
+        <div class="row g-3 mb-3 align-items-center">
+            <div class="col">
+                <ol class="breadcrumb bg-transparent mb-0">
+                    <li class="breadcrumb-item"><a class="text-secondary" href="/"><%= translation.home %></a></li>
+                    <li class="breadcrumb-item"><a class="text-secondary" href="#"><%= translation.account %></a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><%= translation.invoices %></li>
+                </ol>
+            </div>
+        </div> <!-- .row end -->
+        <div class="row align-items-center">
+            <div class="col">
+                <h1 class="fs-5 color-900 mt-1 mb-0"><%= translation.welcome_back_dr %> <%= locals.doctor ? locals.doctor.fName : '' %>
+                    !</h1>
+                <small class="text-muted"></small>
+            </div>
+            <div class="col-xxl-4 col-xl-5 col-lg-6 col-md-7 col-sm-12 mt-2 mt-md-0">
+                <!-- Plugin Js -->
+                <script src="../assets/js/bundle/daterangepicker.bundle.js"></script>
+                <!-- Jquery Page Js -->
+                <script>
+                    // date range picker
+                    $(function () {
+                        $('input[name="daterange"]').daterangepicker({
+                            opens: 'left'
+                        }, function (start, end, label) {
+                            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+                        });
+                    })
+                </script>
+            </div>
+        </div> <!-- .row end -->
+    </div>
+</div>
+
+<!-- start: page body -->
+<div class="page-body px-xl-4 px-sm-2 px-0 py-lg-2 py-1 mt-0 mt-lg-3">
+    <div class="container-fluid">
+        <div class="row g-3">
+            <div class="col-12">
+                <!-- invoices: recent -->
+                <div class="card fieldset border border-primary">
+                    <span class="fieldset-tile text-primary bg-body"><%= translation.recent_invoices %>:</span>
+                    <div class="owl-carousel owl-theme owl-loaded owl-drag" id="recent_invoices">
+                        <div class="owl-stage-outer">
+                            <div class="owl-stage"
+                                 style="transform: translate3d(0px, 0px, 0px); transition: all 0s ease 0s; width: 1318px;">
+                                <% foundInvoices.forEach(function (invoice, index) { %>
+                                    <div class="owl-item active" style="width: 275.5px; margin-right: 10px;">
+                                        <!--                                        <div class="item card ribbon">-->
+                                        <div class="item card">
+                                            <div class="card-body">
+                                                <div class="avatar lg rounded-circle no-thumbnail mb-3 fs-5">
+                                                    <%
+                                                        const firstNameInitial = invoice.fullName.charAt(0);
+                                                        const lastNameInitial = invoice.fullName.split(' ')[1].charAt(0);
+                                                        const initials = firstNameInitial + lastNameInitial;
+                                                    %>
+                                                    <%= initials %>
+                                                </div>
+                                                <small class="text-muted"><%= translation.total %></small>
+                                                <h4><%= translation.usd %> <%= invoice.total %></h4>
+                                                <ul class="lh-lg mb-0 text-muted">
+                                                    <li><%= invoice.fullName %></li>
+                                                    <li><%= invoice.invoiceId %></li>
+                                                    <li><%= invoice.invoiceDate %></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }) %>
+                                <div class="owl-nav">
+                                    <button type="button" role="presentation" class="owl-prev disabled"><span
+                                                aria-label="Previous">‹</span></button>
+                                    <button type="button" role="presentation" class="owl-next"><span
+                                                aria-label="Next">›</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Plugin Js -->
+                        <script src="../assets/js/bundle/owlcarousel.bundle.js"></script>
+                        <!-- Jquery Page Js -->
+                        <script>
+                            // recent invoices Carousel
+                            $('#recent_invoices').owlCarousel({
+                                loop: true,
+                                margin: 10,
+                                responsiveClass: true,
+                                responsive: {
+                                    0: {
+                                        items: 1,
+                                        nav: true
+                                    },
+                                    600: {
+                                        items: 2,
+                                        nav: false
+                                    },
+                                    1000: {
+                                        items: 4,
+                                        nav: true,
+                                        loop: false
+                                    },
+                                    1400: {
+                                        items: 5,
+                                        nav: true,
+                                        loop: false
+                                    }
+                                }
+                            })
+                        </script>
+                    </div>
+                    <div class="col-12">
+                        <!-- invoices: all -->
+                        <div class="card fieldset border border-muted">
+                            <span class="fieldset-tile text-muted bg-body"><%= translation.all_invoices %></span>
+                            <div id="invoice_list_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-6"></div>
+                                    <div class="col-sm-12 col-md-6"></div>
+                                </div>
+                                <div class="row dt-row">
+                                    <div class="col-sm-12">
+                                        <div id="invoice_list_wrapper"
+                                             class="dataTables_wrapper dt-bootstrap5 no-footer">
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-6"></div>
+                                                <div class="col-sm-12 col-md-6"></div>
+                                            </div>
+                                            <div class="row dt-row">
+                                                <div class="col-sm-12">
+                                                    <table
+                                                            class="myTable table card-table align-middle mb-0 nowrap dataTable no-footer dtr-inline"
+                                                            style="width: 1147px;">
+                                                        <thead>
+
+                                                        <th class="sorting" tabindex="0"
+                                                            aria-controls="invoice_list" rowspan="1" colspan="1"
+                                                            style="width: 83.2px;"
+                                                            aria-label="Invoice: activate to sort column ascending">
+                                                            <%= translation.invoice %>
+                                                        </th>
+                                                        <th class="sorting" tabindex="0"
+                                                            aria-controls="invoice_list" rowspan="1" colspan="1"
+                                                            style="width: 200.2px;"
+                                                            aria-label="Name: activate to sort column ascending">
+                                                            <%= translation.name %>
+                                                        </th>
+                                                        <th class="sorting" tabindex="0"
+                                                            aria-controls="invoice_list" rowspan="1" colspan="1"
+                                                            style="width: 108.2px;"
+                                                            aria-label="Total: activate to sort column ascending">
+                                                            <%= translation.total %>
+                                                        </th>
+                                                        <th class="sorting" tabindex="0"
+                                                            aria-controls="invoice_list" rowspan="1" colspan="1"
+                                                            style="width: 108.2px;"
+                                                            aria-label="Total: activate to sort column ascending">
+                                                            <%= translation.paid %>
+                                                        </th>
+                                                        <th class="sorting" tabindex="0"
+                                                            aria-controls="invoice_list" rowspan="1" colspan="1"
+                                                            style="width: 108.2px;"
+                                                            aria-label="Total: activate to sort column ascending">
+                                                            <%= translation.remaining %>
+                                                        </th>
+                                                        <th class="sorting" tabindex="0"
+                                                            aria-controls="invoice_list" rowspan="1" colspan="1"
+                                                            style="width: 107.2px;"
+                                                            aria-label="Date: activate to sort column ascending">
+                                                            <%= translation.date %>
+                                                        </th>
+                                                        <th class="sorting" tabindex="0"
+                                                            aria-controls="invoice_list" rowspan="1" colspan="1"
+                                                            style="width: 176.2px;"
+                                                            aria-label="Action: activate to sort column ascending">
+                                                            <%= translation.action %>
+                                                        </th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <% foundPatients.forEach(function (patient, index) { %>
+                                                            <% patient.invoices.forEach(function (invoice, index) { %>
+                                                                <tr class="row-selectable odd invRowRmv_<%= invoice._id %>"
+                                                                    id="invoice-row-<%= index %>">
+                                                                    <form class="deleteAndUpdateForm"
+                                                                          id="<%= invoice._id %>">
+                                                                        <input type="hidden" name="patientID"
+                                                                               value="<%= patient._id %>">
+                                                                        <input type="hidden" name="invoiceID"
+                                                                               value="<%= invoice._id %>">
+                                                                        <input type="hidden" name="totalPrice"
+                                                                               value="<%= invoice.totalPrice %>">
+                                                                        <input type="hidden" name="amountPaid"
+                                                                               value="<%= invoice.amountPaid %>">
+                                                                        <input type="hidden" name="due"
+                                                                               value="<%= invoice.due %>">
+                                                                        <input type="hidden" name="invoiceDate"
+                                                                               value="<%= invoice.invoiceDate %>">
+                                                                        <input type="hidden" name="invoice-Id"
+                                                                               value="<%= invoice.invoiceId %>">
+                                                                        <input type="hidden" name="invoice-status"
+                                                                               value="<%= invoice.status %>">
+                                                                        <input type="hidden" name="items"
+                                                                               value="<%= invoice.items %>">
+                                                                        <td class="fw-bold"><%= invoice.invoiceId %></td>
+                                                                        <td>
+                                                                            <div class="d-flex align-items-center">
+                                                                                <img src="/assets/img/<%= patient.gender %>.png"
+                                                                                     class="rounded-circle sm avatar"
+                                                                                     alt="">
+                                                                                <div class="ms-2 mb-0"><%= patient.fName %> <%= patient.lName %></div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td class="fw-bold"><%= invoice.totalPrice %></td>
+                                                                        <td class="fw-bold"><%= invoice.amountPaid %></td>
+                                                                        <td class="fw-bold"><%= invoice.due %></td>
+                                                                        <td class="fw-bold"><%= invoice.invoiceDate %></td>
+                                                                        <td>
+                                                                            <button type="button"
+                                                                                    class="btn btn-link btn-sm color-400 btn-outline-primary"
+                                                                                    data-bs-toggle="modal"
+                                                                                    data-bs-target="#invoice_detail"
+                                                                                    onclick="handleAllInvoices('<%= index %>', '<%= patient._id %>', '<%= invoice._id %>')">
+                                                                                <i class="fa fa-envelope"></i></button>
+                                                                            <button type="button"
+                                                                                    class="btn btn-link btn-sm color-400 btn-outline-warning"
+                                                                                    data-bs-toggle="modal"
+                                                                                    data-bs-target="#invoice_detail"
+                                                                                    onclick="handleAllInvoices('<%= index %>', '<%= patient._id %>', '<%= invoice._id %>')">
+                                                                                <i class="fa fa-download"></i></button>
+                                                                            <button type="button"
+                                                                                    class="btn btn-link btn-sm color-400 btn-outline-danger"
+                                                                                    data-bs-toggle="tooltip"
+                                                                                    data-bs-placement="top"
+                                                                                    aria-label="Delete"
+                                                                                    data-bs-original-title="Delete"
+                                                                                    data-original-title="" title=""
+                                                                                    onclick="deleteInvoice('<%= invoice.invoiceId %>', '<%= invoice._id %>')">
+                                                                                <i
+                                                                                        class="fa fa-trash"></i>
+                                                                            </button>
+                                                                        </td>
+                                                                    </form>
+                                                                </tr>
+                                                            <% }) %>
+                                                        <% }) %>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-5"></div>
+                                                <div class="col-sm-12 col-md-7"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-5"></div>
+                                    <div class="col-sm-12 col-md-7"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Plugin Js -->
+                        <script src="../assets/js/bundle/dataTables.bundle.js"></script>
+                        <!-- Jquery Page Js -->
+                        <script>
+                            $(document).ready(function () {
+                                $('#invoice_list').addClass('nowrap').dataTable({
+                                    responsive: true,
+                                    searching: false,
+                                    paging: false,
+                                    ordering: true,
+                                    info: false,
+                                });
+                                $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+                                    $($.fn.dataTable.tables(true)).DataTable().columns.adjust().responsive.recalc();
+                                });
+                            });
+                        </script>
+                        <!-- Modal: invoice send -->
+                        <!-- <button class="btn btn-primary px-4 text-uppercase" data-bs-toggle="modal" data-bs-target="#invoice_send" type="button">invoice send</button> -->
+                        <div class="modal fade" id="invoice_send" tabindex="-1" style="display: none;"
+                             aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Invoice #RA0011</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body custom_scroll">
+                                        <table class="card p-2">
+                                            <tbody>
+                                            <tr>
+                                                <td></td>
+                                                <td style="text-align: center; width: 100%;">
+                                                    <table class="table table-borderless mb-0" width="100%"
+                                                           cellpadding="0" cellspacing="0">
+                                                        <tbody>
+                                                        <tr>
+                                                            <td style="text-align: center;">
+                                                                <h2 style="margin-bottom: 0;">$33.98 Paid</h2>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="padding-bottom:30px; padding-top: 10px; text-align: center;">
+                                                                <h4 style="margin-bottom: 0;">Thanks for using TTM
+                                                                    Inc.</h4>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="padding: 20px 0;">
+                                                                <table width="100%">
+                                                                    <tbody>
+                                                                    <tr>
+                                                                        <td> Attn: <strong>Daniel Marek</strong>
+                                                                            43-190 Mikolow, Poland<br> Email:
+                                                                            marek@daniel.com<br> Phone: +48 123 456
+                                                                            789<br>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <table class="table table-borderless table-striped mb-0"
+                                                                                   cellpadding="0" cellspacing="0">
+                                                                                <tbody>
+                                                                                <tr>
+                                                                                    <td style="text-align: left;">
+                                                                                        Extended License
+                                                                                    </td>
+                                                                                    <td style="text-align: right;">
+                                                                                        $19.99
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td style="text-align: left;">1
+                                                                                        year subcription
+                                                                                    </td>
+                                                                                    <td style="text-align: right;">
+                                                                                        $9.99
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td style="text-align: left;">
+                                                                                        Instalation and
+                                                                                        Customization
+                                                                                    </td>
+                                                                                    <td style="text-align: right;">
+                                                                                        $4.00
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td style="text-align: right;"
+                                                                                        width="80%">
+                                                                                        <strong>Total</strong></td>
+                                                                                    <td style="text-align: right;">
+                                                                                        $33.98
+                                                                                    </td>
+                                                                                </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </td>
+                                                                    </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="padding: 10px 0; text-align: center;">
+                                                                <a href="#">View in browser</a>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="padding: 0; text-align: center;"> TTM Inc. 70
+                                                                Bowman St. South Windsor, CT 06074
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <table width="100%"
+                                                           style="text-align: center; margin-top: 40px;">
+                                                        <tbody>
+                                                        <tr>
+                                                            <td class="aligncenter content-block">Questions? Email
+                                                                <a href="mailto:">info@thememakker.com</a></td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary">Send Email</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            Close
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Modal: invoice detail -->
+                        <!-- <button class="btn btn-primary px-4 text-uppercase" data-bs-toggle="modal" data-bs-target="#invoice_detail" type="button">invoice detail</button> -->
+                        <div class="modal fade" id="invoice_detail" tabindex="-1" style="display: none;"
+                             aria-hidden="true">
+                            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                                <form id="generate-pdf" method="post">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 id="invID" class="modal-title"></h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div id="invoice_detail_by_email" class="modal-body custom_scroll">
+                                            <table id="invTable" class="table table-borderless mb-0">
+                                                <input type="hidden" name="invoID" id="sentInvoice">
+                                                <input type="hidden" name="patientID" id="patientID">
+                                                <tbody>
+                                                <tr>
+                                                    <td id="invDate"></td>
+                                                    <td class="text-end">
+                                                        <span id="invStatus" class="text-danger"></span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div>From:</div>
+                                                        <div class="fs-6 fw-bold mb-1">
+                                                            Dr. <%= doctor.fName %> <%= doctor.lName %></div>
+                                                        <div><%= doctor.address.state %> <%= doctor.address.street %></div>
+                                                        <div><%= doctor.address.zipCode %>
+                                                            , <%= doctor.address.city %> <%= doctor.address.country %></div>
+                                                        <div>Email: <%= doctor.email %></div>
+                                                        <div>Phone: <%= doctor.tel %></div>
+                                                    </td>
+                                                    <td class="text-end" id="toPatient">
+                                                        <div>To:</div>
+                                                        <div class="fs-6 fw-bold mb-1" id="patientName"></div>
+                                                        <div id="patientEmail"></div>
+                                                        <div id="patientPhone"></div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2">
+                                                        <table id="invItemsTable"
+                                                               class="table table-borderless table-striped mb-0">
+                                                            <thead>
+                                                            <tr>
+                                                                <th style="text-align: center" class="text-center">#
+                                                                </th>
+                                                                <th style="text-align: center">Item</th>
+                                                                <th style="text-align: center">Description</th>
+                                                                <th style="text-align: center" class="">Unit Cost</th>
+                                                                <th style="text-align: center" class="text-center">Qty
+                                                                </th>
+                                                                <th style="text-align: center" class="text-end">Total
+                                                                </th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr>
+                                                                <td colspan="3" style="width: 700px;">
+                                                                    <h6>Terms &amp; Condition</h6>
+                                                                    <p id="termsAndCondition" class="text-muted"></p>
+                                                                </td>
+                                                                <td colspan="3" style="width: 50px">
+                                                                    <table class="table table-borderless mb-0 totalTable">
+                                                                        <tbody>
+                                                                        <tr>
+                                                                            <td><strong>Total</strong></td>
+                                                                            <td class="text-end"><strong
+                                                                                        id="invTotal"></strong>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td><strong>Amount Paid</strong></td>
+                                                                            <td id="amntPaid" class="text-end"></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td><strong>Balance Due</strong></td>
+                                                                            <td class="text-end"><strong
+                                                                                        id="balanceDue"></strong></td>
+                                                                        </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" onclick="window.print()">
+                                                <i class="fa fa-print me-2"></i>Print
+                                            </button>
+                                            <button type="button" class="btn btn-primary send-pdf-button2"
+                                                    onclick="sendPdfButton(this)">
+                                                <i class="fa fa fa-envelope me-2"></i>Send Email
+                                            </button>
+                                            <button id="generate-pdf-button" type="button" class="btn btn-primary"
+                                                    onclick="downloadInvoice()">
+                                                <i class="fa fa-file-pdf-o me-2"></i>Download PDF
+                                            </button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                Close
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- .row end -->
+            </div>
+        </div>
+
+
+        <%- include("partials/footer"); -%>
