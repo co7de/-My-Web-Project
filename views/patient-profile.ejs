@@ -38,7 +38,7 @@
                             <div class="ms-md-5 m-0 mt-4 mt-md-0 text-md-start text-center">
                                 <h5 class="fw-bold"><%= patient ? patient.fName : '' %> <%= patient ? patient.lName : '' %>
                                     <span
-                                            class="text-danger"> $<%= lastInvoice ? lastInvoice.due : '' %></span></h5>
+                                            class="text-danger"><%= translation.remaining %> $<%= lastInvoice ? lastInvoice.due : '' %></span></h5>
                                 <p><strong><%= translation.address %>:</strong> <%= patient ? patient.adress : '' %></p>
                                 <div class="d-flex justify-content-center align-items-center mb-3 mt-2">
                                     <div class="me-3 me-md-5">
@@ -276,16 +276,6 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <h6 class="card-title fw-bold"><i class="fa fa-pencil"></i> <%= translation.note_for_patient %>
-                        </h6>
-                        <span>If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet.</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
                         <!-- Tab: navbar -->
                         <ul class="nav nav-tabs tab-card border-bottom-0 tab-card px-4" role="tablist">
                             <li class="nav-item" role="presentation"><a class="nav-link active" data-bs-toggle="tab"
@@ -391,36 +381,6 @@
                                                 <label class="form-check-label radio-inline" for="female">
                                                     <%= translation.female %>
                                                 </label>
-                                            </div>
-
-                                            <div class="form-group col-md-3">
-                                                <select class="form-control" name="disease">
-                                                    <option value="">- <%= translation.disease %> -</option>
-                                                    <option value="fever"
-                                                    <% if (patient.disease.toLocaleLowerCase() === 'fever'.toLocaleLowerCase()) { %>
-                                                            selected
-                                                            <% } %>
-                                                    >FEVER
-                                                    </option>
-                                                    <option value="cancer"
-                                                    <% if (patient.disease.toLocaleLowerCase() === 'cancer'.toLocaleLowerCase()) { %>
-                                                            selected
-                                                            <% } %>
-                                                    >CANCER
-                                                    </option>
-                                                    <option value="lakva"
-                                                    <% if (patient.disease.toLocaleLowerCase() === 'lakva'.toLocaleLowerCase()) { %>
-                                                            selected
-                                                            <% } %>
-                                                    >LAKVA
-                                                    </option>
-                                                    <option value="dental"
-                                                    <% if (patient.disease.toLocaleLowerCase() === 'dental'.toLocaleLowerCase()) { %>
-                                                            selected
-                                                            <% } %>
-                                                    >DENTAL
-                                                    </option>
-                                                </select>
                                             </div>
 
                                             <div class="form-group col-sm-3">
@@ -3732,28 +3692,11 @@
                                                     <div class="border-bottom pb-2">
                     <textarea class="form-control address"><%= translation.from %>:
 <%= locals.doctor ? locals.doctor.fName : '' %> <%= locals.doctor ? locals.doctor.lName : '' %>
-                        <%= locals.doctor ? locals.doctor.address.city : '' %> <%= locals.doctor ? locals.doctor.address.state : '' %>
-                        <%= locals.doctor ? locals.doctor.address.zipCode : '' %> <%= locals.doctor ? locals.doctor.address.street : '' %>, <%= locals.doctor ? locals.doctor.address.country : '' %>
-                        <%= locals.doctor ? locals.doctor.email : '' %>
-                        <%= locals.doctor ? locals.doctor.tel : '' %></textarea>
+<%= locals.doctor ? locals.doctor.address.city : '' %> <%= locals.doctor ? locals.doctor.address.state : '' %>
+<%= locals.doctor ? locals.doctor.address.zipCode : '' %> <%= locals.doctor ? locals.doctor.address.street : '' %>, <%= locals.doctor ? locals.doctor.address.country : '' %>
+<%= locals.doctor ? locals.doctor.email : '' %>
+<%= locals.doctor ? locals.doctor.tel : '' %></textarea>
 
-                                                        <div id="logo">
-                                                            <div id="logoctr">
-                                                                <a href="javascript:;" id="change-logo"
-                                                                   title="Change logo"><%= translation.change_logo %></a>
-                                                                <a href="javascript:;" id="save-logo"
-                                                                   title="Save changes"><%= translation.save %></a>
-                                                                | <a href="javascript:;" id="delete-logo"
-                                                                     title="Delete logo"><%= translation.delete_logo %></a>
-                                                                <a href="javascript:;" id="cancel-logo"
-                                                                   title="Cancel changes"><%= translation.cancel %></a>
-                                                            </div>
-                                                            <div id="logohelp">
-                                                                <input id="imageloc" type="text" size="50" value=""><br>
-                                                                (max width: 540px, max height: 100px)
-                                                            </div>
-                                                            <img id="image" src="/assets/img/logo-icon.svg" alt="logo">
-                                                        </div>
                                                     </div>
                                                     <div style="clear:both"></div>
                                                     <div style="display: flex; align-content: center; justify-content: space-between"

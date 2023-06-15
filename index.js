@@ -2975,7 +2975,7 @@ app.post("/add-patient", async (req, res) => {
 
 
 //the route handler is using app.post() to handle HTTP POST requests to "/patient-profile". It extracts various data fields from the request body using req.body. The extracted fields are then used to update a Patient document in a database using Patient.findOneAndUpdate().
-app.post("/patient-profile", async (req, res) => {
+app.post("/patient-profile", (req, res) => {
     // Extracting data from the request body
     const patientId = req.body.patientId;
     const idNumber = req.body.idNumber;
@@ -3193,7 +3193,7 @@ app.post("/patient-profile", async (req, res) => {
     const employer = req.body.employer;
     const workingPlan = req.body.workingPlan;
     // Updating the Patient document in the database
-    await Patient.findOneAndUpdate({_id: patientId}, {
+    Patient.findOneAndUpdate({_id: patientId}, {
         idNumber: idNumber,
         fName: fName,
         lName: lName,
