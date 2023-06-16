@@ -27,7 +27,6 @@ const {EventEmitter} = require('events');
 const { promisify } = require('util');
 
 
-
 // Create express application
 const app = express();
 
@@ -200,7 +199,6 @@ const eventEmitter = new EventEmitter();
 const contactEventEmitter = new EventEmitter();
 const contactEmitter = new EventEmitter();
 
-
 const appointmentSchema = {
     idNumber: String,
     fName: String,
@@ -217,7 +215,6 @@ const appointmentSchema = {
 }
 const Appointment = mongoose.model("appointment", appointmentSchema);
 
-
 const approvedAppointmentSchema = {
     idNumber: String,
     fName: String,
@@ -229,7 +226,6 @@ const approvedAppointmentSchema = {
 }
 const ApprovedAppointment = mongoose.model("ApprovedAppointment", approvedAppointmentSchema);
 
-
 const deletedAppointmentSchema = {
     idNumber: String,
     fName: String,
@@ -240,7 +236,6 @@ const deletedAppointmentSchema = {
     tel: String,
 }
 const DeletedAppointment = mongoose.model("deletedAppointment", deletedAppointmentSchema);
-
 
 const drugSchema = {
     idNumber: String,
@@ -257,7 +252,6 @@ const drugSchema = {
     thePriceOfTheQuantityPurchased: Number,
 }
 const Drug = mongoose.model('drug', drugSchema);
-
 
 const invoiceItemSchema = new mongoose.Schema({
     itemName: {type: String},
@@ -276,7 +270,6 @@ const invoiceItemSchema = new mongoose.Schema({
 });
 const InvoiceItem = mongoose.model('invoiceItem', invoiceItemSchema);
 
-
 const invoiceSchema = {
     fullName: {type: String},
     email: {type: String},
@@ -292,7 +285,6 @@ const invoiceSchema = {
 }
 const Invoice = mongoose.model('invoice', invoiceSchema);
 
-
 const lastVisitSchema = {
     patientId: String,
     date: String,
@@ -301,7 +293,6 @@ const lastVisitSchema = {
     reason: String
 };
 const LastVisit = mongoose.model('lastVisit', lastVisitSchema);
-
 
 const patientSchema = {
     idNumber: String,
@@ -662,8 +653,6 @@ const patientSchema = {
 }
 const Patient = mongoose.model('patient', patientSchema);
 
-
-
 const doctorSchema = new mongoose.Schema({
     idNumber: {
         type: String
@@ -765,7 +754,6 @@ const doctorSchema = new mongoose.Schema({
 });
 const Doctor = mongoose.model('Doctor', doctorSchema);
 
-
 const todoSchema = new mongoose.Schema({
     text: {
         type: String,
@@ -778,61 +766,6 @@ const todoSchema = new mongoose.Schema({
 });
 const Todo = mongoose.model('Todo', todoSchema);
 
-
-const authenticationSchema = new mongoose.Schema({
-    username: {
-        type: String
-    },
-    password: {
-        type: String
-    }
-});
-
-authenticationSchema.plugin(passportLocalMongoose);
-const Authentication = mongoose.model('Authentication', authenticationSchema);
-
-
-
-// Configure Passport to use the LocalStrategy for authentication
-passport.use(new LocalStrategy(Authentication.authenticate()));
-
-// Serialize the user object into the session
-passport.serializeUser(Authentication.serializeUser());
-
-// Deserialize the user object from the session
-passport.deserializeUser(Authentication.deserializeUser());
-
-
-// Set up session management
-// app.use(session({
-//     secret: "Our little secret.", // Secret used to sign the session ID cookie
-//     resave: false, // Whether to save the session on every request, even if it hasn't been modified
-//     saveUninitialized: false // Whether to save uninitialized sessions to the store
-// }));
-
-// Initialize Passport authentication
-// app.use(passport.initialize());
-
-// Enable persistent login sessions with Passport
-// app.use(passport.session());
-
-// Enable flash messages
-// app.use(flash());
-
-// Serialize the user object into the session
-// passport.serializeUser(function (doctor, done) {
-//     done(null, doctor.id);
-// });
-
-// Deserialize the user object from the session
-// passport.deserializeUser(function (id, done) {
-//     Doctor.findById(id, function (err, doctor) {
-//         done(err, doctor);
-//     });
-// });
-
-
-//Defining other schemas
 const clinicSchema = {
     idNumber: {
         type: String
@@ -1006,44 +939,10 @@ const contactSchema = new mongoose.Schema({
 const Contact = mongoose.model('Contact', contactSchema);
 
 
-// app.get('/register', (req, res) => {
-//     res.render('register');
-// });
-
-
-// Render the login page
-// app.get('/login', (req, res) => {
-//     res.render('sign-in', { errorMessage: req.flash('error') });
-// });
-
-/*
-// Render the registration page
-app.get("/register", function(req, res){
-    res.render("register");
-});
-*/
-
-// Handle the logout request
-// app.get("/logout", function (req, res) {
-//     req.logout(function (err) {
-//         if (err) {
-//             console.log(err);
-//         }
-//         res.redirect("/");
-//     });
-// });
-
-// Middleware to ensure user authentication
-// function ensureAuthenticated(req, res, next) {
-//     if (req.isAuthenticated()) {
-//         return next();
-//     }
-//     res.redirect("/login"); // Redirect to the login page if user is not authenticated
-// }
-
-// Render the dashboard page
+// This code block sets up a route handler for the "/dashboard" URL path. It renders the "index" view and passes the current language from the request to the view.
 app.get("/dashboard", async (req, res) => {
     try {
+        // Render the 'index' view with the current language set from the request
         res.render('index', { currentLanguage: req.language });
     } catch (error) {
         console.error(error);
@@ -1051,16 +950,19 @@ app.get("/dashboard", async (req, res) => {
     }
 });
 
+//This code block sets up a route handler for the root URL ("/"). It defines an array of hours and then retrieves active reviews from the database. It also generate
 app.get('/', async (req, res) => {
     const hoursList = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
 
     try {
+        // Retrieve active reviews from the database and generate stars for each review
         const activeReviews = await Review.find({ active: true }).exec();
         const activeReviewsWithStars = activeReviews.map((review) => ({
             ...review.toObject(),
             stars: generateStars(review.rating),
         }));
 
+        // Retrieve appointments from the database and render the "landing-page" view
         const foundAppointments = await Appointment.find({}).exec();
         res.render("landing-page", { hoursList, foundAppointments, activeReviewsWithStars });
     } catch (err) {
@@ -1069,8 +971,10 @@ app.get('/', async (req, res) => {
     }
 });
 
+//This code block sets up a route handler for the "/user/theme" URL path. It retrieves user preferences from the database and responds with JSON containing the theme.
 app.get('/user/theme', async function (req, res) {
     try {
+        // Retrieve user preferences from the database and respond with JSON containing the theme
         const userPreferences = await UserPreferences.find({}).exec();
         res.json({ theme: userPreferences[0] });
     } catch (err) {
@@ -1079,8 +983,10 @@ app.get('/user/theme', async function (req, res) {
     }
 });
 
+//This code block sets up a route handler for the "/api/invoices/:invoiceID" URL path. It retrieves an invoice from the database based on the provided invoice ID. If the invoice is found, it responds with the invoice data in JSON format. If the invoice is not found, it responds with a JSON error message and a 404 status code. If any error occurs during the process, it responds with a JSON error message and a 500 status code.
 app.get('/api/invoices/:invoiceID', async (req, res) => {
     try {
+        // Find an invoice by ID and respond with it if found; otherwise, respond with a 404 error
         const invoice = await Invoice.findOne({ _id: req.params.invoiceID }).exec();
         if (!invoice) {
             res.status(404).json({ message: 'Invoice not found' });
@@ -1093,8 +999,10 @@ app.get('/api/invoices/:invoiceID', async (req, res) => {
     }
 });
 
+//This code block sets up a route handler for the "/api/appointments/:id" URL path. It retrieves an appointment from the database based on the provided ID. It converts the appointment to a plain JavaScript object using the lean() method and responds with it in JSON format.
 app.get('/api/appointments/:id', async (req, res) => {
     try {
+        // Find an appointment by ID, convert it to a plain JavaScript object, and respond with it in JSON format
         const appointment = await Appointment.findById(req.params.id).lean().exec();
         res.json(appointment);
     } catch (error) {
@@ -1103,8 +1011,10 @@ app.get('/api/appointments/:id', async (req, res) => {
     }
 });
 
+//This code block sets up a route handler for the "/api/drug/:id" URL path. It retrieves a drug from the database based on the provided ID. It converts the drug to a plain JavaScript object using the lean() method and responds with it in JSON format.
 app.get('/api/drug/:id', async (req, res) => {
     try {
+        // Find a drug by ID, convert it to a plain JavaScript object, and respond with it in JSON format
         const drug = await Drug.findById(req.params.id).lean().exec();
         res.json(drug);
     } catch (error) {
@@ -1113,8 +1023,10 @@ app.get('/api/drug/:id', async (req, res) => {
     }
 });
 
+//This code block sets up a route handler for the "/switch-language/:lang" URL path. It updates the user's language preference based on the provided language parameter (lang). It retrieves the user preferences from the database, updates the language field, and saves the changes. Finally, it redirects the user to the "/dashboard" URL. If any error occurs during the process, it logs an error message and also redirects the user to the "/dashboard" URL.
 app.get('/switch-language/:lang', async (req, res) => {
     try {
+        // Update the user's language preference and redirect to the "/dashboard" URL
         const lang = req.params.lang;
 
         const userPreferences = await UserPreferences.findOne();
@@ -1129,7 +1041,6 @@ app.get('/switch-language/:lang', async (req, res) => {
         res.redirect('/dashboard');
     }
 });
-
 
 //Rendering account settings
 app.get("/account-settings",  async (req, res) => {
@@ -2617,13 +2528,19 @@ app.get("/account-settings",  async (req, res) => {
     }
 
 })
+
+//This code block sets up a route handler for the "/invoices" URL path. It retrieves the latest 10 invoices from the database and finds patients who have invoices associated with them. The invoices are populated for each patient. Finally, it renders the "invoices" view, passing the found patients and invoices to the view.
 app.get("/invoices", async (req, res) => {
     try {
+        // Retrieve the latest 10 invoices from the database
         const foundInvoices = await Invoice.find({}).limit(10).exec();
+
+        // Find patients with invoices and populate their invoices
         const foundPatients = await Patient.find({ invoices: { $exists: true, $ne: [] } })
             .populate("invoices")
             .exec();
 
+        // Render the 'invoices' view with the found patients and invoices
         res.render('invoices', { foundPatients, foundInvoices });
     } catch (error) {
         console.error(error);
@@ -2631,22 +2548,23 @@ app.get("/invoices", async (req, res) => {
     }
 });
 
-app.get("/create-invoice", (req, res) => {
-    res.render('createInvoice');
-});
-
+//This code block sets up a route handler for the "/doctor-profile" URL path. It renders the "doctorProfile" view.
 app.get("/doctor-profile", (req, res) => {
+    // Render the 'doctorProfile' view
     res.render('doctorProfile');
 });
 
+//This code block sets up a route handler for the "/book-appointment" URL path. It defines an array of hours and then retrieves appointments, approved appointments, and canceled appointments from the database. It renders the "book-appointment" view, passing the retrieved data and hours list to the view.
 app.get("/book-appointment", async (req, res) => {
     const hoursList = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
 
     try {
+        // Retrieve appointments, approved appointments, and canceled appointments from the database
         const foundAppointments = await Appointment.find({}).exec();
         const foundApprovedAppointments = await ApprovedAppointment.find({}).exec();
         const foundCanceledAppointments = await DeletedAppointment.find({}).exec();
 
+        // Render the "book-appointment" view with the retrieved data
         res.render("book-appointment", {
             foundAppointments,
             foundApprovedAppointments,
@@ -2659,10 +2577,13 @@ app.get("/book-appointment", async (req, res) => {
     }
 });
 
+//This code block sets up a route handler for the "/approved-appointments" URL path. It retrieves approved appointments from the database and renders the "approved-appointment" view, passing the found approved appointments to the view.
 app.get("/approved-appointments", async (req, res) => {
     try {
+        // Retrieve approved appointments from the database
         const foundApprovedAppointments = await ApprovedAppointment.find({}).exec();
 
+        // Render the "approved-appointment" view with the found approved appointments
         res.render("approved-appointment", {
             foundApprovedAppointments,
         });
@@ -2672,10 +2593,13 @@ app.get("/approved-appointments", async (req, res) => {
     }
 });
 
+//This code block sets up a route handler for the "/canceled-appointments" URL path. It retrieves canceled appointments from the database and renders the "canceled-appointments" view, passing the found canceled appointments to the view.
 app.get("/canceled-appointments", async (req, res) => {
     try {
+        // Retrieve canceled appointments from the database
         const foundCanceledAppointments = await DeletedAppointment.find({}).exec();
 
+        // Render the "canceled-appointments" view with the found canceled appointments
         res.render("canceled-appointments", {
             foundCanceledAppointments,
         });
@@ -2685,6 +2609,7 @@ app.get("/canceled-appointments", async (req, res) => {
     }
 });
 
+//This code defines a function generateStars() that generates star icons based on a given rating. It takes the rating as input and returns a string containing HTML-encoded star icons (filled or empty) representing the rating.
 // Star icons generator
 function generateStars(rating) {
     var stars = "";
@@ -2698,9 +2623,13 @@ function generateStars(rating) {
     return stars;
 }
 
+//This code block sets up a route handler for the "/patients" URL path. It retrieves all patients from the database and renders the "patients" view, passing the found patients to the view.
 app.get("/patients", async (req, res) => {
     try {
+        // Retrieve all patients from the database
         const foundPatients = await Patient.find({}).exec();
+
+        // Render the "patients" view with the found patients
         res.render("patients", {
             foundPatients,
         });
@@ -2710,29 +2639,35 @@ app.get("/patients", async (req, res) => {
     }
 });
 
+//This code block sets up a route handler for the "/patients" URL path. It retrieves all patients from the database and renders the "patients" view, passing the found patients to the view.
 app.get("/add-patient", (req, res) => {
+    // Render the "add-patient" view
     res.render("add-patient");
 });
 
+//This code block sets up a route handler for the "/patient-profile" URL path. It retrieves a patient's ID from the query parameters and finds the patient by ID, populating their invoices. If the patient is not found, it sends a 404 response. It also retrieves last visits, appointments, approved appointments, deleted appointments, and the last invoice for the patient. Finally, it renders the "patient-profile" view, passing the retrieved data and hours list to the view.
 app.get("/patient-profile", async (req, res) => {
     const patientId = req.query.id;
     const hoursList = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
 
     try {
+        // Find the patient by ID and populate their invoices
         const patient = await Patient.findById(patientId).populate("invoices");
 
+        // If patient is not found, send a 404 response
         if (!patient) {
             return res.status(404).send("Patient not found");
         }
 
+        // Retrieve last visits, appointments, approved appointments, deleted appointments, and the last invoice
         const lastVisits = await LastVisit.find({}).exec();
         const foundAppointments = await Appointment.find({}).exec();
         const Appointments = await Appointment.find({ idNumber: patient.idNumber }).exec();
         const approvedAppointments = await ApprovedAppointment.find({ idNumber: patient.idNumber }).exec();
         const deletedAppointments = await DeletedAppointment.find({ idNumber: patient.idNumber }).exec();
-
         const lastInvoice = patient.invoices.length > 0 ? patient.invoices[patient.invoices.length - 1] : null;
 
+        // Render the "patient-profile" view with the retrieved data
         res.render("patient-profile", {
             patient,
             lastInvoice,
@@ -2748,9 +2683,13 @@ app.get("/patient-profile", async (req, res) => {
     }
 });
 
+//This code block sets up a route handler for the "/drugs" URL path. It retrieves all drugs from the database and renders the "drugs" view, passing the found drugs to the view.
 app.get("/drugs", async (req, res) => {
     try {
+        // Retrieve all drugs from the database
         const foundDrugs = await Drug.find({}).exec();
+
+        // Render the "drugs" view with the found drugs
         res.render("drugs", {
             foundDrugs,
         });
@@ -2760,20 +2699,32 @@ app.get("/drugs", async (req, res) => {
     }
 });
 
+//This code block sets up a route handler for the "/add-drug" URL path. It renders the "add-drug" view.
 app.get("/add-drug", (req, res) => {
+    // Render the "add-drug" view
     res.render("add-drug");
 });
 
+//This code block sets up a route handler for the "/reviews" URL path. It retrieves reviews that are not viewed from the database. Then, it updates the viewed status of those reviews to true and counts the number of new reviews that are not viewed. An event is emitted to update the new reviews count. The code then retrieves active and inactive reviews from the database. It maps the active and inactive reviews to include stars based on the rating using the generateStars() function. Finally, it renders the "reviews" view, passing the active and inactive reviews with stars to the view.
 app.get("/reviews", async (req, res) => {
     try {
+        // Retrieve reviews that are not viewed
         const reviews = await Review.find({ viewed: false });
+
+        // Update the viewed status of the retrieved reviews to true
         await Review.updateMany({ viewed: false }, { viewed: true });
+
+        // Count the number of new reviews that are not viewed
         const newReviewsCount = await Review.countDocuments({ viewed: false });
+
+        // Emit an event to update the new reviews count
         eventEmitter.emit('update', newReviewsCount);
 
+        // Retrieve active and inactive reviews
         const activeReviews = await Review.find({ active: true }).exec();
         const inactiveReviews = await Review.find({ active: false }).exec();
 
+        // Map the active reviews and inactive reviews to include stars based on the rating
         const activeReviewsWithStars = activeReviews.map((review) => ({
             ...review.toObject(),
             stars: generateStars(review.rating),
@@ -2784,6 +2735,7 @@ app.get("/reviews", async (req, res) => {
             stars: generateStars(review.rating),
         }));
 
+        // Render the "reviews" view with the active and inactive reviews
         res.render("reviews", {
             activeReviews: activeReviewsWithStars,
             inactiveReviews: inactiveReviewsWithStars,
@@ -2794,13 +2746,23 @@ app.get("/reviews", async (req, res) => {
     }
 });
 
+//This code block sets up a route handler for the "/contact-requests" URL path. It updates the viewed status of contact requests to true and counts the number of new contact requests that are not viewed. An event is emitted to update the new contact requests count. The code then retrieves persons to contact and contacted persons from the database. Finally, it renders the "contact" view, passing the persons to contact and contacted persons to the view.
 app.get("/contact-requests", async (req, res) => {
     try {
+        // Update the viewed status of contact requests to true
         await Contact.updateMany({ viewed: false }, { viewed: true });
+
+        // Count the number of new contact requests that are not viewed
         const newContactsCount = await Contact.countDocuments({ viewed: false });
+
+        // Emit an event to update the new contact requests count
         contactEventEmitter.emit('update', newContactsCount);
+
+        // Retrieve persons to contact and contacted persons
         const personsToContact = await Contact.find({ contacted: false }).exec();
         const contactedPersons = await Contact.find({ contacted: true }).exec();
+
+        // Render the "contact" view with persons to contact and contacted persons
         res.render("contact", { personsToContact, contactedPersons });
     } catch (error) {
         console.error(error);
@@ -2808,9 +2770,13 @@ app.get("/contact-requests", async (req, res) => {
     }
 });
 
+//This code block sets up a route handler for the "/contacts/count" URL path. It counts the number of new contact requests that are not viewed and sends the count as a JSON response.
 app.get('/contacts/count', async (req, res) => {
     try {
+        // Count the number of new contact requests that are not viewed
         const newContactsCount = await Contact.countDocuments({ viewed: false });
+
+        // Send the count as a JSON response
         res.json({ count: newContactsCount });
     } catch (error) {
         console.error('Error fetching contact count:', error);
@@ -2818,16 +2784,20 @@ app.get('/contacts/count', async (req, res) => {
     }
 });
 
+//This code block sets up a route handler for the "/api/patients/:id" URL path. It retrieves the patient's ID from the request parameters and finds the patient by ID. If the patient is not found, it sends a 404 response with an error message. Otherwise, it sends the patient as a JSON response.
 app.get('/api/patients/:id', async (req, res) => {
     const patientId = req.params.id;
 
     try {
+        // Find a patient by ID
         const patient = await Patient.findById(patientId);
 
+        // If the patient is not found, send a 404 response with an error message
         if (!patient) {
             return res.status(404).json({ message: 'Patient not found' });
         }
 
+        // Send the patient as a JSON response
         res.json(patient);
     } catch (error) {
         console.error(error);
@@ -2835,9 +2805,13 @@ app.get('/api/patients/:id', async (req, res) => {
     }
 });
 
+//This code block sets up a route handler for the "/reviews/count" URL path. It counts the number of new reviews that are not viewed and sends the count as a JSON response.
 app.get('/reviews/count', async (req, res) => {
     try {
+        // Count the number of new reviews that are not viewed
         const newReviewsCount = await Review.countDocuments({ viewed: false });
+
+        // Send the count as a JSON response
         res.json({ count: newReviewsCount });
     } catch (error) {
         console.error('Error fetching review count:', error);
@@ -2848,6 +2822,20 @@ app.get('/reviews/count', async (req, res) => {
 
 // Post requests ..............
 //This route is responsible for booking an appointment. It retrieves the necessary appointment details from the request body and updates an existing appointment or creates a new one. The updated or newly created appointment is then saved to the database.
+
+//This code block retrieves the necessary data from the request body, including idNumber, firstName, lastName, dateOfBirth, gender, service, date, time, email, tel, and paragraph.
+//
+// Inside a try-catch block, it uses await to asynchronously find an existing appointment based on the idNumber. If an appointment with the provided idNumber exists, it updates the appointment with the new data using findOneAndUpdate.
+//
+// If the appointment does not exist (based on upsert: true), it creates a new appointment using the provided data.
+//
+// The new: true option ensures that the updated or newly created appointment is returned as the result.
+//
+// The code logs the saved appointment to the console for debugging purposes.
+//
+// Finally, it redirects the user to the /book-appointment page.
+//
+// In case of any errors during the process, it logs the error to the console and sends a 500 Internal Server Error response.
 app.post("/book-appointment", async (req, res) => {
     const idNumber = req.body.idNumber;
     const firstName = req.body.fName;
@@ -2889,6 +2877,7 @@ app.post("/book-appointment", async (req, res) => {
     }
 });
 
+//This code block sets up a route handler for the "/online-appointment-booking" URL path with a POST method. It expects a request body with a formData object. The code retrieves the necessary data from the formData object and assigns them to variables. It then tries to find and update an existing appointment using the idNumber, or creates a new appointment if not found. The appointment data is updated or set based on the received form data. The { upsert: true, new: true } options ensure that a new appointment is created if it doesn't exist and the updated appointment is returned. The code logs the saved appointment and sends a JSON response indicating success.
 app.post('/online-appointment-booking', async (req, res) => {
     const formData = req.body.formData;
     console.log(formData);
@@ -2904,6 +2893,7 @@ app.post('/online-appointment-booking', async (req, res) => {
     const paragraph = formData.paragraph;
 
     try {
+        // Find and update an existing appointment or create a new one if not found
         let appointment = await Appointment.findOneAndUpdate(
             { idNumber: idNumber },
             {
@@ -2931,6 +2921,7 @@ app.post('/online-appointment-booking', async (req, res) => {
     }
 });
 
+//This code block sets up a route handler for the "/add-patient" URL path with a POST method. It expects a request body with various patient data fields. The code assigns the provided data to variables and creates a new Patient instance with the data. It then saves the new patient to the database using the save method. If the save operation is successful, the code redirects the user to the "/patients" URL path. If there's an error, it logs the error and sends a 500 "Internal server error" response.
 app.post("/add-patient", async (req, res) => {
     const idNumber = req.body.idNumber;
     const fName = req.body.fName;
@@ -2948,6 +2939,7 @@ app.post("/add-patient", async (req, res) => {
     const employeeName = req.body.employeeName;
 
     try {
+        // Create a new patient instance with the provided data
         const patient = new Patient({
             idNumber: idNumber,
             fName: fName,
@@ -2965,14 +2957,16 @@ app.post("/add-patient", async (req, res) => {
             employeeName: employeeName,
         });
 
+        // Save the new patient to the database
         await patient.save();
+
+        // Redirect to the "/patients" URL path
         res.redirect("/patients");
     } catch (error) {
         console.error('Error saving patient:', error);
         res.status(500).send('Internal server error');
     }
 });
-
 
 //the route handler is using app.post() to handle HTTP POST requests to "/patient-profile". It extracts various data fields from the request body using req.body. The extracted fields are then used to update a Patient document in a database using Patient.findOneAndUpdate().
 app.post("/patient-profile", (req, res) => {
@@ -3534,6 +3528,7 @@ app.delete("/delete-appointment/:appointmentID", async (req, res) => {
     }
 });
 
+//This route handles the deletion of an invoice. It expects the invoice ID to be specified in the URL parameter invoiceID. The code tries to find and delete the invoice with the specified ID using findOneAndDelete method of the Invoice model. If the invoice is not found, it sends an error response. Otherwise, it sends a success response.
 app.delete("/delete-invoice/:invoiceID", async (req, res) => {
     try {
         // Extract the invoice ID from the request parameters
@@ -3557,6 +3552,9 @@ app.delete("/delete-invoice/:invoiceID", async (req, res) => {
     }
 });
 
+//This route handles the deletion of a drug. It expects the drug ID to be specified in the URL parameter drugID.
+// The code tries to find and delete the drug with the specified ID using findOneAndDelete method of the Drug model.
+// If the drug is not found, it sends an error response. Otherwise, it sends a success response.
 app.delete("/delete-drug/:drugID", async (req, res) => {
     try {
         // Extract the drug ID from the request parameters
@@ -3580,6 +3578,9 @@ app.delete("/delete-drug/:drugID", async (req, res) => {
     }
 });
 
+//This route handles the deletion of a review. It expects the review ID to be specified in the URL parameter reviewID.
+// The code tries to find and delete the review with the specified ID using findOneAndDelete method of the Review model.
+// If the review is not found, it sends an error response. Otherwise, it sends a success response.
 app.delete("/delete-review/:reviewID", async (req, res) => {
     try {
         // Extract the review ID from the request parameters
@@ -3603,6 +3604,9 @@ app.delete("/delete-review/:reviewID", async (req, res) => {
     }
 });
 
+//This route handles the deletion of a contact. It expects the contact ID to be specified in the URL parameter contactID.
+// The code tries to find and delete the contact with the specified ID using findOneAndDelete method of the Contact model.
+// If the contact is not found, it sends an error response. Otherwise, it sends a success response.
 app.delete("/delete-contact/:contactID", async (req, res) => {
     try {
         // Extract the contact ID from the request parameters
@@ -3626,6 +3630,9 @@ app.delete("/delete-contact/:contactID", async (req, res) => {
     }
 });
 
+//This route handles the deletion of a patient. It expects the patient ID to be specified in the URL parameter patientID.
+// The code tries to find and delete the patient with the specified ID using findOneAndDelete method of the Patient model.
+// If the patient is not found, it sends an error response. Otherwise, it sends a success response.
 app.delete("/delete-patient/:patientID", async (req, res) => {
     try {
         // Extract the patient ID from the request parameters
@@ -3649,6 +3656,10 @@ app.delete("/delete-patient/:patientID", async (req, res) => {
     }
 });
 
+//This route handles toggling the "active" status of a review. It expects the review ID to be specified in the URL parameter reviewID.
+// The code tries to find the review with the specified ID using findOne method of the Review model.
+// If the review is not found, it sends an error response. Otherwise, it toggles the active property of the review and saves the updated review.
+// It sends a success response if the operation is successful, or an error response if there is an issue.
 app.post("/active-review/:reviewID", async (req, res) => {
     try {
         // Extract the review ID from the request parameters
@@ -3678,6 +3689,10 @@ app.post("/active-review/:reviewID", async (req, res) => {
     }
 });
 
+//This route handles toggling the "contacted" status of a person. It expects the person ID to be specified in the URL parameter personID.
+// The code tries to find the person with the specified ID using findOne method of the Contact model.
+// If the person is not found, it sends an error response. Otherwise, it toggles the contacted property of the person and saves the updated person.
+// It sends a success response if the operation is successful, or an error response if there is an issue.
 app.post("/contact-person/:personID", async (req, res) => {
     try {
         // Extract the person ID from the request parameters
@@ -3707,6 +3722,10 @@ app.post("/contact-person/:personID", async (req, res) => {
     }
 });
 
+//This route handles the deletion of a past appointment. It expects the appointment ID to be specified in the URL parameter appointmentID.
+// The code uses Promise.all() to wait for both ApprovedAppointment.findOneAndDelete() and DeletedAppointment.findOneAndDelete() operations to complete.
+// After successful deletion, it logs the deleted approved and deleted appointments.
+// It sends a success response to the client if the deletion is successful, or an error response if there was an issue.
 app.delete("/del-past-appointment/:appointmentID", async (req, res) => {
     try {
         // Extract the appointment ID from the request parameters
@@ -3730,6 +3749,11 @@ app.delete("/del-past-appointment/:appointmentID", async (req, res) => {
     }
 });
 
+//This route handles updating an appointment with new data. It expects various appointment data fields to be sent in the request body.
+// The code extracts the data from the request body.
+// It uses Appointment.findOneAndUpdate() to find and update the appointment with the specified ID.
+// After successful update, it logs the updated appointment and redirects to the "book-appointment" page.
+// If there is an error, it sends a server error response.
 app.post("/update-appointment", async (req, res) => {
     try {
         // Extract data from the request body
@@ -3768,6 +3792,13 @@ app.post("/update-appointment", async (req, res) => {
     }
 });
 
+//This route handles approving an appointment. It expects various appointment data fields to be sent in the request body.
+// The code extracts the data from the request body.
+// It updates the patient's information using Patient.findOneAndUpdate().
+// It creates a new approved appointment using the ApprovedAppointment model and saves it.
+// It deletes the original appointment using Appointment.deleteOne().
+// After successful approval, it logs a success message and redirects to the "book-appointment" page.
+// If there is an error, it sends a server error response.
 app.post("/approve-appointment", async (req, res) => {
     try {
         // Extract data from the request body
@@ -3825,6 +3856,12 @@ app.post("/approve-appointment", async (req, res) => {
     }
 });
 
+//This route handles updating clinic information. It expects clinic data fields to be sent in the request body.
+// The code extracts the clinic data from the request body.
+// It finds an existing clinic document with a different ID number and deletes it using existingClinic.remove().
+// It creates a new clinic document with the updated clinic data using Clinic.create().
+// After successful update, it redirects to the "account-settings" page.
+// If there is an error, it sends a server error response.
 app.post('/clinic-info', async (req, res) => {
     // Extract clinic data from the request body
     const clinicData = {
@@ -3860,6 +3897,11 @@ app.post('/clinic-info', async (req, res) => {
     }
 });
 
+//This route handles updating doctor information. It expects doctor data fields to be sent in the request body.
+// The code extracts the doctor data from the request body.
+// It updates the doctor information using Doctor.findOneAndUpdate().
+// After successful update, it redirects to the "account-settings" page.
+// If there is an error, it sends a server error response.
 app.post('/doctor-info', async (req, res) => {
     // Extract doctor data from the request body
     const doctorData = {
@@ -3902,6 +3944,11 @@ app.post('/doctor-info', async (req, res) => {
     }
 });
 
+//This route handles updating social media settings. It expects social media data fields to be sent in the request body.
+// The code extracts the social media data from the request body.
+// It updates the social media settings using SettingSocialMedia.findOneAndUpdate().
+// After successful update, it redirects to the "account-settings" page.
+// If there is an error, it sends a server error response.
 app.post('/social-media', async (req, res) => {
     // Extract social media data from the request body
     const socialMediaData = {
@@ -3927,6 +3974,9 @@ app.post('/social-media', async (req, res) => {
     }
 });
 
+//This route handles uploading a doctor's photo. It expects a single file with the field name doctorPhoto to be uploaded.
+// The code creates a new DoctorPhoto document with the uploaded file's path and saves it.
+// After successful upload, it redirects to the "account-settings" page.
 app.post('/doctor-photos', upload.single('doctorPhoto'), function (req, res) {
     // Create a new doctor photo document
     const doctorPhoto = new DoctorPhoto({
@@ -3938,6 +3988,9 @@ app.post('/doctor-photos', upload.single('doctorPhoto'), function (req, res) {
     res.redirect("/account-settings");
 });
 
+//This route handles uploading a clinic's photo. It expects a single file with the field name clinicPhoto to be uploaded.
+// The code creates a new ClinicPhoto document with the uploaded file's path and saves it.
+// After successful upload, it redirects to the "account-settings" page.
 app.post('/clinic-photos', upload.single('clinicPhoto'), function (req, res) {
     // Create a new clinic photo document
     const clinicPhoto = new ClinicPhoto({
@@ -3949,6 +4002,13 @@ app.post('/clinic-photos', upload.single('clinicPhoto'), function (req, res) {
     res.redirect("/account-settings");
 });
 
+//This route handles creating an invoice for a patient. It expects invoice data fields to be sent in the request body and the patient ID as a URL parameter.
+// The code generates an invoice ID using the shortid library and extracts other invoice data from the request body.
+// It creates an array of InvoiceItem documents based on the provided item data.
+// It calculates the total price, amount paid, and due amount for the invoice.
+// It creates a new Invoice document with the invoice data and adds it to the patient's invoices array using Patient.findByIdAndUpdate().
+// After successful creation, it saves the invoice and redirects to the patient profile page with the updated patient information.
+// If there is an error, it sends a server error response.
 app.post('/patients/:id/invoices', async (req, res) => {
     try {
         // Generate an invoice ID using the shortid library
@@ -4056,7 +4116,17 @@ app.get('/sse', (req, res) => {
     });
 });
 
-
+//This route is triggered when a POST request is made to /generate-pdf.
+// It expects the request body to contain invoID and patientID.
+// The route retrieves the corresponding invoice and patient information from the database using the provided IDs.
+// It also fetches a doctor's information using Doctor.findOne().
+// The patient's first and last names are masked by replacing all but the first two characters with asterisks.
+// The invoice data is then formatted and organized.
+// The createInvoice function is called to generate a PDF document using the PDFDocument module.
+// The generated PDF is converted to a base64 string and attached as an email attachment.
+// An email is sent to the patient's email address with the PDF attachment using sgMail.send().
+// If successful, it logs a success message and calls the sendEvent() function.
+// If an error occurs during the process, it logs the error and an error message.
 app.post('/generate-pdf', async (req, res) => {
     try {
         const invoiceId = req.body.invoID;
@@ -4304,6 +4374,15 @@ app.post('/generate-pdf', async (req, res) => {
     }
 });
 
+//This route is triggered when a POST request is made to /download-pdf.
+// It expects the request body to contain invoID and patientID.
+// The route retrieves the corresponding invoice and patient information from the database using the provided IDs.
+// It also fetches a doctor's information using Doctor.findOne().
+// The patient's first and last names are masked by replacing all but the first two characters with asterisks.
+// The invoice data is then formatted and organized.
+// The createInvoice function is called to generate a PDF document using the PDFDocument module.
+// The generated PDF is streamed as a response to the client.
+// The response headers are set to specify the content as a PDF file and provide the file name.
 app.post('/download-pdf', async (req, res) => {
     try {
         const invoiceId = req.body.invoID;
@@ -4530,6 +4609,7 @@ app.post('/download-pdf', async (req, res) => {
     }
 });
 
+// This route handler handles a POST request for updating the theme value in user preferences. It retrieves the current user preferences from the database, checks if the new theme value is different from the current one, and updates the theme value in the user preferences. Finally, it sends a JSON response with the updated preferences.
 app.post('/update-theme', async (req, res) => {
     try {
         const { themeValue } = req.body;
@@ -4564,6 +4644,7 @@ app.post('/update-theme', async (req, res) => {
     }
 });
 
+//This route handler handles a POST request for updating the sidebarMini value in user preferences. It retrieves the current user preferences from the database and updates the sidebarMini value. Then, it sends a JSON response with the updated preferences.
 app.post('/update-sidebar', async (req, res) => {
     const sidebarMini = req.body.sidebarMini === 'true';
     try {
@@ -4586,6 +4667,8 @@ app.post('/update-sidebar', async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
+
+//This route handler handles a POST request for updating various user preferences. It retrieves the submitted form data, including theme, themeValue, font, pic, and other preferences. It retrieves the current user preferences from the database and updates the preferences with the new values. Finally, it redirects to the "/dashboard" route.
 app.post("/user-prefrences", async (req, res) => {
     const hMenu = req.body.h_menu === 'true';
     const themeRtl = req.body.themeRtl === 'true';
@@ -4643,7 +4726,7 @@ app.post("/user-prefrences", async (req, res) => {
 
 const reviewEmitter = new EventEmitter();
 
-// Endpoint for submitting a review
+// This route handler handles a POST request for submitting a review. It retrieves the review data from the request body, creates a new Review object, saves it to the database, and emits an SSE event with the saved review. It sends a JSON response indicating the success of the operation.
 app.post("/rate", async (req, res) => {
     try {
         const formData = req.body.formData;
@@ -4677,7 +4760,7 @@ app.post("/rate", async (req, res) => {
     }
 });
 
-// Server-Sent Events endpoint for receiving new reviews
+// This route handler establishes a Server-Sent Events (SSE) connection for receiving new reviews. It sets the appropriate headers for SSE, registers an event listener for 'newReview' events, and sends the new review data to the client as an SSE event. It also removes the event listener when the client closes the SSE connection.
 app.get('/sse/reviews', (req, res) => {
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
@@ -4698,7 +4781,7 @@ app.get('/sse/reviews', (req, res) => {
     });
 });
 
-// Endpoint for submitting a contact form
+//  This route handler handles a POST request for saving contact information. It retrieves the contact form data from the request body, creates a new Contact object, saves it to the database, and emits an SSE event with the saved contact. Finally, it sends a JSON response indicating the success of the operation.
 app.post("/contact", async (req, res) => {
     try {
         const formData = req.body.formData;
@@ -4727,7 +4810,7 @@ app.post("/contact", async (req, res) => {
     }
 });
 
-// Server-Sent Events endpoint for receiving new contacts
+//  This route handler establishes an SSE connection for receiving new contact information. It sets the appropriate headers for SSE, registers an event listener for 'newContact' events, and sends the new contact data to the client as an SSE event. It also removes the event listener when the client closes the SSE connection.
 app.get('/sse/contacts', (req, res) => {
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
@@ -4748,9 +4831,7 @@ app.get('/sse/contacts', (req, res) => {
     });
 });
 
-
-
-// Endpoint for updating the last visit of a patient
+// This route handler handles a POST request for updating the last visit of a patient. It retrieves the last visit form data from the request body, finds the patient by the provided ID, adds the last visit information to the patient's lastVisit array, saves the patient, and saves the last visit information to the database as a new LastVisit object. Finally, it sends a JSON response indicating the success of the operation.
 app.post('/patients/:id/lastvisit', async (req, res) => {
     try {
         const formData = req.body.formData;
@@ -4785,29 +4866,7 @@ app.post('/patients/:id/lastvisit', async (req, res) => {
     }
 });
 
-// Endpoint for user login
-// app.post('/login', (req, res, next) => {
-//     passport.authenticate('local', (err, user, info) => {
-//         if (err) {
-//             console.error(err);
-//             return next(err);
-//         }
-//         if (!user) {
-//             // User authentication failed, show error message on login page
-//             req.flash('error', 'Incorrect email or password');
-//             return res.redirect('/login');
-//         }
-//         req.logIn(user, (err) => {
-//             if (err) {
-//                 console.error(err);
-//                 return next(err);
-//             }
-//             return res.redirect('/dashboard');
-//         });
-//     })(req, res, next);
-// });
-
-// Endpoint for creating a new todo item
+//This route handler handles a POST request for creating a new todo item. It retrieves the text property from the request body, creates a new Todo object, saves it to the database, and sends a JSON response with the created todo item.
 app.post('/todos', (req, res) => {
     const { text } = req.body;
 
@@ -4824,7 +4883,7 @@ app.post('/todos', (req, res) => {
         });
 });
 
-// Endpoint for updating the status of a todo item
+//  This route handler handles a PUT request for updating the status of a todo item. It retrieves the todo item ID from the request parameters, finds the todo item by ID, toggles its done property, saves the updated todo item, and sends a JSON response with the updated todo item.
 app.put('/todos/:id', (req, res) => {
     const { id } = req.params;
 
@@ -4841,7 +4900,7 @@ app.put('/todos/:id', (req, res) => {
         });
 });
 
-// Endpoint for deleting a todo item
+//  This route handler handles a DELETE request for deleting a todo item. It retrieves the todo item ID from the request parameters, finds the todo item by ID, deletes it from the database, and sends a 204 No Content status code to indicate the successful deletion.
 app.delete('/todos/:id', (req, res) => {
     const { id } = req.params;
 
@@ -4854,7 +4913,7 @@ app.delete('/todos/:id', (req, res) => {
         });
 });
 
-// Endpoint for updating the status of a patient
+//  This route handler handles a POST request for updating the status of a patient. It retrieves the patient ID from the request parameters and the new status from the request body. It updates the patient's status in the database and sends an appropriate response based on the success or failure of the operation.
 app.post('/patients/:id/updateStatus', (req, res) => {
     const patientId = req.params.id;
     const newStatus = req.body.status;
@@ -4872,55 +4931,6 @@ app.post('/patients/:id/updateStatus', (req, res) => {
     });
 });
 
-
-
-// app.post("/register", function(req, res) {
-//     // Delete all existing doctors
-//     Authentication.deleteMany({}, function(err) {
-//         if (err) {
-//             console.log(err);
-//             res.redirect("/register");
-//         } else {
-//             // Create a new doctor document
-//             Authentication.register(
-//                 { username: req.body.username },
-//                 req.body.password,
-//                 function(err, doctor) {
-//                     if (err) {
-//                         console.log(err);
-//                         res.redirect("/register");
-//                     } else {
-//                         passport.authenticate("local")(req, res, function() {
-//                             res.redirect("/dashboard");
-//                         });
-//                     }
-//                 }
-//             );
-//         }
-//     });
-// });
-
-
-// Patient.updateMany(
-//     {},
-//     { $set: { lastVisit: [] } }
-// )
-//     .then((result) => {
-//         console.log(`Updated ${result.nModified} patient records.`);
-//     })
-//     .catch((error) => {
-//         console.error('Error updating patient records:', error);
-//     });
-// Contact.updateMany(
-//     {},
-//     { $set: { viewed: false } }
-// )
-//     .then((result) => {
-//         console.log(`Updated ${result.nModified} contact records.`);
-//     })
-//     .catch((error) => {
-//         console.error('Error updating contact records:', error);
-//     });
 
 
 //The app.listen() function is used to start the server and make it listen on a specific port for incoming HTTP requests.
