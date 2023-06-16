@@ -2508,7 +2508,7 @@ app.get("/account-settings",  async (req, res) => {
 
         // Retrieve other necessary data from the database
         const doctor = await Doctor.find({}).exec();
-        const authentication = await Authentication.find({}).exec();
+        // const authentication = await Authentication.find({}).exec();
         const clinic = await Clinic.find({}).exec();
         const settingSocialMedia = await SettingSocialMedia.find({}).exec();
 
@@ -2516,7 +2516,7 @@ app.get("/account-settings",  async (req, res) => {
         res.render('accountSetting', {
             lastUploadedDoctorPhoto: encodeURIComponent(lastUploadedDoctorPhoto),
             doctor: doctor.length > 0 ? doctor[0] : null,
-            authentication: authentication.length > 0 ? authentication[0] : null,
+            // authentication: authentication.length > 0 ? authentication[0] : null,
             clinic: clinic.length > 0 ? clinic[0] : null,
             settingSocialMedia: settingSocialMedia.length > 0 ? settingSocialMedia[0] : null,
             allTimeZone: allTimeZone

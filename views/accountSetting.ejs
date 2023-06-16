@@ -368,18 +368,7 @@
 <!--                        <form action="/clinic-info" method="post">-->
                             <div class="card-body">
                                 <div class="row g-3">
-                                    <div class="col-lg-4 col-md-12">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" name="userName" value="<%= authentication ? authentication.username : '' %>" readonly
-                                                   placeholder="<%= translation.username %>">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-12">
-<!--                                        <div class="form-group">-->
-<!--                                            <input type="email" class="form-control" name="registrationEmail" readonly value="authentication.username"-->
-<!--                                                   placeholder="<%= translation.email %>">-->
-<!--                                        </div>-->
-                                    </div>
+
                                     <div class="col-12">
 
                                         <h6 class="border-top pt-2 mt-2 mb-3"><%= translation.change_password %></h6>
@@ -398,13 +387,7 @@
                                         </div>
                                     </div>
                                     <div class="row g-3">
-                                        <div class="col-md-9 col-sm-8">
-                                            <label class="col-md-3 col-sm-4 col-form-label"><%= translation.authentication %></label>
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="" readonly>
-                                                <label class="form-check-label"><%= translation.tow_factor_authentication %></label>
-                                            </div>
-                                        </div>
+
                                     </div>
                                 </div>
                             </div>
