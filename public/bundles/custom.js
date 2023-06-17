@@ -1,3 +1,5 @@
+const successNotification = document.getElementById('successe-notification');
+
 const sidebarToggleBtn = document.getElementById('sidebar-toggle-btn');
 
 //Toggling Sidebar Mini
@@ -333,7 +335,6 @@ colorOptions.forEach((option) => {
 });
 
 
-const successNotification = document.getElementById('successe-notification');
 
 //Removes the row associated with the given appointmentID from the DOM.
 function remove_deleted_appointment(appointmentID) {

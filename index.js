@@ -3718,26 +3718,24 @@ app.post("/contact-person/:personID", async (req, res) => {
 // After successful deletion, it logs the deleted approved and deleted appointments.
 // It sends a success response to the client if the deletion is successful, or an error response if there was an issue.
 app.delete("/del-past-appointment/:appointmentID", async (req, res) => {
-    try {
-        // Extract the appointment ID from the request parameters
-        const appointmentId = req.params.appointmentID;
+    const appointmentId = req.params.appointmentID;
+    console.log(appointmentId)
 
-        // Use Promise.all() to wait for both database operations to complete
-        await Promise.all([
-            ApprovedAppointment.findOneAndDelete({ _id: appointmentId }).exec(),
-            DeletedAppointment.findOneAndDelete({ _id: appointmentId }).exec()
-        ]);
-
-        console.log("Deleted approved appointment:", approvedAppointment);
-        console.log("Deleted deleted appointment:", deletedAppointment);
-
-        // Send a success response to the client
-        res.json({ success: true });
-    } catch (err) {
-        console.error(err);
-        // Send an error response if there was an issue deleting the appointment
-        res.json({ success: false, message: "Error deleting appointment." });
-    }
+    // use Promise.all() to wait for both database operations to complete
+    await  Promise.all([
+        ApprovedAppointment.findOneAndDelete({_id: appointmentId}).exec(),
+        DeletedAppointment.findOneAndDelete({_id: appointmentId}).exec()
+    ])
+        .then(([approvedAppointment, deletedAppointment]) => {
+            // send success response to client
+            res.json({success: true});
+            console.log('Deleted approved appointment:', approvedAppointment);
+            console.log('Deleted deleted appointment:', deletedAppointment);
+        })
+        .catch(err => {
+            console.error(err);
+            res.json({success: false, message: 'Error deleting appointment.'});
+        });
 });
 
 //This route handles updating an appointment with new data. It expects various appointment data fields to be sent in the request body.
