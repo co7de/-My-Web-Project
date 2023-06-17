@@ -16,13 +16,6 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const pdf = require('html-pdf');
 const fs = require('fs');
 const PDFDocument = require('pdfkit');
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
-const passport = require("passport");
-const flash = require('connect-flash');
-const LocalStrategy = require("passport-local");
-const passportLocalMongoose = require("passport-local-mongoose");
-const {isAuthenticated} = require("passport/lib/http/request");
 const {EventEmitter} = require('events');
 const { promisify } = require('util');
 
@@ -51,8 +44,6 @@ ejs.partials = {
     footer: 'partials/footer'
 };
 
-// Middleware for parsing cookies
-app.use(cookieParser());
 
 // Serve static files for fonts, CSS, and bundles
 app.use('/fonts', express.static(path.join(__dirname, 'public/css/fonts'), {
