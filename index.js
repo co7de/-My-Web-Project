@@ -2811,6 +2811,11 @@ app.get('/reviews/count', async (req, res) => {
 });
 
 
+// Handle keep-alive requests
+app.get('/keep-alive', (req, res) => {
+    res.status(200).send('Server is alive.');
+});
+
 // Post requests ..............
 //This route is responsible for booking an appointment. It retrieves the necessary appointment details from the request body and updates an existing appointment or creates a new one. The updated or newly created appointment is then saved to the database.
 

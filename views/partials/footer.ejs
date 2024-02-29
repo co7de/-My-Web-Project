@@ -1,6 +1,23 @@
 
 </div>
 
+<script>
+    // Periodically make requests to the server to keep it alive
+    setInterval(function() {
+        fetch('/keep-alive', {
+            method: 'GET',
+        })
+            .then(response => {
+                if (!response.ok) {
+                    console.error('Keep-alive request failed:', response.statusText);
+                }
+            })
+            .catch(error => {
+                console.error('Error during keep-alive request:', error);
+            });
+    }, 60000); // Repeat every 60 seconds (adjust as needed)
+</script>
+
 <!--dark_mode-->
 <script>
     $("#dark_mode").on("click", function () {
